@@ -5,7 +5,7 @@ import Link from 'next/link';
 
 export default function IDEPage() {
   return (
-    <div className="flex-1 flex items-center justify-center bg-gray-900">
+    <div className="flex-1 flex items-center justify-center bg-[var(--bg-panel)]">
       <div className="text-center max-w-2xl mx-auto p-8">
         <div className="text-6xl mb-6">🚀</div>
         <h1 className="text-3xl font-bold text-white mb-4">Welcome to Web3 IDE</h1>
@@ -16,7 +16,7 @@ export default function IDEPage() {
         
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-12">
           <Link href="/ide/editor" className="group">
-            <div className="bg-gray-800 hover:bg-gray-700 rounded-lg p-6 transition-colors border border-gray-700 hover:border-blue-500">
+            <div className="bg-[var(--bg-panel)] hover:bg-gray-700 rounded-lg p-6 transition-colors border border-gray-700 hover:border-blue-500">
               <div className="text-3xl mb-3">💻</div>
               <h3 className="text-white font-semibold mb-2">Code Editor</h3>
               <p className="text-gray-400 text-sm">
@@ -26,7 +26,7 @@ export default function IDEPage() {
           </Link>
           
           <Link href="/ide/audit" className="group">
-            <div className="bg-gray-800 hover:bg-gray-700 rounded-lg p-6 transition-colors border border-gray-700 hover:border-green-500">
+            <div className="bg-[var(--bg-panel)] hover:bg-gray-700 rounded-lg p-6 transition-colors border border-gray-700 hover:border-green-500">
               <div className="text-3xl mb-3">🔍</div>
               <h3 className="text-white font-semibold mb-2">Security Audit</h3>
               <p className="text-gray-400 text-sm">
@@ -36,7 +36,7 @@ export default function IDEPage() {
           </Link>
           
           <Link href="/ide/plugins" className="group">
-            <div className="bg-gray-800 hover:bg-gray-700 rounded-lg p-6 transition-colors border border-gray-700 hover:border-purple-500">
+            <div className="bg-[var(--bg-panel)] hover:bg-gray-700 rounded-lg p-6 transition-colors border border-gray-700 hover:border-purple-500">
               <div className="text-3xl mb-3">🚀</div>
               <h3 className="text-white font-semibold mb-2">Deploy</h3>
               <p className="text-gray-400 text-sm">
