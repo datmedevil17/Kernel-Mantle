@@ -33,11 +33,11 @@ const CodeEditor = ({ file, onContentChange }: CodeEditorProps) => {
 
   if (!file) {
     return (
-      <div className="flex-1 flex items-center justify-center bg-gray-900 text-gray-400">
+      <div className="flex-1 flex items-center justify-center bg-[var(--bg-panel)] text-[var(--text-muted)]">
         <div className="text-center">
-          <div className="text-6xl mb-4">🔗</div>
-          <p className="text-lg">Select a contract to start editing</p>
-          <p className="text-sm mt-2">Supports Solidity (.sol), Rust (.rs), and more</p>
+          <div className="text-6xl mb-4">📝</div>
+          <p className="text-lg">Select a file to start editing</p>
+          <p className="text-sm mt-2">Supports Solidity, Rust, JS, TS and more</p>
         </div>
       </div>
     );
@@ -46,18 +46,18 @@ const CodeEditor = ({ file, onContentChange }: CodeEditorProps) => {
   const language = getLanguage(file.name);
 
   return (
-    <div className="flex-1 flex flex-col bg-gray-900">
-      {/* File Tab */}
-      <div className="flex items-center bg-gray-800 border-b border-gray-700 px-4 py-2">
-        <span className="text-white text-sm flex items-center">
+    <div className="flex-1 flex flex-col bg-[var(--bg-panel)] rounded-xl shadow-lg overflow-hidden border border-[var(--border)]">
+      {/* File Tab Header */}
+      <div className="flex items-center bg-[#1c1c24] border-b border-[var(--border)] px-4 py-2">
+        <span className="text-white font-medium text-sm flex items-center">
           {language === 'solidity' && <span className="mr-2">⚡</span>}
           {language === 'rust' && <span className="mr-2">🦀</span>}
           {language === 'javascript' && <span className="mr-2">📜</span>}
           {language === 'typescript' && <span className="mr-2">🔷</span>}
           {file.name}
         </span>
-        <div className="ml-auto text-xs text-gray-400">
-          <span className="capitalize">{language}</span>
+        <div className="ml-auto text-xs text-[var(--text-muted)] italic">
+          {language}
         </div>
       </div>
 
