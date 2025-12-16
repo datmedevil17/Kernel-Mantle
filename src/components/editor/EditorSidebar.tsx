@@ -10,25 +10,22 @@ interface EditorSidebarProps {
   selectedFile: FileItem | null
   onCompile: () => void
   onDeploy: () => void
-  onCheck: () => void
-  onBuild: () => void
-  onRun: () => void
+ 
   compilationResult?: {
-    abi: string
-    bytecode: string
-    error?: string
-  }
-  isCompiling?: boolean
-  deployedAddress: string | null
+    abi: string;
+    bytecode: string;
+    error?: string;
+  };
+  isCompiling?: boolean;
+  deployedAddress: string | null;
+
 }
 
 const EditorSidebar = ({
   selectedFile,
   onCompile,
   onDeploy,
-  onCheck,
-  onBuild,
-  onRun,
+
   compilationResult,
   isCompiling = false,
   deployedAddress,
@@ -304,7 +301,6 @@ const EditorSidebar = ({
       </div>
 
       <button
-        onClick={onCheck}
         className="w-full px-4 py-3 bg-gradient-to-r from-orange-600 to-orange-500 hover:from-orange-500 hover:to-orange-400 text-white text-sm rounded-xl transition-all duration-200 flex items-center justify-center space-x-2 font-medium shadow-lg hover:shadow-xl border border-orange-500/20"
       >
         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -319,7 +315,6 @@ const EditorSidebar = ({
       </button>
 
       <button
-        onClick={onBuild}
         className="w-full px-4 py-3 bg-gradient-to-r from-gray-700 to-gray-600 hover:from-gray-600 hover:to-gray-500 text-white text-sm rounded-xl transition-all duration-200 flex items-center justify-center space-x-2 font-medium shadow-lg hover:shadow-xl border border-gray-600/20"
       >
         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -368,7 +363,6 @@ const EditorSidebar = ({
       </div>
 
       <button
-        onClick={onRun}
         className="w-full px-4 py-3 bg-gradient-to-r from-yellow-600 to-yellow-500 hover:from-yellow-500 hover:to-yellow-400 text-white text-sm rounded-xl transition-all duration-200 flex items-center justify-center space-x-2 font-medium shadow-lg hover:shadow-xl border border-yellow-500/20"
       >
         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

@@ -69,10 +69,23 @@ pub mod pallet {
     }
 }`;
 
-
 interface CompilationResult {
   abi: string;
   bytecode: string;
+  error?: string;
+}
+
+interface RustBuildResult {
+  bytecode?: string;
+  abi?: string[];
+  contractName?: string;
+  warnings?: string[];
+  error?: string;
+}
+
+interface RustCompilationState {
+  bytecode: string;
+  abi: string;
   error?: string;
 }
 
@@ -81,6 +94,10 @@ export default function EditorPage() {
   const [isCompiling, setIsCompiling] = useState(false);
   const [deployedAddress, setDeployedAddress] = useState<string | null>(null);
   
+  // Rust compilation state
+  const [rustBuildResult, setRustBuildResult] = useState<RustCompilationState | null>(null);
+  const [isBuilding, setIsBuilding] = useState(false);
+
   const [files, setFiles] = useState<FileItem[]>([
     {
       id: '1',
@@ -99,10 +116,15 @@ export default function EditorPage() {
   ]);
   const [selectedFile, setSelectedFile] = useState<FileItem | null>(files[0]);
 
+  const {deployContract} = useDeployContract()
+  const {switchChain} = useSwitchChain()
+  const publicClient = usePublicClient()
+
   const handleFileSelect = useCallback((file: FileItem): void => {
     setSelectedFile(file);
     // Clear compilation results when switching files
     setCompilationResult(null);
+    setRustBuildResult(null);
   }, []);
 
   const handleFileCreate = useCallback((name: string): void => {
@@ -137,6 +159,7 @@ export default function EditorPage() {
     setFiles(prev => [...prev, newFile]);
     setSelectedFile(newFile);
     setCompilationResult(null);
+    setRustBuildResult(null);
   }, []);
 
   const handleFileDelete = useCallback((id: string): void => {
@@ -145,6 +168,7 @@ export default function EditorPage() {
       if (selectedFile?.id === id) {
         setSelectedFile(newFiles.length > 0 ? newFiles[0] : null);
         setCompilationResult(null);
+        setRustBuildResult(null);
       }
       return newFiles;
     });
@@ -167,9 +191,14 @@ export default function EditorPage() {
     
     // Clear compilation results when content changes
     setCompilationResult(null);
+    setRustBuildResult(null);
   }, [selectedFile]);
 
-  // Action handlers
+  // Helper function to check if current file is Rust
+  const isRustFile = useCallback(() => {
+    return selectedFile?.name.endsWith('.rs') || false;
+  }, [selectedFile]);
+
   const handleCompile = useCallback(async () => {
     if (!selectedFile) return;
     
@@ -242,10 +271,6 @@ export default function EditorPage() {
     }
   }, [selectedFile]);
 
-  const {deployContract} = useDeployContract()
-  const {switchChain} = useSwitchChain()
-  const publicClient = usePublicClient()
-
   const handleDeploy = useCallback(async() => {
     await switchChain({ chainId: 420420421 });
 
@@ -272,22 +297,9 @@ export default function EditorPage() {
         },
       }
     );
-}, [compilationResult]);
+  }, [compilationResult, switchChain, deployContract, publicClient]);
 
-  const handleCheck = useCallback(() => {
-    console.log('Check function - to be implemented');
-    // TODO: Implement Rust cargo check logic
-  }, []);
 
-  const handleBuild = useCallback(() => {
-    console.log('Build function - to be implemented');
-    // TODO: Implement Rust cargo build logic
-  }, []);
-
-  const handleRun = useCallback(() => {
-    console.log('Run function - to be implemented');
-    // TODO: Implement JavaScript/TypeScript run logic
-  }, []);
 
   return (
     <div className="flex h-full">
@@ -306,12 +318,10 @@ export default function EditorPage() {
         selectedFile={selectedFile}
         onCompile={handleCompile}
         onDeploy={handleDeploy}
-        onCheck={handleCheck}
-        onBuild={handleBuild}
-        onRun={handleRun}
         compilationResult={compilationResult || undefined}
         isCompiling={isCompiling}
-        deployedAddress={deployedAddress} // Pass deployedAddress to EditorSidebar
+        deployedAddress={deployedAddress}
+  
       />
     </div>
   );
