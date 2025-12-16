@@ -283,9 +283,137 @@ const componentLibrary: ComponentItem[] = [
       mintPrice: 0.08,
       royaltyFee: 5
     }
+  },
+  // Governance Components
+  {
+    id: 'dao-voting',
+    type: 'template',
+    category: 'governance',
+    name: 'DAO Voting',
+    icon: <Users className="w-5 h-5" />,
+    color: 'bg-violet-100 border-violet-300 hover:bg-violet-200',
+    description: 'Decentralized voting mechanism',
+    gasEstimate: 180000,
+    properties: {
+      votingPeriod: '3 days',
+      quorum: '4%',
+      proposalThreshold: '1%',
+      votingDelay: '1 day',
+      proposalLifetime: '7 days'
+    }
+  },
+
+  // Oracle Integration
+  {
+    id: 'chainlink-price-feed',
+    type: 'template',
+    category: 'oracle',
+    name: 'Price Feed Oracle',
+    icon: <Radio className="w-5 h-5" />,
+    color: 'bg-blue-100 border-blue-300 hover:bg-blue-200',
+    description: 'Chainlink price feed integration',
+    gasEstimate: 42000,
+    properties: {
+      pair: 'ETH/USD',
+      heartbeat: '1 hour',
+      deviation: '0.5%',
+      aggregatorAddress: '',
+      decimals: 8
+    }
+  },
+
+  // Advanced Storage Patterns
+  {
+    id: 'diamond-storage',
+    type: 'storage',
+    category: 'storage',
+    name: 'Diamond Storage',
+    icon: <Database className="w-5 h-5" />,
+    color: 'bg-emerald-100 border-emerald-300 hover:bg-emerald-200',
+    description: 'EIP-2535 Diamond storage pattern',
+    gasEstimate: 0,
+    properties: {
+      namespace: 'LibStorage',
+      storageSlot: 'keccak256("diamond.storage")',
+      variables: 'mapping(address => uint256) balances'
+    }
+  },
+
+  // Cross-Chain
+  {
+    id: 'bridge-connector',
+    type: 'template',
+    category: 'crosschain',
+    name: 'Bridge Connector',
+    icon: <Map className="w-5 h-5" />,
+    color: 'bg-indigo-100 border-indigo-300 hover:bg-indigo-200',
+    description: 'Cross-chain bridge integration',
+    gasEstimate: 250000,
+    properties: {
+      targetChain: 'Polygon',
+      bridgeAddress: '',
+      lockPeriod: '1 hour',
+      minAmount: '0.1',
+      maxAmount: '100'
+    }
+  },
+
+  // Gas Optimization
+  {
+    id: 'batch-transfer',
+    type: 'function',
+    category: 'optimization',
+    name: 'Batch Transfer',
+    icon: <Zap className="w-5 h-5" />,
+    color: 'bg-amber-100 border-amber-300 hover:bg-amber-200',
+    description: 'Gas-optimized batch operations',
+    gasEstimate: 65000,
+    properties: {
+      maxBatchSize: 100,
+      arrayType: 'address[]',
+      valueType: 'uint256[]',
+      checkSuccess: true
+    }
+  },
+
+  // Proxy Patterns
+  {
+    id: 'upgradeable-proxy',
+    type: 'template',
+    category: 'proxy',
+    name: 'Upgradeable Proxy',
+    icon: <Shield className="w-5 h-5" />,
+    color: 'bg-sky-100 border-sky-300 hover:bg-sky-200',
+    description: 'OpenZeppelin upgradeable proxy',
+    gasEstimate: 350000,
+    properties: {
+      proxyType: 'UUPS',
+      initializeData: '',
+      adminAddress: '',
+      implementationAddress: ''
+    }
+  },
+
+  // Flash Loans
+  {
+    id: 'flash-loan',
+    type: 'template',
+    category: 'defi',
+    name: 'Flash Loan',
+    icon: <Zap className="w-5 h-5" />,
+    color: 'bg-fuchsia-100 border-fuchsia-300 hover:bg-fuchsia-200',
+    description: 'Flash loan functionality',
+    gasEstimate: 120000,
+    properties: {
+      lendingPool: '',
+      flashLoanFee: '0.09%',
+      supportedTokens: ['DAI', 'USDC', 'USDT'],
+      maxLoanAmount: '1000000'
+    }
   }
 ];
 
+// Add new categories
 const categories: Category[] = [
   { id: 'all', name: 'All Components', icon: <Settings className="w-4 h-4" /> },
   { id: 'core', name: 'Core', icon: <Cpu className="w-4 h-4" /> },
@@ -295,7 +423,12 @@ const categories: Category[] = [
   { id: 'tokens', name: 'Tokens', icon: <Zap className="w-4 h-4" /> },
   { id: 'defi', name: 'DeFi', icon: <Gift className="w-4 h-4" /> },
   { id: 'events', name: 'Events', icon: <Radio className="w-4 h-4" /> },
-  { id: 'time', name: 'Time', icon: <Calendar className="w-4 h-4" /> }
+  { id: 'time', name: 'Time', icon: <Calendar className="w-4 h-4" /> },
+  { id: 'governance', name: 'Governance', icon: <Users className="w-4 h-4" /> },
+  { id: 'oracle', name: 'Oracles', icon: <Radio className="w-4 h-4" /> },
+  { id: 'crosschain', name: 'Cross-Chain', icon: <Map className="w-4 h-4" /> },
+  { id: 'optimization', name: 'Optimization', icon: <Zap className="w-4 h-4" /> },
+  { id: 'proxy', name: 'Proxy', icon: <Shield className="w-4 h-4" /> }
 ];
 
 export { componentLibrary, categories, type ComponentItem, type Category };

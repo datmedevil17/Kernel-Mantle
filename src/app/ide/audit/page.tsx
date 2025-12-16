@@ -4,69 +4,9 @@ import React, { useState, useCallback } from 'react';
 import FileNavigator from '@/components/editor/FileNavigator';
 import AuditReport from '@/components/audit/AuditReport';
 import AuditSidebar from '@/components/audit/AuditSidebar';
-import { FileItem } from '@/types/editor';
+import { useFileStore } from '@/stores/fileStore';
 import { querySecurityAudit, queryCodeSuggestions, queryCodeAnalytics } from '@/utils/api';
-
-const defaultSolidityCode = `// SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;
-
-contract HelloWorld {
-    string private greeting;
-    
-    constructor() {
-        greeting = "Hello, World!";
-    }
-    
-    function setGreeting(string memory _greeting) public {
-        greeting = _greeting;
-    }
-    
-    function getGreeting() public view returns (string memory) {
-        return greeting;
-    }
-}`;
-
-const defaultRustCode = `#![cfg_attr(not(feature = "std"), no_std)]
-
-use frame_support::{
-    dispatch::DispatchResult,
-    pallet_prelude::*,
-};
-use frame_system::pallet_prelude::*;
-
-#[frame_support::pallet]
-pub mod pallet {
-    use super::*;
-
-    #[pallet::pallet]
-    #[pallet::generate_store(pub(super) trait Store)]
-    pub struct Pallet<T>(_);
-
-    #[pallet::config]
-    pub trait Config: frame_system::Config {
-        type RuntimeEvent: From<Event<Self>> + IsType<<Self as frame_system::Config>::RuntimeEvent>;
-    }
-
-    #[pallet::storage]
-    pub type Greeting<T> = StorageValue<_, Vec<u8>, ValueQuery>;
-
-    #[pallet::event]
-    #[pallet::generate_deposit(pub(super) fn deposit_event)]
-    pub enum Event<T: Config> {
-        GreetingSet { greeting: Vec<u8> },
-    }
-
-    #[pallet::call]
-    impl<T: Config> Pallet<T> {
-        #[pallet::weight(10_000)]
-        pub fn set_greeting(origin: OriginFor<T>, greeting: Vec<u8>) -> DispatchResult {
-            let _who = ensure_signed(origin)?;
-            Greeting::<T>::put(&greeting);
-            Self::deposit_event(Event::GreetingSet { greeting });
-            Ok(())
-        }
-    }
-}`;
+import { FileItem } from '@/types/editor';
 
 export interface AuditResult {
   type: 'audit' | 'suggestions' | 'analytics';
@@ -121,79 +61,20 @@ export interface AnalyticsData {
 }
 
 export default function AuditPage() {
-  const [files, setFiles] = useState<FileItem[]>([
-    {
-      id: '1',
-      name: 'HelloWorld.sol',
-      content: defaultSolidityCode,
-      type: 'file',
-      extension: 'sol',
-    },
-    {
-      id: '2',
-      name: 'pallet.rs',
-      content: defaultRustCode,
-      type: 'file',
-      extension: 'rs',
-    },
-  ]);
-  
-  const [selectedFile, setSelectedFile] = useState<FileItem | null>(files[0]);
+  const {
+    files,
+    selectedFile,
+    setSelectedFile,
+    createFile,
+    deleteFile
+  } = useFileStore();
+
   const [auditResults, setAuditResults] = useState<AuditResult[]>([]);
   const [currentReport, setCurrentReport] = useState<AuditResult | null>(null);
   const [isGenerating, setIsGenerating] = useState(false);
   const [generatingType, setGeneratingType] = useState<string>('');
 
-  const handleFileSelect = useCallback((file: FileItem): void => {
-    setSelectedFile(file);
-    // Clear current report when switching files
-    setCurrentReport(null);
-  }, []);
 
-  const handleFileCreate = useCallback((name: string): void => {
-    const extension = name.split('.').pop()?.toLowerCase();
-    let defaultContent = '';
-    
-    switch (extension) {
-      case 'sol':
-        defaultContent = '// SPDX-License-Identifier: MIT\npragma solidity ^0.8.0;\n\n';
-        break;
-      case 'rs':
-        defaultContent = '#![cfg_attr(not(feature = "std"), no_std)]\n\n';
-        break;
-      case 'js':
-        defaultContent = '// JavaScript file\n\n';
-        break;
-      case 'ts':
-        defaultContent = '// TypeScript file\n\n';
-        break;
-      default:
-        defaultContent = '';
-    }
-    
-    const newFile: FileItem = {
-      id: Date.now().toString(),
-      name,
-      content: defaultContent,
-      type: 'file',
-      extension,
-    };
-    
-    setFiles(prev => [...prev, newFile]);
-    setSelectedFile(newFile);
-    setCurrentReport(null);
-  }, []);
-
-  const handleFileDelete = useCallback((id: string): void => {
-    setFiles((prev: FileItem[]): FileItem[] => {
-      const newFiles = prev.filter((f: FileItem) => f.id !== id);
-      if (selectedFile?.id === id) {
-        setSelectedFile(newFiles.length > 0 ? newFiles[0] : null);
-        setCurrentReport(null);
-      }
-      return newFiles;
-    });
-  }, [selectedFile]);
 
   const generateAuditReport = async (file: FileItem): Promise<SecurityIssue[]> => {
     const language = file.extension ?? 'unknown';
@@ -301,9 +182,9 @@ export default function AuditPage() {
       <FileNavigator
         files={files}
         selectedFile={selectedFile}
-        onFileSelect={handleFileSelect}
-        onFileCreate={handleFileCreate}
-        onFileDelete={handleFileDelete}
+        onFileSelect={setSelectedFile}
+        onFileCreate={createFile}
+        onFileDelete={deleteFile}
       />
       <AuditReport
         file={selectedFile}

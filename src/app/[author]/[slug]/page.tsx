@@ -140,21 +140,66 @@ Keep the response technical but understandable.`;
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="mb-12 bg-gray-900/95 p-8 rounded-xl shadow-2xl border border-gray-800/50 backdrop-blur-sm"
+          className="mb-12 bg-gradient-to-b from-gray-900/95 to-gray-950/95 p-8 rounded-xl"
         >
+          <div className="flex justify-between items-center mb-6">
+            <h2 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-indigo-200">
+              Contract Functions
+            </h2>
+            <div className="p-1 bg-gray-800/70 rounded-xl backdrop-blur-sm">
+              <div className="flex gap-1">
+                <button
+                  onClick={() => setActiveTab("write")}
+                  className={`px-5 py-2.5 rounded-lg text-sm font-medium transition-all duration-300 ${
+                    activeTab === "write"
+                      ? "bg-gradient-to-r from-indigo-600/90 to-blue-600/90 text-white shadow-lg shadow-indigo-900/20"
+                      : "text-gray-400 hover:text-indigo-300 hover:bg-gray-700/50"
+                  }`}
+                >
+                  Write
+                </button>
+                <button
+                  onClick={() => setActiveTab("read")}
+                  className={`px-5 py-2.5 rounded-lg text-sm font-medium transition-all duration-300 ${
+                    activeTab === "read"
+                      ? "bg-gradient-to-r from-emerald-600/90 to-green-600/90 text-white shadow-lg shadow-emerald-900/20"
+                      : "text-gray-400 hover:text-emerald-300 hover:bg-gray-700/50"
+                  }`}
+                >
+                  Read
+                </button>
+              </div>
+            </div>
+          </div>
+
           <div className="border-b border-gray-700/50 pb-6 mb-6">
-            <h1 className="text-4xl font-bold mb-3 bg-clip-text text-transparent bg-gradient-to-r from-white to-gray-300">
-              {contract.source.name}
-            </h1>
-            <p className="text-lg text-gray-400 mb-4 leading-relaxed">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="h-3 w-3 rounded-full bg-gradient-to-r from-indigo-500 to-blue-500"></div>
+              <h1 className="text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white via-blue-100 to-indigo-200">
+                {contract.source.name}
+              </h1>
+            </div>
+            <p className="text-lg text-gray-300 mb-4 leading-relaxed max-w-3xl">
               {contract.source.description}
             </p>
           </div>
           <div className="flex items-center gap-4">
-            <div className="bg-indigo-950/50 text-indigo-300 px-4 py-2 rounded-lg border border-indigo-500/20 shadow-lg shadow-indigo-900/10">
-              <span className="text-sm font-semibold">
-                Version {contract.version}
-              </span>
+            <div className="bg-gradient-to-r from-indigo-950/50 to-blue-950/50 text-indigo-300 px-4 py-2 rounded-lg border border-indigo-500/20 shadow-lg shadow-indigo-900/10">
+              <span className="text-sm font-medium">Version {contract.version}</span>
+            </div>
+            <div className="flex-1 flex justify-end gap-3">
+              <button className="flex items-center gap-2 px-4 py-2 bg-gray-800/70 hover:bg-gray-700/70 text-gray-300 rounded-lg transition-all">
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/>
+                </svg>
+                Save
+              </button>
+              <button className="flex items-center gap-2 px-4 py-2 bg-indigo-600/90 hover:bg-indigo-700/90 text-white rounded-lg transition-all">
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7v8a2 2 0 002 2h6M5 11l4-4m0 0l4 4m-4-4v12"/>
+                </svg>
+                Deploy Contract
+              </button>
             </div>
           </div>
         </motion.div>
@@ -291,57 +336,94 @@ Keep the response technical but understandable.`;
 
               {/* AI Query Section */}
               <div className="mt-8 pt-6 border-t border-gray-700/50">
-                <div className="relative">
-                  <input
-                    type="text"
-                    value={aiQuery}
-                    onChange={(e) => setAiQuery(e.target.value)}
-                    placeholder="Ask anything about these functions..."
-                    className="w-full bg-gray-800/50 text-gray-200 placeholder-gray-500 px-4 py-3 pr-12 rounded-lg border border-gray-700/50 focus:border-indigo-500/50 focus:ring-2 focus:ring-indigo-500/20 focus:outline-none transition-all duration-200"
-                    onKeyPress={(e) => {
-                      if (e.key === "Enter" && !isLoading) {
-                        handleAiQuery(aiQuery);
-                      }
-                    }}
-                  />
-                  <button
-                    className={`absolute right-2 top-1/2 -translate-y-1/2 text-indigo-400 hover:text-indigo-300 transition-colors p-2 hover:bg-indigo-500/10 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed`}
-                    onClick={() => handleAiQuery(aiQuery)}
-                    disabled={isLoading}
-                  >
-                    {isLoading ? (
-                      <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24">
-                        <circle
-                          className="opacity-25"
-                          cx="12"
-                          cy="12"
-                          r="10"
-                          stroke="currentColor"
-                          strokeWidth="4"
-                          fill="none"
-                        />
-                        <path
-                          className="opacity-75"
-                          fill="currentColor"
-                          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                        />
-                      </svg>
-                    ) : (
-                      <svg
-                        className="w-5 h-5"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M13 10V3L4 14h7v7l9-11h-7z"
-                        />
-                      </svg>
+                <div className="space-y-4">
+                  {/* Input Header */}
+                  <div className="flex items-center gap-2 text-gray-400">
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} 
+                        d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                    </svg>
+                    <span className="text-sm">Ask about contract functions, security, or implementation details</span>
+                  </div>
+
+                  {/* Input Group */}
+                  <div className="relative group">
+                    <div className="absolute inset-0 bg-gradient-to-r from-indigo-500/20 to-blue-500/20 rounded-lg blur opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                    <div className="relative flex items-center">
+                      <input
+                        type="text"
+                        value={aiQuery}
+                        onChange={(e) => setAiQuery(e.target.value)}
+                        placeholder="Example: How does the transfer function work?"
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter' && !isLoading && aiQuery.trim()) {
+                            handleAiQuery(aiQuery);
+                          }
+                        }}
+                        disabled={isLoading}
+                        className="w-full bg-gray-800/70 text-gray-200 placeholder-gray-500 px-4 py-3.5 pr-20 rounded-lg border border-gray-700/50 focus:border-indigo-500/50 focus:ring-2 focus:ring-indigo-500/20 focus:outline-none transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                      />
+                      <div className="absolute right-2 flex items-center gap-2">
+                        {aiQuery.trim() && !isLoading && (
+                          <button
+                            onClick={() => setAiQuery('')}
+                            className="p-2 text-gray-400 hover:text-gray-300 transition-colors"
+                            title="Clear input"
+                          >
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                          </button>
+                        )}
+                        <button
+                          onClick={() => handleAiQuery(aiQuery)}
+                          disabled={isLoading || !aiQuery.trim()}
+                          className={`p-2 rounded-lg transition-all duration-200 ${
+                            !aiQuery.trim() 
+                              ? 'text-gray-500 cursor-not-allowed' 
+                              : 'text-indigo-400 hover:text-indigo-300 hover:bg-indigo-500/10'
+                          } disabled:opacity-50 disabled:cursor-not-allowed`}
+                          title={isLoading ? 'Processing...' : 'Send query'}
+                        >
+                          {isLoading ? (
+                            <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24">
+                              <circle
+                                className="opacity-25"
+                                cx="12"
+                                cy="12"
+                                r="10"
+                                stroke="currentColor"
+                                strokeWidth="4"
+                                fill="none"
+                              />
+                              <path
+                                className="opacity-75"
+                                fill="currentColor"
+                                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                              />
+                            </svg>
+                          ) : (
+                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} 
+                                d="M13 10V3L4 14h7v7l9-11h-7z" />
+                            </svg>
+                          )}
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Input Helper Text */}
+                  <div className="flex items-center justify-between px-1">
+                    <p className="text-xs text-gray-500">
+                      Press Enter to send your query
+                    </p>
+                    {aiQuery.length > 0 && (
+                      <span className="text-xs text-gray-500">
+                        {aiQuery.length} characters
+                      </span>
                     )}
-                  </button>
+                  </div>
                 </div>
 
                 {aiError && (

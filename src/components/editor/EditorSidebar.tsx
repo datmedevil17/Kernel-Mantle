@@ -73,32 +73,45 @@ const EditorSidebar = ({
   const isCompiled = compilationResult && compilationResult.abi && compilationResult.bytecode
 
   const copyToClipboard = async (text: string, type: string) => {
-    try {
-      await navigator.clipboard.writeText(text)
-      console.log(`${type} copied to clipboard`)
-    } catch (err) {
-      console.error("Failed to copy:", err)
-    }
+  // Add check for browser environment
+  if (typeof window === 'undefined') return;
+  
+  try {
+    await navigator.clipboard.writeText(text)
+    console.log(`${type} copied to clipboard`)
+  } catch (err) {
+    console.error("Failed to copy:", err)
   }
+}
 
-  const DropTokenButton = () => {
+const DropTokenButton = () => {
     const { address } = useAccount()
-
-    const handleDropToken = async () => {
+    
+    const handleDropToken = () => {
       if (!address) {
         console.error("No wallet connected")
         return
       }
-      window.open(`${FAUCET_URL}&address=${address}`, "_blank")
+      const url = `${FAUCET_URL}&address=${address}`
+      // Use a useCallback or move window check inside
+      const openWindow = () => {
+        if (typeof window !== 'undefined') {
+          window.open(url, "_blank")
+        }
+      }
+      openWindow()
     }
+
+    // Explicitly cast to boolean to ensure consistent rendering
+    const isDisabled = Boolean(!address)
 
     return (
       <button
         onClick={handleDropToken}
-        disabled={!address}
+        disabled={isDisabled}
         className={`w-full px-4 py-3 text-sm rounded-xl transition-all duration-200 flex items-center justify-center space-x-2 font-medium
           ${
-            address
+            !isDisabled
               ? "bg-gradient-to-r from-gray-800 to-gray-700 hover:from-gray-700 hover:to-gray-600 text-white shadow-lg hover:shadow-xl border border-gray-600"
               : "bg-gray-900 text-gray-500 cursor-not-allowed border border-gray-800"
           }`}
@@ -257,9 +270,17 @@ const EditorSidebar = ({
             </div>
             <div className="bg-black rounded-lg p-4 text-xs text-gray-300 font-mono max-h-40 overflow-y-auto border border-gray-800">
               <pre className="whitespace-pre-wrap break-all">
-                {activeTab === "abi"
-                  ? JSON.stringify(JSON.parse(compilationResult.abi), null, 2)
-                  : compilationResult.bytecode}
+                {activeTab === "abi" ? (
+                  (() => {
+                    try {
+                      return JSON.stringify(JSON.parse(compilationResult.abi), null, 2)
+                    } catch (e) {
+                      return compilationResult.abi
+                    }
+                  })()
+                ) : (
+                  compilationResult.bytecode
+                )}
               </pre>
             </div>
           </div>

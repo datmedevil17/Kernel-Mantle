@@ -1,18 +1,13 @@
 export interface Component {
   id: string;
   type: string;
-  name: string;
-  icon: React.ReactNode;
-  color: string;
   category: string;
+  name: string;
+  icon: React.ReactElement;
+  color: string;
   description: string;
-  gasEstimate?: number;
-  originalId?: string;
-  x?: number;
-  y?: number;
-  properties: {
-    [key: string]: any;
-  };
+  gasEstimate: number;
+  properties: Record<string, any>;
 }
 
 export interface SecurityIssue {
