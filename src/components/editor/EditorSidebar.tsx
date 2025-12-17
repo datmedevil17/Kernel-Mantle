@@ -110,11 +110,13 @@ const DropTokenButton = () => {
         onClick={handleDropToken}
         disabled={isDisabled}
         className={`w-full px-4 py-3 text-sm rounded-xl transition-all duration-200 flex items-center justify-center space-x-2 font-medium
-          ${
-            !isDisabled
-              ? "bg-gradient-to-r from-gray-800 to-gray-700 hover:from-gray-700 hover:to-gray-600 text-white shadow-lg hover:shadow-xl border border-gray-600"
-              : "bg-gray-900 text-gray-500 cursor-not-allowed border border-gray-800"
-          }`}
+
+      ${
+     address && !isDisabled
+    ? "bg-gradient-to-r from-gray-800 to-gray-700 hover:from-gray-700 hover:to-gray-600 text-white shadow-lg hover:shadow-xl border border-gray-600"
+    : "bg-gray-900 text-gray-500 cursor-not-allowed border border-gray-800"
+      }
+
       >
         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path
@@ -134,7 +136,7 @@ const DropTokenButton = () => {
       href={`${BLOCK_EXPLORER_URL}/address/${address}`}
       target="_blank"
       rel="noopener noreferrer"
-      className="inline-flex items-center px-4 py-3 bg-gradient-to-r from-blue-600 to-blue-500 text-white rounded-xl hover:from-blue-500 hover:to-blue-400 transition-all duration-200 shadow-lg hover:shadow-xl font-medium"
+      className="inline-flex items-center px-4 py-3 bg-gradient-to-r from-gray-800 to-gray-700 text-white rounded-xl hover:from-gray-700 hover:to-gray-600 transition-all duration-200 shadow-md hover:shadow-lg font-medium border border-gray-700"
     >
       <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path
@@ -151,7 +153,7 @@ const DropTokenButton = () => {
   const renderSolidityActions = () => (
     <div className="space-y-4">
       <div className="flex items-center space-x-3 mb-6">
-        <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center">
+        <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-gray-800 to-gray-700 flex items-center justify-center">
           <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 24 24">
             <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
           </svg>
@@ -165,7 +167,7 @@ const DropTokenButton = () => {
       <button
         onClick={onCompile}
         disabled={isCompiling}
-        className="w-full px-4 py-3 bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-400 disabled:from-gray-800 disabled:to-gray-700 disabled:cursor-not-allowed text-white text-sm rounded-xl transition-all duration-200 flex items-center justify-center space-x-2 font-medium shadow-lg hover:shadow-xl border border-blue-500/20"
+        className="w-full px-4 py-3 bg-gradient-to-r from-gray-800 to-gray-700 hover:from-gray-700 hover:to-gray-600 disabled:from-gray-900 disabled:to-gray-800 disabled:cursor-not-allowed text-white text-sm rounded-xl transition-all duration-200 flex items-center justify-center space-x-2 font-medium shadow-md hover:shadow-lg border border-gray-700"
       >
         {isCompiling ? (
           <>
@@ -198,9 +200,9 @@ const DropTokenButton = () => {
       <button
         onClick={onDeploy}
         disabled={!isCompiled}
-        className={`w-full px-4 py-3 text-sm rounded-xl transition-all duration-200 flex items-center justify-center space-x-2 font-medium shadow-lg hover:shadow-xl ${
+        className={`w-full px-4 py-3 text-sm rounded-xl transition-all duration-200 flex items-center justify-center space-x-2 font-medium shadow-md hover:shadow-lg ${
           isCompiled
-            ? "bg-gradient-to-r from-green-600 to-green-500 hover:from-green-500 hover:to-green-400 text-white border border-green-500/20"
+            ? "bg-gradient-to-r from-gray-800 to-gray-700 hover:from-gray-700 hover:to-gray-600 text-white border border-gray-700"
             : "bg-gray-900 text-gray-500 cursor-not-allowed border border-gray-800"
         }`}
       >
@@ -225,7 +227,7 @@ const DropTokenButton = () => {
               onClick={() => setActiveTab("abi")}
               className={`px-4 py-2 text-xs font-medium transition-all duration-200 rounded-t-lg ${
                 activeTab === "abi"
-                  ? "text-white bg-gray-800 border-b-2 border-blue-500"
+                  ? "text-white bg-gray-800 border-b-2 border-gray-600"
                   : "text-gray-400 hover:text-white hover:bg-gray-800/50"
               }`}
             >
@@ -235,7 +237,7 @@ const DropTokenButton = () => {
               onClick={() => setActiveTab("bytecode")}
               className={`px-4 py-2 text-xs font-medium transition-all duration-200 rounded-t-lg ${
                 activeTab === "bytecode"
-                  ? "text-white bg-gray-800 border-b-2 border-blue-500"
+                  ? "text-white bg-gray-800 border-b-2 border-gray-600"
                   : "text-gray-400 hover:text-white hover:bg-gray-800/50"
               }`}
             >
@@ -296,7 +298,7 @@ const DropTokenButton = () => {
           </div>
           <div className="flex justify-between">
             <span>Optimizer:</span>
-            <span className="text-green-400">Enabled</span>
+            <span className="text-gray-300">Enabled</span>
           </div>
           <div className="flex justify-between">
             <span>Runs:</span>
@@ -310,7 +312,7 @@ const DropTokenButton = () => {
   const renderRustActions = () => (
     <div className="space-y-4">
       <div className="flex items-center space-x-3 mb-6">
-        <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-orange-500 to-red-500 flex items-center justify-center">
+        <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-gray-800 to-gray-700 flex items-center justify-center">
           <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 24 24">
             <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
           </svg>
@@ -322,7 +324,9 @@ const DropTokenButton = () => {
       </div>
 
       <button
+
         className="w-full px-4 py-3 bg-gradient-to-r from-orange-600 to-orange-500 hover:from-orange-500 hover:to-orange-400 text-white text-sm rounded-xl transition-all duration-200 flex items-center justify-center space-x-2 font-medium shadow-lg hover:shadow-xl border border-orange-500/20"
+
       >
         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path
@@ -362,7 +366,7 @@ const DropTokenButton = () => {
           </div>
           <div className="flex justify-between">
             <span>Profile:</span>
-            <span className="text-orange-400">release</span>
+            <span className="text-gray-300">release</span>
           </div>
         </div>
       </div>
@@ -372,7 +376,7 @@ const DropTokenButton = () => {
   const renderJavaScriptActions = () => (
     <div className="space-y-4">
       <div className="flex items-center space-x-3 mb-6">
-        <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-yellow-500 to-yellow-600 flex items-center justify-center">
+        <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-gray-800 to-gray-700 flex items-center justify-center">
           <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 24 24">
             <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
           </svg>
@@ -384,7 +388,9 @@ const DropTokenButton = () => {
       </div>
 
       <button
+
         className="w-full px-4 py-3 bg-gradient-to-r from-yellow-600 to-yellow-500 hover:from-yellow-500 hover:to-yellow-400 text-white text-sm rounded-xl transition-all duration-200 flex items-center justify-center space-x-2 font-medium shadow-lg hover:shadow-xl border border-yellow-500/20"
+
       >
         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path
@@ -406,7 +412,7 @@ const DropTokenButton = () => {
           </div>
           <div className="flex justify-between">
             <span>Runtime:</span>
-            <span className="text-yellow-400">Node.js</span>
+            <span className="text-gray-300">Node.js</span>
           </div>
         </div>
       </div>
@@ -486,7 +492,7 @@ const DropTokenButton = () => {
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
               </svg>
-              <span>✓ Compilation successful</span>
+              <span> Compilation successful</span>
             </div>
           ) : (
             <div className="text-gray-500 flex items-center space-x-2">
