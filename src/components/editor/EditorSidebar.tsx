@@ -10,25 +10,22 @@ interface EditorSidebarProps {
   selectedFile: FileItem | null
   onCompile: () => void
   onDeploy: () => void
-  onCheck: () => void
-  onBuild: () => void
-  onRun: () => void
+ 
   compilationResult?: {
-    abi: string
-    bytecode: string
-    error?: string
-  }
-  isCompiling?: boolean
-  deployedAddress: string | null
+    abi: string;
+    bytecode: string;
+    error?: string;
+  };
+  isCompiling?: boolean;
+  deployedAddress: string | null;
+
 }
 
 const EditorSidebar = ({
   selectedFile,
   onCompile,
   onDeploy,
-  onCheck,
-  onBuild,
-  onRun,
+
   compilationResult,
   isCompiling = false,
   deployedAddress,
@@ -76,35 +73,50 @@ const EditorSidebar = ({
   const isCompiled = compilationResult && compilationResult.abi && compilationResult.bytecode
 
   const copyToClipboard = async (text: string, type: string) => {
-    try {
-      await navigator.clipboard.writeText(text)
-      console.log(`${type} copied to clipboard`)
-    } catch (err) {
-      console.error("Failed to copy:", err)
-    }
+  // Add check for browser environment
+  if (typeof window === 'undefined') return;
+  
+  try {
+    await navigator.clipboard.writeText(text)
+    console.log(`${type} copied to clipboard`)
+  } catch (err) {
+    console.error("Failed to copy:", err)
   }
+}
 
-  const DropTokenButton = () => {
+const DropTokenButton = () => {
     const { address } = useAccount()
-
-    const handleDropToken = async () => {
+    
+    const handleDropToken = () => {
       if (!address) {
         console.error("No wallet connected")
         return
       }
-      window.open(`${FAUCET_URL}&address=${address}`, "_blank")
+      const url = `${FAUCET_URL}&address=${address}`
+      // Use a useCallback or move window check inside
+      const openWindow = () => {
+        if (typeof window !== 'undefined') {
+          window.open(url, "_blank")
+        }
+      }
+      openWindow()
     }
+
+    // Explicitly cast to boolean to ensure consistent rendering
+    const isDisabled = Boolean(!address)
 
     return (
       <button
         onClick={handleDropToken}
-        disabled={!address}
+        disabled={isDisabled}
         className={`w-full px-4 py-3 text-sm rounded-xl transition-all duration-200 flex items-center justify-center space-x-2 font-medium
-        ${
-          address
-            ? "bg-gradient-to-r from-gray-900 to-gray-800 hover:from-gray-800 hover:to-gray-700 text-white shadow-md hover:shadow-lg border border-gray-700"
-            : "bg-gray-900 text-gray-500 cursor-not-allowed border border-gray-800"
-        }`}
+
+      ${
+     address && !isDisabled
+    ? "bg-gradient-to-r from-gray-800 to-gray-700 hover:from-gray-700 hover:to-gray-600 text-white shadow-lg hover:shadow-xl border border-gray-600"
+    : "bg-gray-900 text-gray-500 cursor-not-allowed border border-gray-800"
+      }
+
       >
         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path
@@ -260,9 +272,17 @@ const EditorSidebar = ({
             </div>
             <div className="bg-black rounded-lg p-4 text-xs text-gray-300 font-mono max-h-40 overflow-y-auto border border-gray-800">
               <pre className="whitespace-pre-wrap break-all">
-                {activeTab === "abi"
-                  ? JSON.stringify(JSON.parse(compilationResult.abi), null, 2)
-                  : compilationResult.bytecode}
+                {activeTab === "abi" ? (
+                  (() => {
+                    try {
+                      return JSON.stringify(JSON.parse(compilationResult.abi), null, 2)
+                    } catch (e) {
+                      return compilationResult.abi
+                    }
+                  })()
+                ) : (
+                  compilationResult.bytecode
+                )}
               </pre>
             </div>
           </div>
@@ -304,8 +324,9 @@ const EditorSidebar = ({
       </div>
 
       <button
-        onClick={onCheck}
-        className="w-full px-4 py-3 bg-gradient-to-r from-gray-800 to-gray-700 hover:from-gray-700 hover:to-gray-600 text-white text-sm rounded-xl transition-all duration-200 flex items-center justify-center space-x-2 font-medium shadow-md hover:shadow-lg border border-gray-700"
+
+        className="w-full px-4 py-3 bg-gradient-to-r from-orange-600 to-orange-500 hover:from-orange-500 hover:to-orange-400 text-white text-sm rounded-xl transition-all duration-200 flex items-center justify-center space-x-2 font-medium shadow-lg hover:shadow-xl border border-orange-500/20"
+
       >
         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path
@@ -319,7 +340,6 @@ const EditorSidebar = ({
       </button>
 
       <button
-        onClick={onBuild}
         className="w-full px-4 py-3 bg-gradient-to-r from-gray-700 to-gray-600 hover:from-gray-600 hover:to-gray-500 text-white text-sm rounded-xl transition-all duration-200 flex items-center justify-center space-x-2 font-medium shadow-lg hover:shadow-xl border border-gray-600/20"
       >
         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -368,8 +388,9 @@ const EditorSidebar = ({
       </div>
 
       <button
-        onClick={onRun}
-        className="w-full px-4 py-3 bg-gradient-to-r from-gray-800 to-gray-700 hover:from-gray-700 hover:to-gray-600 text-white text-sm rounded-xl transition-all duration-200 flex items-center justify-center space-x-2 font-medium shadow-md hover:shadow-lg border border-gray-700"
+
+        className="w-full px-4 py-3 bg-gradient-to-r from-yellow-600 to-yellow-500 hover:from-yellow-500 hover:to-yellow-400 text-white text-sm rounded-xl transition-all duration-200 flex items-center justify-center space-x-2 font-medium shadow-lg hover:shadow-xl border border-yellow-500/20"
+
       >
         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path

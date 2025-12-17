@@ -5,70 +5,8 @@ import axios from 'axios';
 import FileNavigator from '@/components/editor/FileNavigator';
 import CodeEditor from '@/components/editor/CodeEditor';
 import EditorSidebar from '@/components/editor/EditorSidebar';
-import { FileItem } from '@/types/editor';
+import { useFileStore } from '@/stores/fileStore';
 import { useDeployContract, useSwitchChain, usePublicClient } from 'wagmi';
-
-const defaultSolidityCode = `// SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;
-
-contract HelloWorld {
-    string private greeting;
-    
-    constructor() {
-        greeting = "Hello, World!";
-    }
-    
-    function setGreeting(string memory _greeting) public {
-        greeting = _greeting;
-    }
-    
-    function getGreeting() public view returns (string memory) {
-        return greeting;
-    }
-}`;
-
-const defaultRustCode = `#![cfg_attr(not(feature = "std"), no_std)]
-
-use frame_support::{
-    dispatch::DispatchResult,
-    pallet_prelude::*,
-};
-use frame_system::pallet_prelude::*;
-
-#[frame_support::pallet]
-pub mod pallet {
-    use super::*;
-
-    #[pallet::pallet]
-    #[pallet::generate_store(pub(super) trait Store)]
-    pub struct Pallet<T>(_);
-
-    #[pallet::config]
-    pub trait Config: frame_system::Config {
-        type RuntimeEvent: From<Event<Self>> + IsType<<Self as frame_system::Config>::RuntimeEvent>;
-    }
-
-    #[pallet::storage]
-    pub type Greeting<T> = StorageValue<_, Vec<u8>, ValueQuery>;
-
-    #[pallet::event]
-    #[pallet::generate_deposit(pub(super) fn deposit_event)]
-    pub enum Event<T: Config> {
-        GreetingSet { greeting: Vec<u8> },
-    }
-
-    #[pallet::call]
-    impl<T: Config> Pallet<T> {
-        #[pallet::weight(10_000)]
-        pub fn set_greeting(origin: OriginFor<T>, greeting: Vec<u8>) -> DispatchResult {
-            let _who = ensure_signed(origin)?;
-            Greeting::<T>::put(&greeting);
-            Self::deposit_event(Event::GreetingSet { greeting });
-            Ok(())
-        }
-    }
-}`;
-
 
 interface CompilationResult {
   abi: string;
@@ -77,99 +15,38 @@ interface CompilationResult {
 }
 
 export default function EditorPage() {
+  const {
+    files,
+    selectedFile,
+    setSelectedFile,
+    createFile,
+    deleteFile,
+    updateFile
+  } = useFileStore();
+
   const [compilationResult, setCompilationResult] = useState<CompilationResult | null>(null);
   const [isCompiling, setIsCompiling] = useState(false);
   const [deployedAddress, setDeployedAddress] = useState<string | null>(null);
-  
-  const [files, setFiles] = useState<FileItem[]>([
-    {
-      id: '1',
-      name: 'HelloWorld.sol',
-      content: defaultSolidityCode,
-      type: 'file',
-      extension: 'sol',
-    },
-    {
-      id: '2',
-      name: 'pallet.rs',
-      content: defaultRustCode,
-      type: 'file',
-      extension: 'rs',
-    },
-  ]);
-  const [selectedFile, setSelectedFile] = useState<FileItem | null>(files[0]);
 
-  const handleFileSelect = useCallback((file: FileItem): void => {
-    setSelectedFile(file);
-    // Clear compilation results when switching files
-    setCompilationResult(null);
-  }, []);
-
-  const handleFileCreate = useCallback((name: string): void => {
-    const extension = name.split('.').pop()?.toLowerCase();
-    let defaultContent = '';
-    
-    switch (extension) {
-      case 'sol':
-        defaultContent = '// SPDX-License-Identifier: MIT\npragma solidity ^0.8.0;\n\n';
-        break;
-      case 'rs':
-        defaultContent = '#![cfg_attr(not(feature = "std"), no_std)]\n\n';
-        break;
-      case 'js':
-        defaultContent = '// JavaScript file\n\n';
-        break;
-      case 'ts':
-        defaultContent = '// TypeScript file\n\n';
-        break;
-      default:
-        defaultContent = '';
-    }
-    
-    const newFile: FileItem = {
-      id: Date.now().toString(),
-      name,
-      content: defaultContent,
-      type: 'file',
-      extension,
-    };
-    
-    setFiles(prev => [...prev, newFile]);
-    setSelectedFile(newFile);
-    setCompilationResult(null);
-  }, []);
-
-  const handleFileDelete = useCallback((id: string): void => {
-    setFiles((prev: FileItem[]): FileItem[] => {
-      const newFiles = prev.filter((f: FileItem) => f.id !== id);
-      if (selectedFile?.id === id) {
-        setSelectedFile(newFiles.length > 0 ? newFiles[0] : null);
-        setCompilationResult(null);
-      }
-      return newFiles;
-    });
-  }, [selectedFile]);
+  const {deployContract} = useDeployContract()
+  const {switchChain} = useSwitchChain()
+  const publicClient = usePublicClient()
 
   const handleContentChange = useCallback((content: string): void => {
     if (!selectedFile) return;
     
-    setFiles((prev: FileItem[]) =>
-      prev.map((file: FileItem) =>
-        file.id === selectedFile.id
-          ? { ...file, content }
-          : file
-      )
-    );
-    
-    setSelectedFile((prev: FileItem | null) => 
-      prev ? { ...prev, content } : null
-    );
+    const updatedFile = { ...selectedFile, content };
+    updateFile(updatedFile);
     
     // Clear compilation results when content changes
     setCompilationResult(null);
+  }, [selectedFile, updateFile]);
+
+  // Helper function to check if current file is Rust
+  const isRustFile = useCallback(() => {
+    return selectedFile?.name.endsWith('.rs') || false;
   }, [selectedFile]);
 
-  // Action handlers
   const handleCompile = useCallback(async () => {
     if (!selectedFile) return;
     
@@ -242,10 +119,6 @@ export default function EditorPage() {
     }
   }, [selectedFile]);
 
-  const {deployContract} = useDeployContract()
-  const {switchChain} = useSwitchChain()
-  const publicClient = usePublicClient()
-
   const handleDeploy = useCallback(async() => {
     await switchChain({ chainId: 420420421 });
 
@@ -272,31 +145,18 @@ export default function EditorPage() {
         },
       }
     );
-}, [compilationResult]);
+  }, [compilationResult, switchChain, deployContract, publicClient]);
 
-  const handleCheck = useCallback(() => {
-    console.log('Check function - to be implemented');
-    // TODO: Implement Rust cargo check logic
-  }, []);
 
-  const handleBuild = useCallback(() => {
-    console.log('Build function - to be implemented');
-    // TODO: Implement Rust cargo build logic
-  }, []);
-
-  const handleRun = useCallback(() => {
-    console.log('Run function - to be implemented');
-    // TODO: Implement JavaScript/TypeScript run logic
-  }, []);
 
   return (
     <div className="flex h-full">
       <FileNavigator
         files={files}
         selectedFile={selectedFile}
-        onFileSelect={handleFileSelect}
-        onFileCreate={handleFileCreate}
-        onFileDelete={handleFileDelete}
+        onFileSelect={setSelectedFile}
+        onFileCreate={createFile}
+        onFileDelete={deleteFile}
       />
       <CodeEditor
         file={selectedFile}
@@ -306,12 +166,9 @@ export default function EditorPage() {
         selectedFile={selectedFile}
         onCompile={handleCompile}
         onDeploy={handleDeploy}
-        onCheck={handleCheck}
-        onBuild={handleBuild}
-        onRun={handleRun}
         compilationResult={compilationResult || undefined}
         isCompiling={isCompiling}
-        deployedAddress={deployedAddress} // Pass deployedAddress to EditorSidebar
+        deployedAddress={deployedAddress}
       />
     </div>
   );

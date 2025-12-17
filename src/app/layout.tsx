@@ -7,6 +7,13 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from 'sonner'
 import { ThemeProvider } from 'styled-components';
 import { theme } from '../styles/theme';
+import { Inter } from 'next/font/google';
+import { NeuronAssistant } from "@/components/NeuronAssistant";
+
+const inter = Inter({
+  subsets: ['latin'],
+  variable: '--font-inter',
+});
 
 const queryClient = new QueryClient()
 
@@ -26,6 +33,7 @@ export default function RootLayout({
           <QueryClientProvider client={queryClient}>
         <Providers>
         {children}
+        <NeuronAssistant/>
         </Providers>
         </QueryClientProvider>
         </WagmiProvider>
