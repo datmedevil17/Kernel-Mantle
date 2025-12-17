@@ -109,13 +109,13 @@ const DropTokenButton = () => {
       <button
         onClick={handleDropToken}
         disabled={isDisabled}
-        className={`w-full px-4 py-3 text-sm rounded-xl transition-all duration-200 flex items-center justify-center space-x-2 font-medium
-
-      ${
-     address && !isDisabled
+        className={`w-full px-4 py-3 text-sm rounded-xl transition-all duration-200 flex items-center justify-center space-x-2 font-medium 
+          ${
+  !isDisabled
     ? "bg-gradient-to-r from-gray-800 to-gray-700 hover:from-gray-700 hover:to-gray-600 text-white shadow-lg hover:shadow-xl border border-gray-600"
     : "bg-gray-900 text-gray-500 cursor-not-allowed border border-gray-800"
-      }
+}`}
+      
 
       >
         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
