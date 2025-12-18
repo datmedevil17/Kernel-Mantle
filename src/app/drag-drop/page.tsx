@@ -2,7 +2,7 @@
 import type React from "react"
 import { useState } from "react"
 import { componentLibrary, categories } from "@/constants/componentLibrary"
-import { Database, Radio, Zap, Map, Cpu, X, Copy, Check } from "lucide-react"
+import { Database, Radio, Zap, Map, Cpu, X, Copy, Check, ChevronDown } from "lucide-react"
 
 const VisualSmartContractBuilder = () => {
   const [canvasComponents, setCanvasComponents] = useState<ComponentType[]>([])
@@ -13,6 +13,7 @@ const VisualSmartContractBuilder = () => {
   const [isImportModalOpen, setIsImportModalOpen] = useState(false)
   const [isCodeModalOpen, setIsCodeModalOpen] = useState(false)
   const [copied, setCopied] = useState(false)
+  const [isCategoryDropdownOpen, setIsCategoryDropdownOpen] = useState(false)
 
   interface ComponentType {
     originalId: string
@@ -564,64 +565,83 @@ const VisualSmartContractBuilder = () => {
   )
 
   return (
-    <div className="min-h-screen bg-black flex overflow-hidden">
+     <div className="min-h-screen bg-black flex overflow-hidden">
       {/* Component Library Sidebar */}
-      <div className="w-80 bg-black/90 backdrop-blur-xl border-r border-gray-800/50 flex flex-col">
-        <div className="p-6 border-b border-gray-800/50">
+      <div className="w-80 bg-black/90 backdrop-blur-xl border-r border-gray-800/50 flex flex-col h-screen">
+        {/* Header section - fixed height */}
+        <div className="p-6 border-b border-gray-800/50 flex-shrink-0">
           <div className="bg-gradient-to-r from-purple-400/20 to-violet-400/20 backdrop-blur-sm rounded-xl p-4 border border-purple-400/30">
             <h2 className="text-xl font-bold text-white mb-1">Smart Contract Components</h2>
             <p className="text-sm text-gray-300">Drag components to canvas</p>
           </div>
         </div>
 
-        {/* Category filter */}
-        <div className="p-4 border-b border-gray-800/50">
-          <div className="flex flex-wrap gap-2">
-            {categories.map((category) => (
-              <button
-                key={category.id}
-                onClick={() => setSelectedCategory(category.id)}
-                className={`px-3 py-2 rounded-lg text-xs flex items-center gap-2 transition-all duration-200 ${
-                  selectedCategory === category.id
-                    ? "bg-purple-400/20 text-purple-300 border border-purple-400/30 backdrop-blur-sm"
-                    : "bg-gray-800/50 text-gray-300 hover:bg-gray-700/50 border border-gray-700/50"
-                }`}
+        {/* Category filter - fixed height */}
+        <div className="p-4 border-b border-gray-800/50 relative flex-shrink-0">
+          <button
+            onClick={() => setIsCategoryDropdownOpen(!isCategoryDropdownOpen)}
+            className="w-full flex justify-between items-center px-4 py-3 bg-gray-800/50 text-gray-300 rounded-lg border border-gray-700/50 hover:bg-gray-700/50 transition-colors"
+          >
+            <span>
+              {categories.find(c => c.id === selectedCategory)?.name || "All Categories"}
+            </span>
+            <ChevronDown className={`w-4 h-4 transition-transform ${isCategoryDropdownOpen ? "transform rotate-180" : ""}`} />
+          </button>
+          
+          {isCategoryDropdownOpen && (
+            <div className="absolute z-10 mt-2 w-full bg-gray-800 rounded-lg shadow-lg border border-gray-700/50 overflow-hidden">
+              {categories.map((category) => (
+                <button
+                  key={category.id}
+                  onClick={() => {
+                    setSelectedCategory(category.id)
+                    setIsCategoryDropdownOpen(false)
+                  }}
+                  className={`w-full text-left px-4 py-2 text-sm flex items-center gap-2 transition-colors ${
+                    selectedCategory === category.id
+                      ? "bg-purple-500/20 text-purple-300"
+                      : "text-gray-300 hover:bg-gray-700"
+                  }`}
+                >
+                  {category.icon}
+                  <span>{category.name}</span>
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* Component list - scrollable area */}
+        <div className="flex-1 overflow-y-auto">
+          <div className="p-4 space-y-3">
+            {filteredComponents.map((component) => (
+              <div
+                key={component.id}
+                draggable
+                onDragStart={(e) =>
+                  handleDragStart(e, {
+                    ...component,
+                    originalId: component.id,
+                    x: undefined,
+                    y: undefined,
+                  })
+                }
+                className="group p-4 rounded-xl bg-gray-900/50 backdrop-blur-sm border border-gray-700/50 cursor-move hover:bg-gray-800/50 hover:border-purple-400/30 transition-all duration-300 transform hover:scale-105"
               >
-                {category.icon}
-                <span>{category.name}</span>
-              </button>
+                <div className="flex items-center space-x-3">
+                  <div className="text-purple-400 group-hover:text-purple-300 transition-colors">{component.icon}</div>
+                  <div>
+                    <div className="font-semibold text-sm text-white">{component.name}</div>
+                    <div className="text-xs text-gray-400">{component.description}</div>
+                    <div className="text-xs text-gray-500">Gas: ~{component.gasEstimate}</div>
+                  </div>
+                </div>
+              </div>
             ))}
           </div>
         </div>
-
-        {/* Component list - Only this section scrolls */}
-        <div className="flex-1 overflow-y-auto p-4 space-y-3 scrollbar-thin scrollbar-thumb-gray-600 scrollbar-track-transparent">
-          {filteredComponents.map((component) => (
-            <div
-              key={component.id}
-              draggable
-              onDragStart={(e) =>
-                handleDragStart(e, {
-                  ...component,
-                  originalId: component.id,
-                  x: undefined,
-                  y: undefined,
-                })
-              }
-              className="group p-4 rounded-xl bg-gray-900/50 backdrop-blur-sm border border-gray-700/50 cursor-move hover:bg-gray-800/50 hover:border-purple-400/30 transition-all duration-300 transform hover:scale-105"
-            >
-              <div className="flex items-center space-x-3">
-                <div className="text-purple-400 group-hover:text-purple-300 transition-colors">{component.icon}</div>
-                <div>
-                  <div className="font-semibold text-sm text-white">{component.name}</div>
-                  <div className="text-xs text-gray-400">{component.description}</div>
-                  <div className="text-xs text-gray-500">Gas: ~{component.gasEstimate}</div>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
       </div>
+
 
       {/* Main Area */}
       <div className="flex-1 flex flex-col">
