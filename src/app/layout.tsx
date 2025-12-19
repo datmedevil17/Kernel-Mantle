@@ -9,6 +9,7 @@ import { ThemeProvider } from 'styled-components';
 import { theme } from '../styles/theme';
 import { Inter } from 'next/font/google';
 import { NeuronAssistant } from "@/components/NeuronAssistant";
+import { FloatingNavDemo } from "@/components/Navbar";
 
 const inter = Inter({
   subsets: ['latin'],
@@ -25,13 +26,17 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+      </head>
       <body
-        className={`antialiased`}
+        className={`antialiased ${inter.className}`}
       >
         <ThemeProvider theme={theme}>
         <WagmiProvider config={config}>
           <QueryClientProvider client={queryClient}>
         <Providers>
+          <FloatingNavDemo/>
         {children}
         <NeuronAssistant/>
         </Providers>

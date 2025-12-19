@@ -134,7 +134,7 @@ Keep the response technical but understandable.`;
   };
 
   return (
-    <div className="min-h-screen bg-gray-950 py-8">
+    <div className="min-h-screen bg-gray-950 py-8 pt-40">
       <div className="container mx-auto px-4 max-w-7xl">
         {/* Header Section */}
         <motion.div

@@ -25,6 +25,11 @@ interface ConversionResult {
 }
 
 const NaturalLanguageContractInteraction = () => {
+  // Add these hooks from wagmi
+  const { address } = useAccount();
+  const { writeContract } = useWriteContract();
+  const { sendTransaction } = useSendTransaction();
+  
   const [activeTab, setActiveTab] = useState('nl-to-contract');
   const [input, setInput] = useState('');
   const [result, setResult] = useState<ConversionResult | null>(null);
@@ -173,9 +178,40 @@ const NaturalLanguageContractInteraction = () => {
   };
 
   const executeContract = async () => {
-    // This would integrate with your handleDeploy/contract execution logic
-    console.log('Executing contract function...');
-    // You can integrate with your existing handleDeploy function here
+    if (!result || !contractAddress) {
+      console.error('Missing result or contract address');
+      return;
+    }
+
+    try {
+      // Ensure user is connected
+      if (!address) {
+        throw new Error('Please connect your wallet first');
+      }
+
+      // Parse the ABI
+      const abiFragment = result.abi ? JSON.parse(result.abi) : null;
+      
+      if (!abiFragment) {
+        throw new Error('Invalid ABI fragment');
+      }
+
+      // Prepare parameters
+      const params = result.parameters?.map(param => param.value) || [];
+
+      // Execute the contract call
+      await writeContract({
+        address: contractAddress as `0x${string}`,
+        abi: [abiFragment],
+        functionName: result.contractMethod || '',
+        args: params,
+      });
+
+      console.log('Contract execution initiated');
+    } catch (error) {
+      console.error('Contract execution failed:', error);
+      // You may want to set an error state here to show to the user
+    }
   };
 
   return (

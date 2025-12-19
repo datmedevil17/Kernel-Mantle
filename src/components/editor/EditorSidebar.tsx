@@ -2,6 +2,7 @@
 import { useState } from "react"
 import { useAccount } from "wagmi"
 import type { FileItem } from "@/types/editor"
+import { toast } from "sonner"
 
 const BLOCK_EXPLORER_URL = "https://blockscout-passet-hub.parity-testnet.parity.io"
 const FAUCET_URL = "https://faucet.polkadot.io/?parachain=1111"
@@ -31,6 +32,8 @@ const EditorSidebar = ({
   deployedAddress,
 }: EditorSidebarProps) => {
   const [activeTab, setActiveTab] = useState<"abi" | "bytecode">("abi")
+  const [args, setArgs] = useState<string[]>([]);
+
 
   if (!selectedFile) {
     return (
@@ -150,6 +153,17 @@ const DropTokenButton = () => {
     </a>
   )
 
+  const getConstructorParams = (abi: string) => {
+    try {
+      const parsedAbi = JSON.parse(abi);
+      const constructorAbi = parsedAbi.find((item: any) => item.type === "constructor");
+      return constructorAbi ? constructorAbi.inputs : [];
+    } catch (e) {
+      console.error("Error parsing ABI:", e);
+      return [];
+    }
+  };
+
   const renderSolidityActions = () => (
     <div className="space-y-4">
       <div className="flex items-center space-x-3 mb-6">
@@ -197,8 +211,42 @@ const DropTokenButton = () => {
         )}
       </button>
 
+      {isCompiled && getConstructorParams(compilationResult.abi).length > 0 && (
+        <div className="mt-4 bg-gray-900/50 rounded-xl p-4 border border-gray-800">
+          <h4 className="text-gray-300 text-xs font-semibold tracking-wide mb-3">CONSTRUCTOR PARAMETERS</h4>
+          <div className="space-y-3">
+            {getConstructorParams(compilationResult.abi).map((param: any, index: number) => (
+              <div key={index} className="space-y-1">
+                <label className="block text-xs text-gray-400">
+                  {param.name} ({param.type})
+                </label>
+                <input
+                  type="text"
+                  placeholder={`Enter ${param.type} value`}
+                  className="w-full px-3 py-2 bg-black rounded-lg border border-gray-800 text-white text-sm focus:border-gray-600 focus:ring-1 focus:ring-gray-600 transition-colors"
+                  onChange={(e) => {
+                    // Handle parameter input change
+                    const newArgs = [...args];
+                    newArgs[index] = e.target.value;
+                    setArgs(newArgs);
+                  }}
+                />
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
       <button
-        onClick={onDeploy}
+        onClick={() => {
+          if (!compilationResult?.abi) return;
+          const constructorParams = getConstructorParams(compilationResult.abi);
+          if (constructorParams.length !== args.length || args.some((arg) => !arg.trim())) {
+            toast.error("Please provide all constructor arguments");
+            return;
+          }
+          onDeploy();
+        }}
         disabled={!isCompiled}
         className={`w-full px-4 py-3 text-sm rounded-xl transition-all duration-200 flex items-center justify-center space-x-2 font-medium shadow-md hover:shadow-lg ${
           isCompiled

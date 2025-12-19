@@ -1,20 +1,30 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { useContractStore } from "@/stores/contractStore"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Search, Plus, BookOpen, Bot, Activity, Code, Zap, Shield, Layers } from "lucide-react"
+import { Search, Plus, BookOpen, Bot, Activity, Code, Zap, Shield, Layers, Wallet } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import { ContractCard } from "@/components/contracts/ContractCard"
 import { TransactionList } from "@/components/TransactionList"
 import { motion, AnimatePresence } from "framer-motion"
+import { useAccount, useConnect } from 'wagmi'
+import { injected } from 'wagmi/connectors'
+
 
 export default function DashboardPage() {
   const { contracts } = useContractStore()
   const [searchQuery, setSearchQuery] = useState("")
   const [activeTab, setActiveTab] = useState("contracts")
+  const { address, isConnected } = useAccount()
+  const { connect } = useConnect()
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
 
   const quickActions = [
     {
@@ -34,14 +44,6 @@ export default function DashboardPage() {
       borderGradient: "from-purple-500/10 to-purple-600/10",
     },
     {
-      title: "Documentation",
-      description: "View guides and API references",
-      href: "/docs",
-      icon: <BookOpen className="w-5 h-5 text-purple-400" />,
-      gradient: "from-gray-800/20 to-gray-900/20",
-      borderGradient: "from-purple-500/10 to-purple-600/10",
-    },
-    {
       title: "AI Assistant",
       description: "Get help with smart contract development",
       href: "/ai",
@@ -51,51 +53,54 @@ export default function DashboardPage() {
     },
   ]
 
-  const stats = [
-    {
-      label: "Total Contracts",
-      value: contracts?.length || 0,
-      icon: <Code className="w-5 h-5 text-purple-400" />,
-      change: "+12%",
-    },
-    {
-      label: "Active Deployments",
-      value: "24",
-      icon: <Activity className="w-5 h-5 text-purple-400" />,
-      change: "+8%",
-    },
-    {
-      label: "Gas Saved",
-      value: "1.2M",
-      icon: <Zap className="w-5 h-5 text-purple-400" />,
-      change: "+15%",
-    },
-    {
-      label: "Security Score",
-      value: "98%",
-      icon: <Shield className="w-5 h-5 text-purple-400" />,
-      change: "+2%",
-    },
-  ]
+
+  // Modify the wallet button render logic:
+  const renderWalletButton = () => {
+    if (!mounted) return (
+      <Button className="bg-gray-800 hover:bg-gray-700 border border-purple-500/30 hover:border-purple-400/40 text-purple-100 hover:text-white shadow-sm hover:shadow-purple-500/10 transition-all">
+        <Wallet className="w-4 h-4 mr-2 text-purple-300" />
+        Connect Wallet
+      </Button>
+    )
+
+    return (
+      <Button 
+        onClick={() => connect({ connector: injected() })}
+        className="bg-gray-800 hover:bg-gray-700 border border-purple-500/30 hover:border-purple-400/40 text-purple-100 hover:text-white shadow-sm hover:shadow-purple-500/10 transition-all"
+      >
+        {isConnected ? (
+          <div className="flex items-center">
+            <Wallet className="w-4 h-4 mr-2 text-purple-300" />
+            <span>{address?.slice(0, 6)}...{address?.slice(-4)}</span>
+          </div>
+        ) : (
+          <>
+            <Wallet className="w-4 h-4 mr-2 text-purple-300" />
+            Connect Wallet
+          </>
+        )}
+      </Button>
+    )
+  }
 
   return (
-    <div className="min-h-screen bg-gray-950 relative overflow-hidden">
+    <div className="min-h-screen bg-gray-950  relative overflow-hidden ">
       {/* Animated background */}
-      <div className="absolute inset-0">
-        <div className="absolute inset-0 bg-gradient-to-br from-gray-900/10 via-black to-purple-900/5" />
+      <div className="absolute inset-0 ">
+        <div className="absolute inset-0 bg-gradient-to-br  from-gray-900/10 via-black to-purple-900/5" />
         <motion.div
           className="absolute inset-0 opacity-20"
         />
       </div>
 
-      <div className="relative z-10">
+      <div className="relative z-10 ">
         {/* Enhanced Header Section */}
         <motion.header
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           className="border-b border-gray-800/50 backdrop-blur-xl bg-gray-900/50"
         >
-          <div className="container mx-auto px-6 py-6">
+          <div className="container mx-auto px-6  pt-30 py-6">
             <div className="flex items-center justify-between">
               <div>
                 <h1 className="text-2xl font-bold bg-gradient-to-r from-white to-purple-300 bg-clip-text text-transparent">
@@ -115,49 +120,16 @@ export default function DashboardPage() {
                     className="pl-10 w-80 bg-gray-900/50 backdrop-blur-sm border-gray-800/50 focus:border-purple-500/50 text-white placeholder-gray-400"
                   />
                 </div>
-                <Button className="bg-gray-800 hover:bg-gray-700 border border-purple-500/30 hover:border-purple-400/40 text-purple-100 hover:text-white shadow-sm hover:shadow-purple-500/10 transition-all">
-                  <Plus className="w-4 h-4 mr-2 text-purple-300" />
-                  New Contract
-                </Button>
+                {/* Render wallet button here */}
+                {renderWalletButton()}
               </div>
             </div>
           </div>
         </motion.header>
 
-        {/* Stats Section */}
-        <motion.section
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1 }}
-          className="container mx-auto px-6 py-8"
-        >
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-            {stats.map((stat, index) => (
-              <motion.div
-                key={stat.label}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.1 + index * 0.05 }}
-              >
-                <Card className="p-6 bg-gray-900/30 backdrop-blur-xl border-gray-800/50 hover:border-purple-500/30 transition-all duration-300 group">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-gray-400 text-sm font-medium">{stat.label}</p>
-                      <p className="text-2xl font-bold text-white mt-1">{stat.value}</p>
-                      <p className="text-purple-400 text-xs mt-1">{stat.change} from last month</p>
-                    </div>
-                    <div className="w-12 h-12 bg-gray-800/50 backdrop-blur-sm rounded-xl border border-purple-500/30 flex items-center justify-center text-purple-400 group-hover:scale-110 transition-transform duration-300">
-                      {stat.icon}
-                    </div>
-                  </div>
-                </Card>
-              </motion.div>
-            ))}
-          </div>
-        </motion.section>
 
         {/* Main Content */}
-        <main className="container mx-auto px-6 pb-8">
+        <main className="container mx-auto px-6 pb-8 mt-10">
           <div className="grid grid-cols-1 gap-8 lg:grid-cols-4">
             {/* Left Content - Contracts & Transactions */}
             <motion.div
@@ -168,13 +140,7 @@ export default function DashboardPage() {
             >
               <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
                 <TabsList className="grid w-full grid-cols-2 bg-gray-900/50 backdrop-blur-sm border border-gray-800/50 p-1">
-                  <TabsTrigger
-                    value="contracts"
-                    className="data-[state=active]:bg-gray-800 data-[state=active]:text-purple-200 data-[state=active]:border-purple-500/30 text-gray-400 transition-all duration-300"
-                  >
-                    <Code className="w-4 h-4 mr-2 text-purple-400" />
-                    My Contracts
-                  </TabsTrigger>
+                
                   <TabsTrigger
                     value="transactions"
                     className="data-[state=active]:bg-gray-800 data-[state=active]:text-purple-200 data-[state=active]:border-purple-500/30 text-gray-400 transition-all duration-300"
@@ -185,73 +151,20 @@ export default function DashboardPage() {
                 </TabsList>
 
                 <AnimatePresence mode="wait">
-                  <TabsContent value="contracts" className="space-y-6">
-                    <motion.div
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -20 }}
-                      transition={{ duration: 0.3 }}
-                    >
-                      {contracts && contracts.length > 0 ? (
-                        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
-                          {contracts
-                            .filter(
-                              (contract) =>
-                                !searchQuery ||
-                                contract.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                                contract.address.toLowerCase().includes(searchQuery.toLowerCase()),
-                            )
-                            .map((contract, index) => (
-                              <motion.div
-                                key={contract.address}
-                                initial={{ opacity: 0, y: 20 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                transition={{ delay: index * 0.05 }}
-                              >
-                                <ContractCard
-                                  contract={{
-                                    address: contract.address,
-                                    name: contract.name || "Unnamed Contract",
-                                    description: contract.description || "No description available",
-                                    version: contract.version || "1.0.0",
-                                    abi: contract.abi || "",
-                                  }}
-                                />
-                              </motion.div>
-                            ))}
-                        </div>
-                      ) : (
-                        <motion.div
-                          initial={{ opacity: 0, scale: 0.9 }}
-                          animate={{ opacity: 1, scale: 1 }}
-                          transition={{ duration: 0.3 }}
-                        >
-                          <Card className="p-12 text-center bg-gray-900/30 backdrop-blur-xl border-gray-800/50">
-                            <div className="w-16 h-16 bg-gray-800/50 backdrop-blur-sm rounded-2xl border border-purple-500/30 flex items-center justify-center text-purple-400 mx-auto mb-4">
-                              <Code className="w-8 h-8" />
-                            </div>
-                            <h3 className="text-lg font-semibold text-white mb-2">No contracts found</h3>
-                            <p className="text-gray-400 mb-6">Get started by deploying your first smart contract</p>
-                            <Button className="bg-gray-800 hover:bg-gray-700 border border-purple-500/30 hover:border-purple-400/40 text-purple-100 hover:text-white">
-                              <Plus className="w-4 h-4 mr-2 text-purple-300" />
-                              Deploy Contract
-                            </Button>
-                          </Card>
-                        </motion.div>
-                      )}
-                    </motion.div>
-                  </TabsContent>
+                  <div className="mt-20"> {/* Added wrapper div with margin-top */}
+                 
 
-                  <TabsContent value="transactions">
-                    <motion.div
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -20 }}
-                      transition={{ duration: 0.3 }}
-                    >
-                      <TransactionList />
-                    </motion.div>
-                  </TabsContent>
+                    <TabsContent value="transactions">
+                      <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -20 }}
+                        transition={{ duration: 0.3 }}
+                      >
+                        <TransactionList />
+                      </motion.div>
+                    </TabsContent>
+                  </div>
                 </AnimatePresence>
               </Tabs>
             </motion.div>

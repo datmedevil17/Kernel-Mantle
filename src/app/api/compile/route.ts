@@ -1,5 +1,5 @@
-import { readFileSync, writeFileSync } from 'fs';
-import { basename, join } from 'path';
+import { readFileSync, writeFileSync, existsSync } from 'fs';
+import { basename, join, resolve, dirname } from 'path';
 import { NextRequest, NextResponse } from 'next/server';
 
 interface CompilationResult {
@@ -22,18 +22,82 @@ const loadResolc = async () => {
   }
 };
 
-const compileFromSources = async (
+const resolveImportPath = (importPath: string, currentPath?: string) => {
+  if (importPath.startsWith("@openzeppelin/contracts/")) {
+    return resolve(
+      __dirname,
+      "..",
+      "..",
+      "..",
+      "..",
+      "..",
+      "..",
+      "openzeppelin",
+      importPath.replace("@openzeppelin/contracts/", "")
+    );
+  }
+
+  if (currentPath) {
+    return resolve(dirname(currentPath), importPath);
+  }
+
+  return resolve(__dirname, "..", "..", "..", "..", "..", "openzeppelin", importPath);
+};
+
+const readSourceFile = (filePath: string) => {
+  if (existsSync(filePath)) {
+    return readFileSync(filePath, "utf8");
+  }
+  throw new Error(`File not found: ${filePath}`);
+};
+
+const resolveSources = (sources: Record<string, { content: string }>, parent?: string) => {
+  const modifiedSources: Record<string, { content: string }> = {};
+
+  const queue = Object.entries(sources);
+
+  for (const [key, value] of queue) {
+    console.log(`Resolving sources: ${key}`);
+    let content = value.content;
+
+    content = content.replace(/import\s+(\{.*?\}\s+from\s+)?["'](.*)["'];/g, (match, namedImports, importPath) => {
+      console.log(`Resolving import: ${importPath}`);
+      const localPath = resolveImportPath(importPath, parent);
+      const fileContent = readSourceFile(localPath);
+      const filename = basename(localPath);
+
+      const resolvedSources = resolveSources({ [filename]: { content: fileContent } }, localPath);
+      Object.assign(modifiedSources, resolvedSources);
+
+      return `import ${namedImports ? namedImports : ""}"${filename}";`;
+    });
+
+    modifiedSources[key] = { content };
+  }
+
+  return modifiedSources;
+};
+
+// Modify compileFromSources to use the new resolveSources function
+const compileFromSources: (
   sources: { [key: string]: { content: string } },
   outputDir?: string
+) => Promise<CompilationResult> = async (
+  sources,
+  outputDir
 ): Promise<CompilationResult> => {
   try {
     console.log('Compiling contracts from sources...');
 
+    // Resolve imports before compilation
+    const resolvedSources = resolveSources(sources);
+    console.log('Resolved sources:', Object.keys(resolvedSources));
+
     // Dynamically load the compile function
     const compile = await loadResolc();
 
-    // Compile the contract using the provided sources
-    const out = await compile(sources);
+    // Compile using resolved sources
+    const out = await compile(resolvedSources);
     const contracts: { [contractName: string]: { abi: any; bytecode: string } } = {};
     const warnings: string[] = [];
 
@@ -102,19 +166,23 @@ const compileFromFile = async (
   outputDir?: string
 ): Promise<CompilationResult> => {
   try {
-    // Construct the sources object for the compiler
+    // Read the initial source file
+    const content = readFileSync(solidityFilePath, 'utf8');
+    
+    // Construct the initial sources object
     const sources = {
-      [`contracts/${basename(solidityFilePath)}`]: {
-        content: readFileSync(solidityFilePath, 'utf8'),
-      },
+      [basename(solidityFilePath)]: { content },
     };
 
-    return await compileFromSources(sources, outputDir);
+    // Use resolveSources to handle imports
+    const resolvedSources = resolveSources(sources, solidityFilePath);
+
+    return await compileFromSources(resolvedSources, outputDir);
   } catch (error) {
-    console.error('Error reading file:', error);
+    console.error('Error reading or resolving file:', error);
     return {
       contracts: {},
-      error: error instanceof Error ? error.message : 'Error reading file',
+      error: error instanceof Error ? error.message : 'Error reading or resolving file',
     };
   }
 };

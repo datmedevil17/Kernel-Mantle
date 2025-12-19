@@ -8,6 +8,9 @@ import { formatDistanceToNow } from 'date-fns'
 import { Copy, ChevronDown, ChevronUp } from 'lucide-react'
 import { useTransactions } from '@/hooks/useTransactions'
 import { useAccount } from 'wagmi'
+import { makeGeminiRequest } from '@/utils/api'
+
+
 
 interface Transaction {
   transaction: {
@@ -36,45 +39,43 @@ export function TransactionList() {
   const [expandedId, setExpandedId] = React.useState<string | null>(null)
   const [decodingMap, setDecodingMap] = useState<Record<string, DecodedTransaction>>({})
 
-  const decodeTransaction = async (tx: Transaction) => {
-    try {
-      const response = await axios({
-        url: "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent",
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${process.env.NEXT_PUBLIC_GOOGLE_API_KEY}`
-        },
-        data: {
-          contents: [
-            {
-              parts: [{ 
-                text: `Analyze and decode this blockchain transaction:
-                Input Data: ${tx.transaction.input}
-                To Address: ${tx.transaction.to}
-                Value: ${parseInt(tx.transaction.value, 16) / 1e18} ETH
-                Please explain what this transaction does in simple terms.`
-              }],
-            },
-          ],
-        },
-      });
+ const decodeTransaction = async (tx: Transaction) => {
 
-      const decoded = {
-        explanation: response.data.candidates[0].content.parts[0].text,
-        type: 'Unknown',
-        details: {}
-      };
 
-      setDecodingMap(prev => ({
-        ...prev,
-        [tx.transaction.hash]: decoded
-      }));
-    } catch (error) {
-      console.error('Error decoding transaction:', error);
+  try {
+    const prompt = `Analyze and decode this blockchain transaction:
+      Input Data: ${tx.transaction.input}
+      To Address: ${tx.transaction.to}
+      Value: ${parseInt(tx.transaction.value, 16) / 1e18} ETH
+      Please explain what this transaction does in simple terms.
+      Return the response as a JSON object with 'explanation' and 'type' fields.`;
+
+    const decoded = await makeGeminiRequest(prompt);
+
+    setDecodingMap(prev => ({
+      ...prev,
+      [tx.transaction.hash]: {
+        explanation: decoded.explanation,
+        type: decoded.type || 'Unknown',
+        details: decoded.details || {}
+      }
+    }));
+  } catch (error) {
+    console.error('Error decoding transaction:', error);
+    
+    if (axios.isAxiosError(error)) {
+      if (error.response?.status === 401) {
+        toast.error('Invalid API key. Please check your configuration.');
+      } else if (error.response?.status === 429) {
+        toast.error('API rate limit exceeded. Please try again later.');
+      } else {
+        toast.error(`API Error: ${error.response?.status || 'Unknown error'}`);
+      }
+    } else {
       toast.error('Failed to decode transaction');
     }
-  };
+  }
+};
 
   if (isLoading) {
     return (

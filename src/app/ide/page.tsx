@@ -1,66 +1,128 @@
 // app/ide/page.tsx
 'use client'
-import React from 'react';
-import Link from 'next/link';
+import React, { useState } from 'react';
+import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { useRouter } from 'next/navigation';
+import { Badge } from "@/components/ui/badge";
 
 export default function IDEPage() {
+  const router = useRouter();
+  const [selectedType, setSelectedType] = useState<string>('');
+
+  const handleCreateProject = (type: string) => {
+    setSelectedType(type);
+    router.push(`/ide/editor?template=${type}`);
+  };
+
   return (
-    <div className="flex-1 flex items-center justify-center bg-[var(--bg-panel)]">
-      <div className="text-center max-w-2xl mx-auto p-8">
-        <div className="text-6xl mb-6">🚀</div>
-        <h1 className="text-3xl font-bold text-white mb-4">Welcome to Web3 IDE</h1>
-        <p className="text-gray-400 text-lg mb-8">
-          A comprehensive development environment for smart contracts and blockchain applications.
-          Build, compile, deploy, and audit your code all in one place.
-        </p>
+    <div className="min-h-screen bg-gradient-to-b from-gray-900 to-black">
+      <div className="container mx-auto p-8">
+        <div className="flex items-center justify-between mb-8">
+          <h1 className="text-3xl font-bold bg-gradient-to-r from-purple-400 to-pink-600 bg-clip-text text-transparent">
+            Create New Smart Contract
+          </h1>
+          <Badge variant="outline" className="px-4 py-1">
+            Solidity ^0.8.0
+          </Badge>
+        </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-12">
-          <Link href="/ide/editor" className="group">
-            <div className="bg-[var(--bg-panel)] hover:bg-gray-700 rounded-lg p-6 transition-colors border border-gray-700 hover:border-blue-500">
-              <div className="text-3xl mb-3">💻</div>
-              <h3 className="text-white font-semibold mb-2">Code Editor</h3>
-              <p className="text-gray-400 text-sm">
-                Multi-language editor with syntax highlighting for Solidity, Rust, and more.
-              </p>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {/* ERC Templates Card */}
+          <Card className="p-6 bg-gray-900/50 border border-gray-800 backdrop-blur-sm hover:border-purple-500/50 transition-all">
+            <div className="flex items-center mb-4">
+              <h2 className="text-xl font-semibold">ERC Templates</h2>
+              <Badge variant="secondary" className="ml-2">Popular</Badge>
             </div>
-          </Link>
-          
-          <Link href="/ide/audit" className="group">
-            <div className="bg-[var(--bg-panel)] hover:bg-gray-700 rounded-lg p-6 transition-colors border border-gray-700 hover:border-green-500">
-              <div className="text-3xl mb-3">🔍</div>
-              <h3 className="text-white font-semibold mb-2">Security Audit</h3>
-              <p className="text-gray-400 text-sm">
-                Analyze your smart contracts for security vulnerabilities and best practices.
-              </p>
+            <p className="text-gray-400 text-sm mb-4">
+              Standard token implementations following ERC specifications
+            </p>
+            <div className="space-y-4">
+              <Button 
+                onClick={() => handleCreateProject('erc20')}
+                className="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600"
+              >
+                ERC20 Token
+              </Button>
+              <Button 
+                onClick={() => handleCreateProject('erc721')}
+                className="w-full bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600"
+              >
+                ERC721 NFT Collection
+              </Button>
+              <Button 
+                onClick={() => handleCreateProject('erc1155')}
+                className="w-full bg-gradient-to-r from-indigo-500 to-blue-500 hover:from-indigo-600 hover:to-blue-600"
+              >
+                ERC1155 Multi-Token
+              </Button>
             </div>
-          </Link>
-          
-          <Link href="/ide/plugins" className="group">
-            <div className="bg-[var(--bg-panel)] hover:bg-gray-700 rounded-lg p-6 transition-colors border border-gray-700 hover:border-purple-500">
-              <div className="text-3xl mb-3">🚀</div>
-              <h3 className="text-white font-semibold mb-2">Deploy</h3>
-              <p className="text-gray-400 text-sm">
-                Deploy your contracts to various networks with ease and confidence.
-              </p>
+          </Card>
+
+          {/* Oracle Projects Card */}
+          <Card className="p-6 bg-gray-900/50 border border-gray-800 backdrop-blur-sm hover:border-purple-500/50 transition-all">
+            <div className="flex items-center mb-4">
+              <h2 className="text-xl font-semibold">Oracle Projects</h2>
+              <Badge variant="secondary" className="ml-2">Advanced</Badge>
             </div>
-          </Link>
+            <p className="text-gray-400 text-sm mb-4">
+              Create custom oracle solutions for real-world data feeds
+            </p>
+            <div className="space-y-4">
+              <Button 
+                onClick={() => handleCreateProject('price-feed')}
+                className="w-full bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600"
+              >
+                Price Feed Oracle
+              </Button>
+              <Button 
+                onClick={() => handleCreateProject('custom-oracle')}
+                className="w-full bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600"
+              >
+                Custom Data Oracle
+              </Button>
+            </div>
+          </Card>
+
+          {/* AI Integration Card */}
+          <Card className="p-6 bg-gray-900/50 border border-gray-800 backdrop-blur-sm hover:border-purple-500/50 transition-all">
+            <div className="flex items-center mb-4">
+              <h2 className="text-xl font-semibold">AI Integration</h2>
+              <Badge variant="secondary" className="ml-2">Experimental</Badge>
+            </div>
+            <p className="text-gray-400 text-sm mb-4">
+              Smart contracts with AI model integration capabilities
+            </p>
+            <div className="space-y-4">
+              <Button 
+                onClick={() => handleCreateProject('ai-oracle')}
+                className="w-full bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600"
+              >
+                AI Oracle Interface
+              </Button>
+              <Button 
+                onClick={() => handleCreateProject('ai-governance')}
+                className="w-full bg-gradient-to-r from-red-500 to-pink-500 hover:from-red-600 hover:to-pink-600"
+              >
+                AI Governance
+              </Button>
+            </div>
+          </Card>
         </div>
 
-        <div className="mt-12">
-          <div className="flex justify-center space-x-6 text-sm text-gray-500">
-            <div className="flex items-center space-x-2">
-              <span className="w-2 h-2 bg-green-500 rounded-full"></span>
-              <span>Multi-chain Support</span>
-            </div>
-            <div className="flex items-center space-x-2">
-              <span className="w-2 h-2 bg-blue-500 rounded-full"></span>
-              <span>Real-time Compilation</span>
-            </div>
-            <div className="flex items-center space-x-2">
-              <span className="w-2 h-2 bg-purple-500 rounded-full"></span>
-              <span>Security Analysis</span>
-            </div>
+        {/* Quick Actions */}
+        <div className="mt-8 flex items-center justify-between">
+          <div className="flex space-x-4">
+            <Button variant="outline" className="text-gray-400 hover:text-white">
+              Import Existing Project
+            </Button>
+            <Button variant="outline" className="text-gray-400 hover:text-white">
+              Browse Templates
+            </Button>
           </div>
+          <Button variant="ghost" className="text-gray-400 hover:text-white">
+            Documentation
+          </Button>
         </div>
       </div>
     </div>
