@@ -21,33 +21,33 @@ export default function DashboardPage() {
       title: "Deploy New Contract",
       description: "Create and deploy a new smart contract",
       href: "/ide",
-      icon: <Plus className="w-5 h-5" />,
-      gradient: "from-purple-500/20 to-violet-500/20",
-      borderGradient: "from-purple-500/30 to-violet-500/30",
+      icon: <Plus className="w-5 h-5 text-purple-400" />,
+      gradient: "from-gray-800/20 to-gray-900/20",
+      borderGradient: "from-purple-500/10 to-purple-600/10",
     },
     {
       title: "Browse Templates",
       description: "Explore pre-built contract templates",
       href: "/templates",
-      icon: <Layers className="w-5 h-5" />,
-      gradient: "from-purple-400/20 to-purple-600/20",
-      borderGradient: "from-purple-400/30 to-purple-600/30",
+      icon: <Layers className="w-5 h-5 text-purple-400" />,
+      gradient: "from-gray-800/20 to-gray-900/20",
+      borderGradient: "from-purple-500/10 to-purple-600/10",
     },
     {
       title: "Documentation",
       description: "View guides and API references",
       href: "/docs",
-      icon: <BookOpen className="w-5 h-5" />,
-      gradient: "from-gray-700/20 to-gray-800/20",
-      borderGradient: "from-gray-600/30 to-gray-700/30",
+      icon: <BookOpen className="w-5 h-5 text-purple-400" />,
+      gradient: "from-gray-800/20 to-gray-900/20",
+      borderGradient: "from-purple-500/10 to-purple-600/10",
     },
     {
       title: "AI Assistant",
       description: "Get help with smart contract development",
       href: "/ai",
-      icon: <Bot className="w-5 h-5" />,
-      gradient: "from-purple-600/20 to-purple-800/20",
-      borderGradient: "from-purple-600/30 to-purple-800/30",
+      icon: <Bot className="w-5 h-5 text-purple-400" />,
+      gradient: "from-gray-800/20 to-gray-900/20",
+      borderGradient: "from-purple-500/10 to-purple-600/10",
     },
   ]
 
@@ -55,34 +55,34 @@ export default function DashboardPage() {
     {
       label: "Total Contracts",
       value: contracts?.length || 0,
-      icon: <Code className="w-5 h-5" />,
+      icon: <Code className="w-5 h-5 text-purple-400" />,
       change: "+12%",
     },
     {
       label: "Active Deployments",
       value: "24",
-      icon: <Activity className="w-5 h-5" />,
+      icon: <Activity className="w-5 h-5 text-purple-400" />,
       change: "+8%",
     },
     {
       label: "Gas Saved",
       value: "1.2M",
-      icon: <Zap className="w-5 h-5" />,
+      icon: <Zap className="w-5 h-5 text-purple-400" />,
       change: "+15%",
     },
     {
       label: "Security Score",
       value: "98%",
-      icon: <Shield className="w-5 h-5" />,
+      icon: <Shield className="w-5 h-5 text-purple-400" />,
       change: "+2%",
     },
   ]
 
   return (
-    <div className="min-h-screen bg-black relative overflow-hidden">
+    <div className="min-h-screen bg-gray-950 relative overflow-hidden">
       {/* Animated background */}
       <div className="absolute inset-0">
-        <div className="absolute inset-0 bg-gradient-to-br from-purple-900/10 via-black to-purple-900/5" />
+        <div className="absolute inset-0 bg-gradient-to-br from-gray-900/10 via-black to-purple-900/5" />
         <motion.div
           className="absolute inset-0 opacity-20"
         />
@@ -93,12 +93,12 @@ export default function DashboardPage() {
         <motion.header
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="border-b border-gray-800/50 backdrop-blur-xl bg-black/50"
+          className="border-b border-gray-800/50 backdrop-blur-xl bg-gray-900/50"
         >
           <div className="container mx-auto px-6 py-6">
             <div className="flex items-center justify-between">
               <div>
-                <h1 className="text-2xl font-bold bg-gradient-to-r from-white to-purple-200 bg-clip-text text-transparent">
+                <h1 className="text-2xl font-bold bg-gradient-to-r from-white to-purple-300 bg-clip-text text-transparent">
                   Dashboard
                 </h1>
                 <p className="text-gray-400 text-sm mt-1">Manage your smart contracts and deployments</p>
@@ -115,8 +115,8 @@ export default function DashboardPage() {
                     className="pl-10 w-80 bg-gray-900/50 backdrop-blur-sm border-gray-800/50 focus:border-purple-500/50 text-white placeholder-gray-400"
                   />
                 </div>
-                <Button className="bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 border-0 shadow-lg hover:shadow-purple-500/25">
-                  <Plus className="w-4 h-4 mr-2" />
+                <Button className="bg-gray-800 hover:bg-gray-700 border border-purple-500/30 hover:border-purple-400/40 text-purple-100 hover:text-white shadow-sm hover:shadow-purple-500/10 transition-all">
+                  <Plus className="w-4 h-4 mr-2 text-purple-300" />
                   New Contract
                 </Button>
               </div>
@@ -144,9 +144,9 @@ export default function DashboardPage() {
                     <div>
                       <p className="text-gray-400 text-sm font-medium">{stat.label}</p>
                       <p className="text-2xl font-bold text-white mt-1">{stat.value}</p>
-                      <p className="text-green-400 text-xs mt-1">{stat.change} from last month</p>
+                      <p className="text-purple-400 text-xs mt-1">{stat.change} from last month</p>
                     </div>
-                    <div className="w-12 h-12 bg-gradient-to-br from-purple-500/20 to-purple-700/20 backdrop-blur-sm rounded-xl border border-purple-500/30 flex items-center justify-center text-purple-400 group-hover:scale-110 transition-transform duration-300">
+                    <div className="w-12 h-12 bg-gray-800/50 backdrop-blur-sm rounded-xl border border-purple-500/30 flex items-center justify-center text-purple-400 group-hover:scale-110 transition-transform duration-300">
                       {stat.icon}
                     </div>
                   </div>
@@ -170,16 +170,16 @@ export default function DashboardPage() {
                 <TabsList className="grid w-full grid-cols-2 bg-gray-900/50 backdrop-blur-sm border border-gray-800/50 p-1">
                   <TabsTrigger
                     value="contracts"
-                    className="data-[state=active]:bg-purple-500/20 data-[state=active]:text-purple-200 data-[state=active]:border-purple-500/30 text-gray-400 transition-all duration-300"
+                    className="data-[state=active]:bg-gray-800 data-[state=active]:text-purple-200 data-[state=active]:border-purple-500/30 text-gray-400 transition-all duration-300"
                   >
-                    <Code className="w-4 h-4 mr-2" />
+                    <Code className="w-4 h-4 mr-2 text-purple-400" />
                     My Contracts
                   </TabsTrigger>
                   <TabsTrigger
                     value="transactions"
-                    className="data-[state=active]:bg-purple-500/20 data-[state=active]:text-purple-200 data-[state=active]:border-purple-500/30 text-gray-400 transition-all duration-300"
+                    className="data-[state=active]:bg-gray-800 data-[state=active]:text-purple-200 data-[state=active]:border-purple-500/30 text-gray-400 transition-all duration-300"
                   >
-                    <Activity className="w-4 h-4 mr-2" />
+                    <Activity className="w-4 h-4 mr-2 text-purple-400" />
                     Transactions
                   </TabsTrigger>
                 </TabsList>
@@ -227,13 +227,13 @@ export default function DashboardPage() {
                           transition={{ duration: 0.3 }}
                         >
                           <Card className="p-12 text-center bg-gray-900/30 backdrop-blur-xl border-gray-800/50">
-                            <div className="w-16 h-16 bg-gradient-to-br from-purple-500/20 to-purple-700/20 backdrop-blur-sm rounded-2xl border border-purple-500/30 flex items-center justify-center text-purple-400 mx-auto mb-4">
+                            <div className="w-16 h-16 bg-gray-800/50 backdrop-blur-sm rounded-2xl border border-purple-500/30 flex items-center justify-center text-purple-400 mx-auto mb-4">
                               <Code className="w-8 h-8" />
                             </div>
                             <h3 className="text-lg font-semibold text-white mb-2">No contracts found</h3>
                             <p className="text-gray-400 mb-6">Get started by deploying your first smart contract</p>
-                            <Button className="bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 border-0">
-                              <Plus className="w-4 h-4 mr-2" />
+                            <Button className="bg-gray-800 hover:bg-gray-700 border border-purple-500/30 hover:border-purple-400/40 text-purple-100 hover:text-white">
+                              <Plus className="w-4 h-4 mr-2 text-purple-300" />
                               Deploy Contract
                             </Button>
                           </Card>
@@ -276,22 +276,16 @@ export default function DashboardPage() {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.3 + index * 0.05 }}
                   >
-                    <Card className="group relative overflow-hidden p-6 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-purple-500/10 bg-gray-900/30 backdrop-blur-xl border-gray-800/50 hover:border-purple-500/30 cursor-pointer">
-                      {/* Background gradient */}
-                      <div
-                        className={`absolute inset-0 opacity-0 bg-gradient-to-br ${action.gradient} 
-                        transition-opacity duration-300 group-hover:opacity-100`}
-                      />
-
+                    <Card className="group relative overflow-hidden p-6 transition-all duration-300 hover:-translate-y-1 bg-gray-900/30 backdrop-blur-xl border-gray-800/50 hover:border-purple-500/30 cursor-pointer">
                       {/* Glowing border effect */}
                       <motion.div
-                        className={`absolute inset-0 rounded-lg bg-gradient-to-r ${action.borderGradient} opacity-0 group-hover:opacity-100 blur-xl transition-opacity duration-300`}
+                        className={`absolute inset-0 rounded-lg bg-gradient-to-r ${action.borderGradient} opacity-0 group-hover:opacity-30 blur-lg transition-opacity duration-300`}
                         initial={false}
                       />
 
                       <div className="relative z-10">
                         <div className="flex items-start justify-between mb-3">
-                          <div className="w-10 h-10 bg-gradient-to-br from-purple-500/20 to-purple-700/20 backdrop-blur-sm rounded-lg border border-purple-500/30 flex items-center justify-center text-purple-400 group-hover:scale-110 transition-transform duration-300">
+                          <div className="w-10 h-10 bg-gray-800/50 backdrop-blur-sm rounded-lg border border-purple-500/30 flex items-center justify-center text-purple-400 group-hover:scale-110 transition-transform duration-300">
                             {action.icon}
                           </div>
                           <motion.div
@@ -315,7 +309,7 @@ export default function DashboardPage() {
 
               {/* Additional Info Card */}
               <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5 }}>
-                <Card className="p-6 bg-gradient-to-br from-purple-500/10 to-purple-700/10 backdrop-blur-xl border-purple-500/20">
+                <Card className="p-6 bg-gray-800/20 backdrop-blur-xl border-purple-500/20">
                   <div className="flex items-center gap-3 mb-3">
                     <div className="w-8 h-8 bg-purple-500/20 rounded-lg flex items-center justify-center">
                       <Zap className="w-4 h-4 text-purple-400" />
