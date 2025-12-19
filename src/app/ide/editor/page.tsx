@@ -43,9 +43,7 @@ export default function EditorPage() {
   }, [selectedFile, updateFile]);
 
   // Helper function to check if current file is Rust
-  const isRustFile = useCallback(() => {
-    return selectedFile?.name.endsWith('.rs') || false;
-  }, [selectedFile]);
+
 
   const handleCompile = useCallback(async () => {
     if (!selectedFile) return;

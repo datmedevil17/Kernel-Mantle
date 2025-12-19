@@ -3,7 +3,7 @@ import type React from "react"
 import { useState, useContext, createContext, useCallback } from "react"
 
 // Create a wallet context
-const WalletContext = createContext<{
+export const WalletContext = createContext<{
   address: string | null
   isConnected: boolean
   connectWallet: () => Promise<void>

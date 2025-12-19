@@ -3,7 +3,7 @@ import axios from 'axios';
 const GEMINI_API_KEY = 'AIzaSyCHK_9m7dwti-kYYWmr-ciR-Kp9_QTgvOc';
 const GEMINI_API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent';
 
-async function makeGeminiRequest(prompt: string) {
+ export async function makeGeminiRequest(prompt: string) {
   try {
     const response = await axios({
       url: `${GEMINI_API_URL}?key=${GEMINI_API_KEY}`,
