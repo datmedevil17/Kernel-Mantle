@@ -8,7 +8,7 @@ import { HeroParallax } from "@/components/home/HeroParallax"
 import Footer from "@/components/home/Footer"
 import { motion } from "framer-motion"
 import { ArrowRight, Play } from "lucide-react"
-import Navbar from "@/components/Navbar"
+
 
 export default function Home() {
   // Add smooth scroll behavior
@@ -21,7 +21,7 @@ export default function Home() {
 
   return (
     <div className="bg-[#0a0a0a] min-h-screen">
-      <Navbar/>
+      
       {/* Hero Section - Enhanced with uniform background */}
       <section className="relative flex h-[100vh] w-full overflow-hidden antialiased md:items-center md:justify-center bg-[#0a0a0a]">
         {/* Subtle grid pattern */}
