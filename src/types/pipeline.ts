@@ -35,6 +35,20 @@ export interface NodeConfig {
   contract?: string;
 }
 
+export interface CompileResult {
+  success: boolean;
+  error?: string;
+  bytecodeSize?: string;
+}
+
+export interface DeployResult {
+  success: boolean;
+  error?: string;
+  contractAddress?: string;
+  transactionHash?: string;
+  gasUsed?: string;
+}
+
 export interface Node {
   id: string;
   type: string;

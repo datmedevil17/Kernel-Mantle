@@ -21,8 +21,22 @@ const GEMINI_API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/
     });
 
     const text = response.data.candidates[0].content.parts[0].text;
-    const cleanString = text.replace(/```json|```/g, "").trim();
-    return JSON.parse(cleanString);
+    console.log(text)
+    try {
+      const cleanString = text.replace(/```json|```/g, "").trim();
+      return JSON.parse(cleanString);
+    } catch (jsonError) {
+      // If JSON parsing fails, return the text as content
+      const cleanCode = text
+        .replace(/```solidity|```/g, "")
+        .replace(/```/g, "")
+        .trim();
+      
+      return {
+        content: cleanCode,
+        success: true
+      };
+    }
   } catch (error) {
     console.error('Gemini API error:', error);
     throw error;

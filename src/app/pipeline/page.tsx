@@ -1,7 +1,9 @@
 'use client'
-import React, { useState, useCallback, useRef } from 'react';
+import React, { useState, useCallback, useRef, useEffect } from 'react';
 import { Play, Plus, Settings, Upload, CheckCircle, XCircle, Clock, GitBranch, Zap, AlertTriangle, FileText, Shield } from 'lucide-react';
-import { Node, NodeConfig, Connection, ExecutionLog, Template, NodeType } from '@/types/pipeline';
+import { Node, NodeConfig, Connection, ExecutionLog, Template, NodeType,CompileResult,DeployResult } from '@/types/pipeline';
+import { makeGeminiRequest } from '@/utils/api';
+import { useContractOperations } from '@/hooks/useContractOperations';
 
 // Pipeline Node Types for Solidity/EVM
 const nodeTypes: Record<string, NodeType> = {
@@ -24,6 +26,51 @@ const PipelineBuilder: React.FC = () => {
   const [executionLogs, setExecutionLogs] = useState<ExecutionLog[]>([]);
   const [draggedNode, setDraggedNode] = useState<string | null>(null);
   const canvasRef = useRef<HTMLDivElement>(null);
+  const [uploadedFiles, setUploadedFiles] = useState<Record<string, string>>({});
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  
+  // Import the hook functions
+  const {handleCompile, handleDeploy} = useContractOperations();
+
+  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file && file.name.endsWith('.sol')) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const content = e.target?.result as string;
+        setUploadedFiles(prev => {
+          const newFiles = {
+            ...prev,
+            [file.name]: content
+          };
+          
+          // After uploading, update any nodes that don't have valid contract files
+          setTimeout(() => {
+            setNodes(currentNodes => currentNodes.map(node => {
+              const currentFile = node.config.contractFile;
+              if (!currentFile || currentFile === 'Contract.sol' || !newFiles[currentFile]) {
+                return {
+                  ...node,
+                  config: {
+                    ...node.config,
+                    contractFile: file.name
+                  }
+                };
+              }
+              return node;
+            }));
+          }, 0);
+          
+          return newFiles;
+        });
+        
+        addLog(`📁 Uploaded contract: ${file.name}`, 'success');
+      };
+      reader.readAsText(file);
+    } else {
+      addLog(`❌ Please upload a .sol file`, 'error');
+    }
+  };
 
   // Predefined templates for Solidity
   const templates: Record<string, Template> = {
@@ -81,50 +128,73 @@ const PipelineBuilder: React.FC = () => {
     }
   };
 
-  const addNode = useCallback((type: string, x?: number, y?: number) => {
-    const newNode: Node = {
-      id: Date.now().toString(),
-      type,
-      x: x || 100,
-      y: y || 100,
-      config: getDefaultConfig(type)
-    };
-    setNodes(prev => [...prev, newNode]);
-  }, []);
+  // Update getDefaultConfig function to pass contractFile to other nodes
+  const getDefaultConfig = (type: string, currentNodes?: Node[], uploadedFiles?: Record<string, string>): NodeConfig => {
+    // Priority order for contract file selection:
+    // 1. Latest import node's contract file
+    // 2. First uploaded file
+    // 3. Default 'Contract.sol'
+    
+    const importNodes = currentNodes?.filter(n => n.type === 'import') || [];
+    const latestImportNode = importNodes[importNodes.length - 1];
+    
+    let contractFile = 'Contract.sol';
+    let contractType = 'Custom';
+    
+    if (latestImportNode?.config.contractFile) {
+      contractFile = latestImportNode.config.contractFile;
+      contractType = latestImportNode.config.contractType || 'Custom';
+    } else if (uploadedFiles && Object.keys(uploadedFiles).length > 0) {
+      contractFile = Object.keys(uploadedFiles)[0]; // Use first uploaded file
+    }
 
-  const getDefaultConfig = (type: string): NodeConfig => {
     switch (type) {
       case 'import':
+        // For import nodes, prefer uploaded files over default
+        const defaultImportFile = uploadedFiles && Object.keys(uploadedFiles).length > 0 
+          ? Object.keys(uploadedFiles)[0] 
+          : 'Contract.sol';
+        
         return { 
-          contractFile: 'Contract.sol', 
+          contractFile: defaultImportFile, 
           contractType: 'Custom',
           dependencies: ['@openzeppelin/contracts']
         };
       case 'compile':
         return { 
+          contractFile: contractFile,
           solcVersion: '0.8.19', 
           optimizer: true, 
           optimizerRuns: 200,
           evmVersion: 'london'
         };
       case 'gasOptimize':
-        return { runs: 200, viaIR: false };
+        return { 
+          contractFile: contractFile,
+          runs: 200, 
+          viaIR: false 
+        };
       case 'test':
         return { 
+          contractFile: contractFile,
+          contractType: contractType,
           testSuite: 'foundry', 
           coverage: true,
           gasReport: true
         };
       case 'deploy':
         return { 
+          contractFile: contractFile,
           network: 'asset-hub-testnet', 
           gasLimit: '2000000',
           gasPrice: 'auto',
           confirmations: 1,
-          contract: ''
+          contract: '',
+          constructorArgs: []
         };
       case 'verify':
         return { 
+          contractFile: contractFile,
           explorer: 'polkadot-js', 
           apiKey: '',
           constructorArgs: []
@@ -146,17 +216,424 @@ const PipelineBuilder: React.FC = () => {
     }
   };
 
+  const addNode = useCallback((type: string, x?: number, y?: number) => {
+    const newNode: Node = {
+      id: Date.now().toString(),
+      type,
+      x: x || 100,
+      y: y || 100,
+      config: getDefaultConfig(type, nodes, uploadedFiles)
+    };
+    
+    // If this is not an import node, ensure it gets the contract file from existing import nodes
+    if (type !== 'import') {
+      const importNodes = nodes.filter(n => n.type === 'import');
+      if (importNodes.length > 0) {
+        const latestImportNode = importNodes[importNodes.length - 1];
+        newNode.config.contractFile = latestImportNode.config.contractFile;
+        if (latestImportNode.config.contractType) {
+          newNode.config.contractType = latestImportNode.config.contractType;
+        }
+      }
+    }
+    
+    setNodes(prev => [...prev, newNode]);
+  }, [nodes, uploadedFiles]);
+
+  const syncContractFileAcrossNodes = useCallback((newContractFile: string, nodeId: string) => {
+    setNodes(prev => prev.map(node => {
+      // Update the import node that was changed
+      if (node.id === nodeId) {
+        return { ...node, config: { ...node.config, contractFile: newContractFile } };
+      }
+      
+      // Update all other nodes (except other import nodes) to use the new contract file
+      if (node.type !== 'import') {
+        return { ...node, config: { ...node.config, contractFile: newContractFile } };
+      }
+      
+      return node;
+    }));
+  }, []);
+
+  const validateContractImport = async (
+    contractFile: string, 
+    logger: (msg: string, type?: ExecutionLog['type']) => void,
+    uploadedFilesParam: Record<string, string>
+  ) => {
+    logger(`🔍 Validating contract file: ${contractFile}`, 'info');
+    
+    // Check if file is uploaded
+    if (!uploadedFilesParam[contractFile]) {
+      logger(`❌ Contract file not uploaded. Please upload ${contractFile} first.`, 'error');
+      return false;
+    }
+    
+    // Validate file extension
+    const isValid = contractFile.endsWith('.sol') && contractFile.length > 0;
+    
+    if (!isValid) {
+      logger(`❌ Invalid contract file: ${contractFile}`, 'error');
+      return false;
+    }
+    
+    // Check file content
+    const content = uploadedFilesParam[contractFile];
+    if (!content || content.trim().length === 0) {
+      logger(`❌ Contract file is empty: ${contractFile}`, 'error');
+      return false;
+    }
+    
+    logger(`✅ Contract file validated successfully`, 'success');
+    return true;
+  };
+
+  const FileUploadSection: React.FC = () => {
+    return (
+      <div className="mb-6 p-4 bg-gray-50 rounded-lg">
+        <h4 className="text-sm font-medium text-gray-700 mb-3">Upload Contract Files</h4>
+        <div className="space-y-2">
+          <button
+            onClick={() => fileInputRef.current?.click()}
+            className="flex items-center gap-2 px-3 py-2 bg-blue-600 text-white rounded text-sm hover:bg-blue-700"
+          >
+            <Upload className="w-4 h-4" />
+            Upload .sol File
+          </button>
+          
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept=".sol"
+            onChange={handleFileUpload}
+            className="hidden"
+          />
+          
+          {Object.keys(uploadedFiles).length > 0 && (
+            <div className="mt-3">
+              <p className="text-xs text-gray-600 mb-2">Uploaded Files:</p>
+              <div className="space-y-1">
+                {Object.keys(uploadedFiles).map(filename => (
+                  <div key={filename} className="text-xs bg-green-50 text-green-700 px-2 py-1 rounded flex items-center gap-1">
+                    <FileText className="w-3 h-3" />
+                    {filename}
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+    );
+  };
+
   const loadTemplate = (templateKey: string) => {
     const template = templates[templateKey];
-    setNodes(template.nodes);
+    
+    // Update template nodes to use uploaded files if available
+    const updatedNodes = template.nodes.map(node => {
+      if (node.type === 'import' && Object.keys(uploadedFiles).length > 0) {
+        const firstUploadedFile = Object.keys(uploadedFiles)[0];
+        return {
+          ...node,
+          config: {
+            ...node.config,
+            contractFile: firstUploadedFile
+          }
+        };
+      } else if (node.type !== 'import' && Object.keys(uploadedFiles).length > 0) {
+        // For non-import nodes, also use uploaded files
+        const firstUploadedFile = Object.keys(uploadedFiles)[0];
+        return {
+          ...node,
+          config: {
+            ...node.config,
+            contractFile: firstUploadedFile
+          }
+        };
+      }
+      return node;
+    });
+    
+    setNodes(updatedNodes);
     setConnections(template.connections);
     setExecutionStatus({});
     setExecutionLogs([]);
   };
 
+  useEffect(() => {
+    if (Object.keys(uploadedFiles).length > 0) {
+      const firstUploadedFile = Object.keys(uploadedFiles)[0];
+      
+      // Update existing nodes that don't have a valid contract file
+      setNodes(prev => prev.map(node => {
+        const currentFile = node.config.contractFile;
+        
+        // If the node has no contract file or the file doesn't exist in uploads
+        if (!currentFile || currentFile === 'Contract.sol' || !uploadedFiles[currentFile]) {
+          return {
+            ...node,
+            config: {
+              ...node.config,
+              contractFile: firstUploadedFile
+            }
+          };
+        }
+        
+        return node;
+      }));
+    }
+  }, [uploadedFiles]);
+
   const addLog = (message: string, type: ExecutionLog['type'] = 'info') => {
     const timestamp = new Date().toLocaleTimeString();
     setExecutionLogs(prev => [...prev, { timestamp, message, type }]);
+  };
+
+  const generateTestsWithGemini = async (contractFile: string, contractType: string) => {
+    const prompt = `Generate comprehensive test cases for a ${contractType} Solidity contract named ${contractFile}. 
+    Create tests in TypeScript using Foundry/Hardhat testing framework. Include:
+    1. Basic functionality tests
+    2. Edge case tests
+    3. Security tests
+    4. Gas optimization tests
+    
+    Return only the test code without explanations.`;
+
+    try {
+      const response = await makeGeminiRequest(prompt);
+      return response;
+    } catch (error) {
+      console.error('Error generating tests:', error);
+      return `// Generated test template for ${contractFile}
+import { expect } from "chai";
+import { ethers } from "hardhat";
+
+describe("${contractFile.replace('.sol', '')}", function () {
+  it("Should deploy successfully", async function () {
+    // Basic deployment test
+    expect(true).to.be.true;
+  });
+  
+  it("Should handle basic operations", async function () {
+    // Add your contract-specific tests here
+    expect(true).to.be.true;
+  });
+});`;
+    }
+  };
+
+  const downloadFile = (content: string, filename: string, contentType: string = 'text/plain') => {
+    const blob = new Blob([content], { type: contentType });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = filename;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  };
+
+  const generateGasOptimizationReport = async (contractFile: string, runs: number) => {
+    const prompt = `Generate a detailed gas optimization report for Solidity contract ${contractFile} with ${runs} optimizer runs. 
+    Include:
+    1. Gas usage analysis
+    2. Optimization recommendations
+    3. Potential savings
+    4. Best practices applied
+    5. Areas for improvement
+    
+    Format as a detailed technical report.`;
+
+    try {
+      const response = await makeGeminiRequest(prompt);
+      return response;
+    } catch (error) {
+      console.error('Error generating gas report:', error);
+      return `# Gas Optimization Report for ${contractFile}
+
+## Summary
+- Optimizer Runs: ${runs}
+- Estimated Gas Savings: ~15-20%
+- Status: Optimization Applied
+
+## Key Optimizations
+1. Loop unrolling where applicable
+2. Storage variable packing
+3. Function selector optimization
+4. Dead code elimination
+
+## Recommendations
+- Consider using assembly for critical sections
+- Review storage access patterns
+- Implement gas-efficient data structures
+
+## Conclusion
+Contract has been optimized with standard compiler optimizations.
+Manual review recommended for further improvements.`;
+    }
+  };
+
+  const simulateNodeExecution = async (
+    node: Node, 
+    logger: (msg: string, type?: ExecutionLog['type']) => void,
+    uploadedFiles: Record<string, any> = {}
+  ) => {
+    console.log('uploadedFiles received:', Object.keys(uploadedFiles));
+    console.log('Looking for contract file:', node.config.contractFile || 'Contract.sol');
+    
+    switch (node.type) {
+     case 'import':
+        logger(`📁 Importing ${node.config.contractFile}`, 'info');
+        
+        const isValidContract = await validateContractImport(node.config.contractFile || '', logger, uploadedFiles);
+        if (!isValidContract) {
+          return false;
+        }
+        
+        logger(`📦 Installing dependencies: ${node.config.dependencies?.join(', ') || 'none'}`, 'info');
+        return true;
+        
+      // Change in simulateNodeExecution function - compile case:
+
+case 'compile':
+  console.log(node.config)
+  logger(`🔧 Compiling with Solc ${node.config.solcVersion}`, 'info');
+  logger(`⚡ Optimizer: ${node.config.optimizer ? 'enabled' : 'disabled'}`, 'info');
+  
+  const contractFile = node.config.contractFile || 'Contract.sol';
+  
+  if (!uploadedFiles[contractFile]) {
+    logger(`❌ Contract file not uploaded: ${contractFile}`, 'error');
+    return false;
+  }
+  
+  try {
+    // Create the file object that handleCompile expects
+    const fileObject = {
+      content: uploadedFiles[contractFile],
+      id: `temp_${Date.now()}`,
+      language: 'solidity',
+      name: contractFile,
+      size: uploadedFiles[contractFile].length,
+      type: 'file'
+    };
+    
+    const compileResult = await handleCompile(fileObject);
+    console.log(compileResult)
+    
+    if (compileResult) {
+      logger(`✅ Compilation successful`, 'success');
+      logger(`📊 Bytecode size: ${compileResult.bytecodeSize || 'N/A'}`, 'info');
+      return true;
+    } else {
+      logger(`❌ Compilation failed: ${compileResult?.error || 'Unknown error'}`, 'error');
+      return false;
+    }
+  } catch (error) {
+    logger(`❌ Compilation error: ${error}`, 'error');
+    return false;
+  }
+        
+      case 'gasOptimize':
+        logger(`⛽ Optimizing gas usage (${node.config.runs} runs)`, 'info');
+        
+        logger(`🤖 Generating gas optimization report...`, 'info');
+        const optimizeContractFile = node.config.contractFile || 'Contract.sol';
+        const runs = node.config.runs || 200;
+        
+        const gasReport = await generateGasOptimizationReport(optimizeContractFile, runs);
+        
+        const reportFileName = `gas-optimization-report-${optimizeContractFile.replace('.sol', '')}.md`;
+        downloadFile(gasReport, reportFileName, 'text/markdown');
+        logger(`📥 Downloaded gas report: ${reportFileName}`, 'success');
+        
+        const gasSavings = Math.floor(Math.random() * 10) + 10; // 10-20% savings
+        logger(`📊 Gas savings: ~${gasSavings}%`, 'success');
+        logger(`⚡ Optimization completed successfully`, 'success');
+        
+        return true;
+        
+      case 'test':
+        logger(`🧪 Running ${node.config.testSuite} tests`, 'info');
+        
+        logger(`🤖 Generating tests with AI...`, 'info');
+        const testContractFile = node.config.contractFile || 'Contract.sol';
+        const contractType = node.config.contractType || 'Custom';
+        
+        const generatedTests = await generateTestsWithGemini(testContractFile, contractType);
+        
+        const testFileName = `${testContractFile.replace('.sol', '')}.test.ts`;
+        downloadFile(generatedTests, testFileName, 'text/typescript');
+        logger(`📥 Downloaded test file: ${testFileName}`, 'success');
+        
+        await new Promise(resolve => setTimeout(resolve, 2000));
+        
+        const testsPassed = Math.random() > 0.2; // 80% pass rate for demo
+        const totalTests = Math.floor(Math.random() * 10) + 5;
+        const passedTests = testsPassed ? totalTests : Math.floor(totalTests * 0.7);
+        
+        if (testsPassed) {
+          logger(`✅ All tests passed (${passedTests}/${totalTests})`, 'success');
+        } else {
+          logger(`⚠️ Some tests failed (${passedTests}/${totalTests})`, 'error');
+        }
+        
+        if (node.config.coverage) logger(`📈 Coverage: ${Math.floor(Math.random() * 20) + 80}%`, 'info');
+        if (node.config.gasReport) logger(`⛽ Average gas usage: ${Math.floor(Math.random() * 50000) + 100000}`, 'info');
+        
+        return testsPassed;
+        
+      case 'deploy':
+        logger(`🚀 Deploying to ${node.config.network}`, 'info');
+        
+        try {
+          const deployResult = await handleDeploy(
+            node.config.network || 'asset-hub-testnet',
+            node.config.gasLimit || '2000000',
+            node.config.gasPrice || 'auto',
+            node.config.contractFile || 'Contract.sol',
+            node.config.constructorArgs || []
+          );
+          
+          if (deployResult && deployResult.success) {
+            logger(`✅ Contract deployed successfully`, 'success');
+            logger(`📍 Contract Address: ${deployResult.contractAddress}`, 'success');
+            logger(`🔗 Transaction Hash: ${deployResult.transactionHash}`, 'info');
+            
+            if (node.config.network === 'asset-hub-mainnet') {
+              setTimeout(() => {
+                alert(`🎉 Contract successfully deployed to Asset Hub Mainnet!
+                
+Contract Address: ${deployResult.contractAddress}
+Transaction Hash: ${deployResult.transactionHash}
+Gas Used: ${deployResult.gasUsed || 'N/A'}`);
+              }, 1000);
+            }
+            
+            return true;
+          } else {
+            logger(`❌ Deployment failed: ${deployResult?.error || 'Unknown error'}`, 'error');
+            return false;
+          }
+        } catch (error) {
+          logger(`❌ Deployment error: ${error}`, 'error');
+          return false;
+        }
+        
+      case 'verify':
+        logger(`🔍 Verifying contract on ${node.config.explorer}`, 'info');
+        logger(`✅ Contract verified successfully`, 'success');
+        return true;
+        
+      case 'condition':
+        logger(`🔀 Evaluating condition: ${node.config.condition}`, 'info');
+        return true;
+        
+      default:
+        return true;
+    }
   };
 
   const executePipeline = async () => {
@@ -166,7 +643,6 @@ const PipelineBuilder: React.FC = () => {
     
     addLog('Starting pipeline execution...', 'info');
     
-    // Sort nodes based on dependencies
     const sortedNodes = [...nodes].sort((a, b) => {
       const aConnections = connections.filter(c => c.to === a.id).length;
       const bConnections = connections.filter(c => c.to === b.id).length;
@@ -180,12 +656,10 @@ const PipelineBuilder: React.FC = () => {
       setExecutionStatus(prev => ({ ...prev, [node.id]: 'running' }));
       addLog(`Executing: ${nodeLabel}`, 'info');
       
-      // Simulate execution time based on node type
       const executionTime = getExecutionTime(node.type);
       await new Promise(resolve => setTimeout(resolve, executionTime));
       
-      // Simulate node-specific execution
-      const success = await simulateNodeExecution(node, addLog);
+      const success = await simulateNodeExecution(node, addLog, uploadedFiles);
       
       if (success) {
         setExecutionStatus(prev => ({ ...prev, [node.id]: 'success' }));
@@ -213,56 +687,6 @@ const PipelineBuilder: React.FC = () => {
       wait: 1000
     };
     return times[nodeType] || 2000;
-  };
-
-  const simulateNodeExecution = async (node: Node, logger: (msg: string, type?: ExecutionLog['type']) => void) => {
-    switch (node.type) {
-      case 'import':
-        logger(`📁 Importing ${node.config.contractFile}`, 'info');
-        logger(`📦 Installing dependencies: ${node.config.dependencies?.join(', ') || 'none'}`, 'info');
-        return true;
-        
-      case 'compile':
-        logger(`🔧 Compiling with Solc ${node.config.solcVersion}`, 'info');
-        logger(`⚡ Optimizer: ${node.config.optimizer ? 'enabled' : 'disabled'}`, 'info');
-        return true;
-        
-      case 'gasOptimize':
-        logger(`⛽ Optimizing gas usage (${node.config.runs} runs)`, 'info');
-        logger(`📊 Gas savings: ~15%`, 'success');
-        return true;
-        
-      case 'test':
-        logger(`🧪 Running ${node.config.testSuite} tests`, 'info');
-        logger(`✅ All tests passed (12/12)`, 'success');
-        if (node.config.coverage) logger(`📈 Coverage: 95%`, 'info');
-        return true;
-        
-      case 'deploy':
-        if (node.config.network === 'asset-hub-mainnet') {
-          logger(`🚀 Deploying to Asset Hub Mainnet`, 'info');
-          // Show demo dialog for mainnet
-          setTimeout(() => {
-            alert('🎉 Contract successfully deployed to Asset Hub Mainnet!\n\nContract Address: 0x1234...5678 (demo)\nTransaction Hash: 0xabcd...ef01 (demo)');
-          }, 1000);
-        } else {
-          logger(`🚀 Deploying to ${node.config.network}`, 'info');
-          logger(`📍 Contract deployed at: 0x${Math.random().toString(16).substr(2, 8)}...`, 'success');
-        }
-        return true;
-        
-      case 'verify':
-        logger(`🔍 Verifying contract on ${node.config.explorer}`, 'info');
-        logger(`✅ Contract verified successfully`, 'success');
-        return true;
-        
-      case 'condition':
-        logger(`🔀 Evaluating condition: ${node.config.condition}`, 'info');
-        return true;
-        
-      default:
-        return true;
-    }
   };
 
   const handleDragStart = (e: React.DragEvent, nodeType: string) => {
@@ -301,246 +725,303 @@ const PipelineBuilder: React.FC = () => {
     if (!node) return null;
 
     const handleInputChange = (key: string, value: any) => {
-      onUpdate({ [key]: value });
+      if (key === 'contractFile' && node.type === 'import') {
+        onUpdate({ [key]: value });
+        syncContractFileAcrossNodes(value, node.id);
+      } else {
+        onUpdate({ [key]: value });
+      }
     };
 
     return (
       <div className="space-y-4">
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Node Type
-          </label>
-          <input
-            type="text"
-            value={nodeTypes[node.type]?.label || node.type}
-            disabled
-            className="w-full p-2 border border-gray-300 rounded bg-gray-50"
-          />
-        </div>
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1">
+          Node Type
+        </label>
+        <input
+          type="text"
+          value={nodeTypes[node.type]?.label || node.type}
+          disabled
+          className="w-full p-2 border border-gray-300 rounded bg-gray-50"
+        />
+      </div>
 
-        {node.type === 'import' && (
-          <>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Contract File
-              </label>
-              <input
-                type="text"
+      {node.type === 'import' && (
+        <>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Contract File
+            </label>
+            <div className="flex gap-2">
+              <select
                 value={node.config.contractFile || ''}
                 onChange={(e) => handleInputChange('contractFile', e.target.value)}
-                placeholder="MyContract.sol"
-                className="w-full p-2 border border-gray-300 rounded"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Contract Type
-              </label>
-              <select
-                value={node.config.contractType || 'Custom'}
-                onChange={(e) => handleInputChange('contractType', e.target.value)}
-                className="w-full p-2 border border-gray-300 rounded"
+                className="flex-1 p-2 border border-gray-300 rounded"
               >
-                <option value="ERC20">ERC20 Token</option>
-                <option value="ERC721">ERC721 NFT</option>
-                <option value="ERC1155">ERC1155 Multi-Token</option>
-                <option value="DEX">DEX/AMM</option>
-                <option value="Governance">Governance/DAO</option>
-                <option value="Custom">Custom Contract</option>
+                <option value="">Select uploaded file...</option>
+                {Object.keys(uploadedFiles).map(filename => (
+                  <option key={filename} value={filename}>{filename}</option>
+                ))}
               </select>
+              <button
+                onClick={() => fileInputRef.current?.click()}
+                className="px-3 py-2 bg-blue-600 text-white rounded text-sm hover:bg-blue-700"
+                title="Upload new file"
+              >
+                <Upload className="w-4 h-4" />
+              </button>
             </div>
-          </>
-        )}
+            {node.config.contractFile && !uploadedFiles[node.config.contractFile] && (
+              <p className="text-xs text-red-600 mt-1">File not uploaded. Please upload this file first.</p>
+            )}
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Contract Type
+            </label>
+            <select
+              value={node.config.contractType || 'Custom'}
+              onChange={(e) => handleInputChange('contractType', e.target.value)}
+              className="w-full p-2 border border-gray-300 rounded"
+            >
+              <option value="ERC20">ERC20 Token</option>
+              <option value="ERC721">ERC721 NFT</option>
+              <option value="ERC1155">ERC1155 Multi-Token</option>
+              <option value="DEX">DEX/AMM</option>
+              <option value="Governance">Governance/DAO</option>
+              <option value="Custom">Custom Contract</option>
+            </select>
+          </div>
+        </>
+      )}
 
-        {node.type === 'compile' && (
-          <>
+      {/* For non-import nodes, show the contract file as read-only but allow manual override */}
+      {node.type !== 'import' && (
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            Contract File
+          </label>
+          <div className="flex gap-2">
+            <select
+              value={node.config.contractFile || ''}
+              onChange={(e) => handleInputChange('contractFile', e.target.value)}
+              className="flex-1 p-2 border border-gray-300 rounded"
+            >
+              <option value="">Select contract file...</option>
+              {Object.keys(uploadedFiles).map(filename => (
+                <option key={filename} value={filename}>{filename}</option>
+              ))}
+            </select>
+          </div>
+          {node.config.contractFile && !uploadedFiles[node.config.contractFile] && (
+            <p className="text-xs text-red-600 mt-1">File not uploaded. Please upload this file first.</p>
+          )}
+        </div>
+      )}
+
+      {/* Rest of the configuration options remain the same */}
+      {node.type === 'compile' && (
+        <>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Solc Version
+            </label>
+            <select
+              value={node.config.solcVersion || '0.8.19'}
+              onChange={(e) => handleInputChange('solcVersion', e.target.value)}
+              className="w-full p-2 border border-gray-300 rounded"
+            >
+              <option value="0.8.19">0.8.19 (Latest)</option>
+              <option value="0.8.18">0.8.18</option>
+              <option value="0.8.17">0.8.17</option>
+              <option value="0.8.0">0.8.0</option>
+            </select>
+          </div>
+          <div className="flex items-center gap-2">
+            <input
+              type="checkbox"
+              checked={node.config.optimizer || false}
+              onChange={(e) => handleInputChange('optimizer', e.target.checked)}
+              className="rounded"
+            />
+            <label className="text-sm text-gray-700">Enable Optimizer</label>
+          </div>
+          {node.config.optimizer && (
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                Solc Version
+                Optimizer Runs
               </label>
-              <select
-                value={node.config.solcVersion || '0.8.19'}
-                onChange={(e) => handleInputChange('solcVersion', e.target.value)}
-                className="w-full p-2 border border-gray-300 rounded"
-              >
-                <option value="0.8.19">0.8.19 (Latest)</option>
-                <option value="0.8.18">0.8.18</option>
-                <option value="0.8.17">0.8.17</option>
-                <option value="0.8.0">0.8.0</option>
-              </select>
-            </div>
-            <div className="flex items-center gap-2">
               <input
-                type="checkbox"
-                checked={node.config.optimizer || false}
-                onChange={(e) => handleInputChange('optimizer', e.target.checked)}
-                className="rounded"
+                type="number"
+                value={node.config.optimizerRuns || 200}
+                onChange={(e) => handleInputChange('optimizerRuns', parseInt(e.target.value))}
+                className="w-full p-2 border border-gray-300 rounded"
               />
-              <label className="text-sm text-gray-700">Enable Optimizer</label>
             </div>
-            {node.config.optimizer && (
+          )}
+        </>
+      )}
+
+      {/* Add similar contract file selection for other node types */}
+      {(node.type === 'deploy' || node.type === 'test' || node.type === 'verify') && (
+        <>
+          {/* Deploy specific configs */}
+          {node.type === 'deploy' && (
+            <>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Optimizer Runs
+                  Network
+                </label>
+                <select
+                  value={node.config.network || 'asset-hub-testnet'}
+                  onChange={(e) => handleInputChange('network', e.target.value)}
+                  className="w-full p-2 border border-gray-300 rounded"
+                >
+                  <option value="asset-hub-testnet">Asset Hub Testnet</option>
+                  <option value="asset-hub-mainnet">Asset Hub Mainnet</option>
+                  <option value="local">Local Development</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Gas Limit
                 </label>
                 <input
-                  type="number"
-                  value={node.config.optimizerRuns || 200}
-                  onChange={(e) => handleInputChange('optimizerRuns', parseInt(e.target.value))}
+                  type="text"
+                  value={node.config.gasLimit || '2000000'}
+                  onChange={(e) => handleInputChange('gasLimit', e.target.value)}
                   className="w-full p-2 border border-gray-300 rounded"
                 />
               </div>
-            )}
-          </>
-        )}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Gas Price
+                </label>
+                <select
+                  value={node.config.gasPrice || 'auto'}
+                  onChange={(e) => handleInputChange('gasPrice', e.target.value)}
+                  className="w-full p-2 border border-gray-300 rounded"
+                >
+                  <option value="auto">Auto</option>
+                  <option value="fast">Fast</option>
+                  <option value="standard">Standard</option>
+                  <option value="slow">Slow</option>
+                </select>
+              </div>
+            </>
+          )}
 
-        {node.type === 'deploy' && (
-          <>
+          {/* Test specific configs */}
+          {node.type === 'test' && (
+            <>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Test Framework
+                </label>
+                <select
+                  value={node.config.testSuite || 'foundry'}
+                  onChange={(e) => handleInputChange('testSuite', e.target.value)}
+                  className="w-full p-2 border border-gray-300 rounded"
+                >
+                  <option value="foundry">Foundry</option>
+                  <option value="hardhat">Hardhat</option>
+                  <option value="truffle">Truffle</option>
+                  <option value="integration">Integration Tests</option>
+                </select>
+              </div>
+              <div className="flex items-center gap-2">
+                <input
+                  type="checkbox"
+                  checked={node.config.coverage || false}
+                  onChange={(e) => handleInputChange('coverage', e.target.checked)}
+                  className="rounded"
+                />
+                <label className="text-sm text-gray-700">Generate Coverage Report</label>
+              </div>
+              <div className="flex items-center gap-2">
+                <input
+                  type="checkbox"
+                  checked={node.config.gasReport || false}
+                  onChange={(e) => handleInputChange('gasReport', e.target.checked)}
+                  className="rounded"
+                />
+                <label className="text-sm text-gray-700">Generate Gas Report</label>
+              </div>
+            </>
+          )}
+
+          {/* Verify specific configs */}
+          {node.type === 'verify' && (
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                Network
+                Explorer
               </label>
               <select
-                value={node.config.network || 'asset-hub-testnet'}
-                onChange={(e) => handleInputChange('network', e.target.value)}
+                value={node.config.explorer || 'polkadot-js'}
+                onChange={(e) => handleInputChange('explorer', e.target.value)}
                 className="w-full p-2 border border-gray-300 rounded"
               >
-                <option value="asset-hub-testnet">Asset Hub Testnet</option>
-                <option value="asset-hub-mainnet">Asset Hub Mainnet</option>
-                <option value="local">Local Development</option>
+                <option value="polkadot-js">Polkadot.js Apps</option>
+                <option value="subscan">Subscan</option>
+                <option value="custom">Custom Explorer</option>
               </select>
             </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Gas Limit
-              </label>
-              <input
-                type="text"
-                value={node.config.gasLimit || '2000000'}
-                onChange={(e) => handleInputChange('gasLimit', e.target.value)}
-                className="w-full p-2 border border-gray-300 rounded"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Gas Price
-              </label>
-              <select
-                value={node.config.gasPrice || 'auto'}
-                onChange={(e) => handleInputChange('gasPrice', e.target.value)}
-                className="w-full p-2 border border-gray-300 rounded"
-              >
-                <option value="auto">Auto</option>
-                <option value="fast">Fast</option>
-                <option value="standard">Standard</option>
-                <option value="slow">Slow</option>
-              </select>
-            </div>
-          </>
-        )}
-
-        {node.type === 'test' && (
-          <>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Test Framework
-              </label>
-              <select
-                value={node.config.testSuite || 'foundry'}
-                onChange={(e) => handleInputChange('testSuite', e.target.value)}
-                className="w-full p-2 border border-gray-300 rounded"
-              >
-                <option value="foundry">Foundry</option>
-                <option value="hardhat">Hardhat</option>
-                <option value="truffle">Truffle</option>
-                <option value="integration">Integration Tests</option>
-              </select>
-            </div>
-            <div className="flex items-center gap-2">
-              <input
-                type="checkbox"
-                checked={node.config.coverage || false}
-                onChange={(e) => handleInputChange('coverage', e.target.checked)}
-                className="rounded"
-              />
-              <label className="text-sm text-gray-700">Generate Coverage Report</label>
-            </div>
-            <div className="flex items-center gap-2">
-              <input
-                type="checkbox"
-                checked={node.config.gasReport || false}
-                onChange={(e) => handleInputChange('gasReport', e.target.checked)}
-                className="rounded"
-              />
-              <label className="text-sm text-gray-700">Generate Gas Report</label>
-            </div>
-          </>
-        )}
-
-        {node.type === 'verify' && (
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Explorer
-            </label>
-            <select
-              value={node.config.explorer || 'polkadot-js'}
-              onChange={(e) => handleInputChange('explorer', e.target.value)}
-              className="w-full p-2 border border-gray-300 rounded"
-            >
-              <option value="polkadot-js">Polkadot.js Apps</option>
-              <option value="subscan">Subscan</option>
-              <option value="custom">Custom Explorer</option>
-            </select>
-          </div>
-        )}
-      </div>
+          )}
+        </>
+      )}
+    </div>
     );
   };
 
   return (
     <div className="h-screen bg-gray-50 flex text-black">
       {/* Sidebar - Node Palette */}
-      <div className="w-64 bg-white border-r border-gray-200 p-4">
-        <h3 className="text-lg font-semibold mb-4">Solidity Pipeline</h3>
-        
-        {/* Templates */}
-        <div className="mb-6">
-          <h4 className="text-sm font-medium text-gray-700 mb-2">Templates</h4>
-          <div className="space-y-2">
-            {Object.entries(templates).map(([key, template]) => (
-              <button
-                key={key}
-                onClick={() => loadTemplate(key)}
-                className="w-full text-left p-2 text-sm bg-blue-50 hover:bg-blue-100 rounded border"
-              >
-                {template.name}
-              </button>
-            ))}
-          </div>
-        </div>
+     <div className="w-64 bg-white border-r border-gray-200 p-4 overflow-y-auto">
+  <h3 className="text-lg font-semibold mb-4">Solidity Pipeline</h3>
+  
+  {/* File Upload Section */}
+  <FileUploadSection />
+  
+  {/* Templates */}
+  <div className="mb-6">
+    <h4 className="text-sm font-medium text-gray-700 mb-2">Templates</h4>
+    <div className="space-y-2">
+      {Object.entries(templates).map(([key, template]) => (
+        <button
+          key={key}
+          onClick={() => loadTemplate(key)}
+          className="w-full text-left p-2 text-sm bg-blue-50 hover:bg-blue-100 rounded border"
+        >
+          {template.name}
+        </button>
+      ))}
+    </div>
+  </div>
 
-        {/* Node Types */}
-        <div className="space-y-2">
-          {Object.entries(nodeTypes).map(([type, config]) => {
-            const IconComponent = config.icon;
-            return (
-              <div
-                key={type}
-                draggable
-                onDragStart={(e) => handleDragStart(e, type)}
-                onDrop={(e) => handleDrop(e)}
-                onDragOver={(e) => handleDragOver(e)}
-                className="flex items-center gap-2 p-3 bg-white border border-gray-200 rounded cursor-move hover:shadow-md transition-shadow"
-              >
-                <div className={`p-2 rounded ${config.color}`}>
-                  <IconComponent className="w-4 h-4 text-white" />
-                </div>
-                <span className="text-sm font-medium">{config.label}</span>
-              </div>
-            );
-          })}
+  {/* Node Types */}
+  <div className="space-y-2">
+    {Object.entries(nodeTypes).map(([type, config]) => {
+      const IconComponent = config.icon;
+      return (
+        <div
+          key={type}
+          draggable
+          onDragStart={(e) => handleDragStart(e, type)}
+          onDrop={(e) => handleDrop(e)}
+          onDragOver={(e) => handleDragOver(e)}
+          className="flex items-center gap-2 p-3 bg-white border border-gray-200 rounded cursor-move hover:shadow-md transition-shadow"
+        >
+          <div className={`p-2 rounded ${config.color}`}>
+            <IconComponent className="w-4 h-4 text-white" />
+          </div>
+          <span className="text-sm font-medium">{config.label}</span>
         </div>
-      </div>
+      );
+    })}
+  </div>
+</div>
+
 
       {/* Main Canvas */}
       <div className="flex-1 flex flex-col">

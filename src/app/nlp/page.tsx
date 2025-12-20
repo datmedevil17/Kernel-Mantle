@@ -177,47 +177,56 @@ const NaturalLanguageContractInteraction = () => {
     setSavedCommands(prev => [saved, ...prev.slice(0, 4)]);
   };
 
-  const executeContract = async () => {
-    if (!result || !contractAddress) {
-      console.error('Missing result or contract address');
-      return;
+const executeContract = async () => {
+  if (!result || !contractAddress) {
+    console.error('Missing result or contract address');
+    return;
+  }
+
+  try {
+    // Ensure user is connected
+    if (!address) {
+      throw new Error('Please connect your wallet first');
     }
 
-    try {
-      // Ensure user is connected
-      if (!address) {
-        throw new Error('Please connect your wallet first');
+    // Handle ABI - it might be a string or already parsed object
+    let abiFragment;
+    if (result.abi) {
+      if (typeof result.abi === 'string') {
+        abiFragment = JSON.parse(result.abi);
+      } else {
+        abiFragment = result.abi;
       }
-
-      // Parse the ABI
-      const abiFragment = result.abi ? JSON.parse(result.abi) : null;
-      
-      if (!abiFragment) {
-        throw new Error('Invalid ABI fragment');
-      }
-
-      // Prepare parameters
-      const params = result.parameters?.map(param => param.value) || [];
-
-      // Execute the contract call
-      await writeContract({
-        address: contractAddress as `0x${string}`,
-        abi: [abiFragment],
-        functionName: result.contractMethod || '',
-        args: params,
-      });
-
-      console.log('Contract execution initiated');
-    } catch (error) {
-      console.error('Contract execution failed:', error);
-      // You may want to set an error state here to show to the user
+    } else {
+      throw new Error('No ABI fragment available');
     }
-  };
+
+    if (!abiFragment) {
+      throw new Error('Invalid ABI fragment');
+    }
+
+    // Prepare parameters
+    const params = result.parameters?.map(param => param.value) || [];
+
+    // Execute the contract call
+    await writeContract({
+      address: contractAddress as `0x${string}`,
+      abi: Array.isArray(abiFragment) ? abiFragment : [abiFragment],
+      functionName: result.contractMethod || '',
+      args: params,
+    });
+
+    console.log('Contract execution initiated');
+  } catch (error) {
+    console.error('Contract execution failed:', error);
+    // You may want to set an error state here to show to the user
+  }
+};
 
   return (
     <div className="flex flex-col h-full bg-gray-900 text-white">
       {/* Header */}
-      <div className="flex items-center justify-between p-4 border-b border-gray-700">
+      <div className="flex items-center justify-between p-4 border-b border-gray-700 pt-30">
         <div className="flex items-center space-x-3">
           <MessageSquare className="w-6 h-6 text-blue-400" />
           <h2 className="text-xl font-semibold">Natural Language Contract Interaction</h2>

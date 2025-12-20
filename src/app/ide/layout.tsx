@@ -79,7 +79,7 @@ export default function IDELayout({ children }: IDELayoutProps) {
   return (
     <WalletContext.Provider value={{ address, isConnected, connectWallet, disconnectWallet }}>
       <div className="h-screen flex flex-col bg-black">
-        <div className="flex flex-1 overflow-hidden">
+        <div className="flex flex-1 overflow-hidden z-50">
           <Sidebar open={isSidebarOpen} setOpen={setIsSidebarOpen}>
             <SidebarBody className="justify-between gap-10">
               <div className="flex flex-1 flex-col overflow-x-hidden overflow-y-auto">

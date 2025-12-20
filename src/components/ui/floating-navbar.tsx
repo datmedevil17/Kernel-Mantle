@@ -64,7 +64,7 @@ export const FloatingNav: React.FC<FloatingNavProps> = ({ navItems, className })
             ease: "easeOut"
           }}
           className={cn(
-            "fixed top-10 inset-x-0 mx-auto flex w-[80vw] items-center justify-between",
+            "fixed top-6 inset-x-0 mx-auto flex w-[80vw] items-center justify-between",
             "border border-white/[0.2] rounded-full bg-black/80 backdrop-blur-sm",
             "shadow-[0px_2px_3px_-1px_rgba(0,0,0,0.1),0px_1px_0px_0px_rgba(25,28,33,0.02),0px_0px_0px_1px_rgba(25,28,33,0.08)]",
             "z-[5000] px-8 py-2",

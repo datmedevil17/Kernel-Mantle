@@ -357,115 +357,7 @@ const DropTokenButton = () => {
     </div>
   )
 
-  const renderRustActions = () => (
-    <div className="space-y-4">
-      <div className="flex items-center space-x-3 mb-6">
-        <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-gray-800 to-gray-700 flex items-center justify-center">
-          <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 24 24">
-            <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
-          </svg>
-        </div>
-        <div>
-          <h3 className="text-white font-semibold text-base">Rust Actions</h3>
-          <p className="text-gray-400 text-xs">Cargo operations</p>
-        </div>
-      </div>
 
-      <button
-
-        className="w-full px-4 py-3 bg-gradient-to-r from-orange-600 to-orange-500 hover:from-orange-500 hover:to-orange-400 text-white text-sm rounded-xl transition-all duration-200 flex items-center justify-center space-x-2 font-medium shadow-lg hover:shadow-xl border border-orange-500/20"
-
-      >
-        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-          />
-        </svg>
-        <span>Check</span>
-      </button>
-
-      <button
-        className="w-full px-4 py-3 bg-gradient-to-r from-gray-700 to-gray-600 hover:from-gray-600 hover:to-gray-500 text-white text-sm rounded-xl transition-all duration-200 flex items-center justify-center space-x-2 font-medium shadow-lg hover:shadow-xl border border-gray-600/20"
-      >
-        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"
-          />
-        </svg>
-        <span>Build</span>
-      </button>
-
-      <div className="mt-8 bg-gray-900/30 rounded-xl p-4 border border-gray-800">
-        <h4 className="text-gray-300 text-xs font-semibold tracking-wide mb-3">CARGO INFO</h4>
-        <div className="text-xs text-gray-400 space-y-2">
-          <div className="flex justify-between">
-            <span>Edition:</span>
-            <span className="text-gray-300">2021</span>
-          </div>
-          <div className="flex justify-between">
-            <span>Target:</span>
-            <span className="text-gray-300">wasm32</span>
-          </div>
-          <div className="flex justify-between">
-            <span>Profile:</span>
-            <span className="text-gray-300">release</span>
-          </div>
-        </div>
-      </div>
-    </div>
-  )
-
-  const renderJavaScriptActions = () => (
-    <div className="space-y-4">
-      <div className="flex items-center space-x-3 mb-6">
-        <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-gray-800 to-gray-700 flex items-center justify-center">
-          <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 24 24">
-            <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
-          </svg>
-        </div>
-        <div>
-          <h3 className="text-white font-semibold text-base">JavaScript Actions</h3>
-          <p className="text-gray-400 text-xs">Node.js operations</p>
-        </div>
-      </div>
-
-      <button
-
-        className="w-full px-4 py-3 bg-gradient-to-r from-yellow-600 to-yellow-500 hover:from-yellow-500 hover:to-yellow-400 text-white text-sm rounded-xl transition-all duration-200 flex items-center justify-center space-x-2 font-medium shadow-lg hover:shadow-xl border border-yellow-500/20"
-
-      >
-        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M14.828 14.828a4 4 0 01-5.656 0M9 10h1.586a1 1 0 01.707.293l2.414 2.414a1 1 0 00.707.293H15M9 10v4a1 1 0 001 1h4a1 1 0 001-1v-4M9 10V6a1 1 0 011-1h4a1 1 0 011 1v4"
-          />
-        </svg>
-        <span>Run</span>
-      </button>
-
-      <div className="mt-8 bg-gray-900/30 rounded-xl p-4 border border-gray-800">
-        <h4 className="text-gray-300 text-xs font-semibold tracking-wide mb-3">NODE INFO</h4>
-        <div className="text-xs text-gray-400 space-y-2">
-          <div className="flex justify-between">
-            <span>Version:</span>
-            <span className="text-gray-300">18.x</span>
-          </div>
-          <div className="flex justify-between">
-            <span>Runtime:</span>
-            <span className="text-gray-300">Node.js</span>
-          </div>
-        </div>
-      </div>
-    </div>
-  )
 
   return (
     <div className="w-80 bg-black border-l border-gray-800 p-6 overflow-y-auto">
@@ -487,9 +379,7 @@ const DropTokenButton = () => {
       </div>
 
       {language === "solidity" && renderSolidityActions()}
-      {language === "rust" && renderRustActions()}
-      {(language === "javascript" || language === "typescript") && renderJavaScriptActions()}
-
+      
       {!["solidity", "rust", "javascript", "typescript"].includes(language) && (
         <div className="text-center text-gray-400 py-8">
           <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-gray-900 flex items-center justify-center">

@@ -6,6 +6,8 @@ export interface Contract {
   description: string
   version: string
   abi: string
+  content: string // Add this for the actual Solidity code
+  language: string // Add this for syntax highlighting
 }
 
 interface ContractStore {

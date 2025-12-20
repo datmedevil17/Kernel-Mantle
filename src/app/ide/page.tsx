@@ -1,130 +1,359 @@
-// app/ide/page.tsx
 'use client'
 import React, { useState } from 'react';
-import { Card } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import { Card, CardContent } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { makeGeminiRequest } from '@/utils/api';
+import { useContractStore } from '@/stores/contractStore';
+import { 
+  Code2, 
+  Coins, 
+  Image, 
+  Layers3, 
+  Database, 
+  Brain,
+  Plus,
+  Sparkles,
+  ChevronRight,
+} from 'lucide-react';
+import { cn } from '@/lib/utils';
+import { AIProjectModal } from '@/components/modals/AIProjectModal';
 import { useRouter } from 'next/navigation';
-import { Badge } from "@/components/ui/badge";
 
-export default function IDEPage() {
+const ProjectHub = () => {
+  const [activeCard, setActiveCard] = useState<string | null>(null);
+  const [isAIModalOpen, setIsAIModalOpen] = useState(false);
+  const { addContract, removeContract, updateContract } = useContractStore();
   const router = useRouter();
-  const [selectedType, setSelectedType] = useState<string>('');
 
-  const handleCreateProject = (type: string) => {
-    setSelectedType(type);
-    router.push(`/ide/editor?template=${type}`);
+  const handleAIGeneration = async (description: string) => {
+    try {
+      const fullPrompt = `Generate a Solidity smart contract based on this description: ${description}. Please provide ONLY the Solidity code without any JSON formatting, explanations, or markdown. Start directly with the contract code.`;
+      
+      const response = await makeGeminiRequest(fullPrompt);
+      if (response.content) {
+        const newContract = {
+          name: 'AIGenerated.sol',
+          content: response.content, // This is the Solidity code content
+          language: 'solidity',
+          address: `temp_${Date.now()}`, // Temporary address until deployed
+          description: description,
+          version: '1.0.0',
+          abi: '' // Will be populated after compilation
+        };
+        
+        addContract(newContract);
+        // Navigate to editor after adding contract
+        router.push('/ide/editor');
+      }
+    } catch (error) {
+      console.error('Error generating contract:', error);
+    }
   };
 
+  const handleTemplateSelection = (projectId: string) => {
+    let templateContent = '';
+    let contractName = '';
+    let contractDescription = '';
+
+    switch (projectId) {
+      case 'scratch':
+        templateContent = `// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+
+contract MyContract {
+    // Your code here
+}`;
+        contractName = 'MyContract.sol';
+        contractDescription = 'Custom contract built from scratch';
+        break;
+
+      case 'erc20':
+        templateContent = `// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+
+import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
+
+contract MyToken is ERC20, Ownable {
+    constructor(
+        string memory name,
+        string memory symbol,
+        uint256 initialSupply
+    ) ERC20(name, symbol) {
+        _mint(msg.sender, initialSupply * 10**decimals());
+    }
+
+    function mint(address to, uint256 amount) public onlyOwner {
+        _mint(to, amount);
+    }
+}`;
+        contractName = 'MyToken.sol';
+        contractDescription = 'ERC-20 fungible token contract';
+        break;
+
+      case 'erc721':
+        templateContent = `// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+
+import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts/utils/Counters.sol";
+
+contract MyNFT is ERC721, Ownable {
+    using Counters for Counters.Counter;
+    Counters.Counter private _tokenIds;
+
+    constructor() ERC721("MyNFT", "NFT") {}
+
+    function mintNFT(address recipient, string memory tokenURI)
+        public onlyOwner
+        returns (uint256)
+    {
+        _tokenIds.increment();
+        uint256 newItemId = _tokenIds.current();
+        _mint(recipient, newItemId);
+        _setTokenURI(newItemId, tokenURI);
+        return newItemId;
+    }
+}`;
+        contractName = 'MyNFT.sol';
+        contractDescription = 'ERC-721 non-fungible token contract';
+        break;
+
+      case 'erc1155':
+        templateContent = `// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+
+import "@openzeppelin/contracts/token/ERC1155/ERC1155.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
+
+contract MyMultiToken is ERC1155, Ownable {
+    constructor() ERC1155("https://game.example/api/item/{id}.json") {}
+
+    function mint(
+        address account,
+        uint256 id,
+        uint256 amount,
+        bytes memory data
+    ) public onlyOwner {
+        _mint(account, id, amount, data);
+    }
+
+    function mintBatch(
+        address to,
+        uint256[] memory ids,
+        uint256[] memory amounts,
+        bytes memory data
+    ) public onlyOwner {
+        _mintBatch(to, ids, amounts, data);
+    }
+}`;
+        contractName = 'MyMultiToken.sol';
+        contractDescription = 'ERC-1155 multi-token contract';
+        break;
+
+      case 'oracle':
+        templateContent = `// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.0;
+
+import "@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol";
+
+contract PriceConsumer {
+    AggregatorV3Interface internal priceFeed;
+
+    constructor() {
+        // ETH/USD Price Feed
+        priceFeed = AggregatorV3Interface(0x5f4eC3Df9cbd43714FE2740f5E3616155c5b8419);
+    }
+
+    function getLatestPrice() public view returns (int) {
+        (
+            uint80 roundID, 
+            int price,
+            uint startedAt,
+            uint timeStamp,
+            uint80 answeredInRound
+        ) = priceFeed.latestRoundData();
+        return price;
+    }
+}`;
+        contractName = 'PriceOracle.sol';
+        contractDescription = 'Chainlink oracle integration contract';
+        break;
+
+      default:
+        return;
+    }
+
+    if (templateContent) {
+      const newContract = {
+        name: contractName,
+        content: templateContent,
+        language: 'solidity',
+        address: `temp_${Date.now()}`,
+        description: contractDescription,
+        version: '1.0.0',
+        abi: ''
+      };
+
+      addContract(newContract);
+      router.push('/ide/editor');
+    }
+  };
+
+  const projects = [
+    {
+      id: 'scratch',
+      title: 'Create From Scratch',
+      subtitle: 'Build Custom',
+      description: 'Full creative control with unlimited possibilities',
+      icon: Code2,
+      color: '#FF6B6B',
+      bgGradient: 'from-red-500/10 via-pink-500/5 to-transparent',
+    },
+    {
+      id: 'erc20',
+      title: 'ERC-20 Template',
+      subtitle: 'Fungible Token',
+      description: 'Standard token implementation ready to deploy',
+      icon: Coins,
+      color: '#4ECDC4',
+      bgGradient: 'from-teal-500/10 via-cyan-500/5 to-transparent',
+    },
+    {
+      id: 'erc721',
+      title: 'ERC-721 Template',
+      subtitle: 'NFT Collection',
+      description: 'Unique digital assets with metadata support',
+      icon: Image,
+      color: '#45B7D1',
+      bgGradient: 'from-blue-500/10 via-indigo-500/5 to-transparent',
+    },
+    {
+      id: 'erc1155',
+      title: 'ERC-1155 Template',
+      subtitle: 'Multi-Token',
+      description: 'Batch operations for complex token ecosystems',
+      icon: Layers3,
+      color: '#96CEB4',
+      bgGradient: 'from-green-500/10 via-emerald-500/5 to-transparent',
+    },
+    {
+      id: 'oracle',
+      title: 'Oracle Integration',
+      subtitle: 'Data Bridge',
+      description: 'Connect blockchain to real-world information',
+      icon: Database,
+      color: '#FFEAA7',
+      bgGradient: 'from-yellow-500/10 via-amber-500/5 to-transparent',
+    },
+    {
+      id: 'ai',
+      title: 'AI-Powered Project',
+      subtitle: 'Smart AI',
+      description: 'Machine learning integrated blockchain solutions',
+      icon: Brain,
+      color: '#DDA0DD',
+      bgGradient: 'from-purple-500/10 via-violet-500/5 to-transparent',
+    }
+  ];
+
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-900 to-black">
-      <div className="container mx-auto p-8">
-        <div className="flex items-center justify-between mb-8">
-          <h1 className="text-3xl font-bold bg-gradient-to-r from-purple-400 to-pink-600 bg-clip-text text-transparent">
-            Create New Smart Contract
-          </h1>
-          <Badge variant="outline" className="px-4 py-1">
-            Solidity ^0.8.0
-          </Badge>
-        </div>
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {/* ERC Templates Card */}
-          <Card className="p-6 bg-gray-900/50 border border-gray-800 backdrop-blur-sm hover:border-purple-500/50 transition-all">
-            <div className="flex items-center mb-4">
-              <h2 className="text-xl font-semibold">ERC Templates</h2>
-              <Badge variant="secondary" className="ml-2">Popular</Badge>
-            </div>
-            <p className="text-gray-400 text-sm mb-4">
-              Standard token implementations following ERC specifications
-            </p>
-            <div className="space-y-4">
-              <Button 
-                onClick={() => handleCreateProject('erc20')}
-                className="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600"
-              >
-                ERC20 Token
-              </Button>
-              <Button 
-                onClick={() => handleCreateProject('erc721')}
-                className="w-full bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600"
-              >
-                ERC721 NFT Collection
-              </Button>
-              <Button 
-                onClick={() => handleCreateProject('erc1155')}
-                className="w-full bg-gradient-to-r from-indigo-500 to-blue-500 hover:from-indigo-600 hover:to-blue-600"
-              >
-                ERC1155 Multi-Token
-              </Button>
-            </div>
-          </Card>
-
-          {/* Oracle Projects Card */}
-          <Card className="p-6 bg-gray-900/50 border border-gray-800 backdrop-blur-sm hover:border-purple-500/50 transition-all">
-            <div className="flex items-center mb-4">
-              <h2 className="text-xl font-semibold">Oracle Projects</h2>
-              <Badge variant="secondary" className="ml-2">Advanced</Badge>
-            </div>
-            <p className="text-gray-400 text-sm mb-4">
-              Create custom oracle solutions for real-world data feeds
-            </p>
-            <div className="space-y-4">
-              <Button 
-                onClick={() => handleCreateProject('price-feed')}
-                className="w-full bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600"
-              >
-                Price Feed Oracle
-              </Button>
-              <Button 
-                onClick={() => handleCreateProject('custom-oracle')}
-                className="w-full bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600"
-              >
-                Custom Data Oracle
-              </Button>
-            </div>
-          </Card>
-
-          {/* AI Integration Card */}
-          <Card className="p-6 bg-gray-900/50 border border-gray-800 backdrop-blur-sm hover:border-purple-500/50 transition-all">
-            <div className="flex items-center mb-4">
-              <h2 className="text-xl font-semibold">AI Integration</h2>
-              <Badge variant="secondary" className="ml-2">Experimental</Badge>
-            </div>
-            <p className="text-gray-400 text-sm mb-4">
-              Smart contracts with AI model integration capabilities
-            </p>
-            <div className="space-y-4">
-              <Button 
-                onClick={() => handleCreateProject('ai-oracle')}
-                className="w-full bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600"
-              >
-                AI Oracle Interface
-              </Button>
-              <Button 
-                onClick={() => handleCreateProject('ai-governance')}
-                className="w-full bg-gradient-to-r from-red-500 to-pink-500 hover:from-red-600 hover:to-pink-600"
-              >
-                AI Governance
-              </Button>
-            </div>
-          </Card>
-        </div>
-
-        {/* Quick Actions */}
-        <div className="mt-8 flex items-center justify-between">
-          <div className="flex space-x-4">
-            <Button variant="outline" className="text-gray-400 hover:text-white">
-              Import Existing Project
-            </Button>
-            <Button variant="outline" className="text-gray-400 hover:text-white">
-              Browse Templates
-            </Button>
-          </div>
-          <Button variant="ghost" className="text-gray-400 hover:text-white">
-            Documentation
-          </Button>
-        </div>
+    <div className="min-h-screen bg-black p-8 relative pt-30">
+      {/* Grid background - lowered z-index */}
+      <div className="text-center mb-12 sm:mb-16 lg:mb-20 z-10">
+        <h4 className="text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-black text-white mb-4 sm:mb-6 tracking-tight">
+          BUILD WITH ASSETHUB
+        </h4>
       </div>
+      <div
+        className={cn(
+          "absolute inset-0 z-0",
+          "[background-size:20px_20px]",
+          "[background-image:linear-gradient(to_right,#262626_1px,transparent_1px),linear-gradient(to_bottom,#262626_1px,transparent_1px)]",
+        )}
+      />
+      {/* Radial gradient - lowered z-index */}
+      <div className="pointer-events-none absolute inset-0 flex items-center justify-center z-0 [mask-image:radial-gradient(ellipse_at_center,transparent_20%,black)] bg-black"></div>
+      
+      {/* Main content - added relative positioning and z-index */}
+      <div className="relative z-10 grid grid-cols-1 md:grid-cols-3 gap-6 max-w-7xl mx-auto">
+        {projects.map((project, index) => {
+          const IconComponent = project.icon;
+          const isActive = activeCard === project.id;
+          
+          return (
+            <Card
+              key={project.id}
+              className={`
+                group relative bg-zinc-900/50 backdrop-blur-sm border border-zinc-800/50 rounded-2xl 
+                transition-all duration-500 cursor-pointer overflow-hidden h-full
+                hover:border-zinc-700/50 hover:shadow-2xl hover:shadow-black/50
+                ${isActive ? 'scale-[1.02] shadow-2xl shadow-black/50' : ''}
+              `}
+              onMouseEnter={() => setActiveCard(project.id)}
+              onMouseLeave={() => setActiveCard(null)}
+            >
+              <div className={`absolute inset-0 bg-gradient-to-br ${project.bgGradient} opacity-0 group-hover:opacity-100 transition-opacity duration-500`} />
+              
+              <div 
+                className="absolute top-0 left-0 w-full h-1 opacity-60 group-hover:opacity-100 transition-opacity duration-300"
+                style={{ backgroundColor: project.color }}
+              />
+              
+              <CardContent className="relative z-10 p-6 h-full flex flex-col">
+                <div className="flex items-center justify-between mb-6">
+                  <div 
+                    className="p-4 rounded-2xl transition-all duration-300 group-hover:scale-105"
+                    style={{ backgroundColor: `${project.color}15`, border: `1px solid ${project.color}30` }}
+                  >
+                    <IconComponent 
+                      className="w-6 h-6 transition-all duration-300" 
+                      style={{ color: project.color }}
+                    />
+                  </div>
+                  <div 
+                    className="text-xs font-bold uppercase tracking-wider px-3 py-1 rounded-full"
+                    style={{ 
+                      backgroundColor: `${project.color}20`, 
+                      color: project.color,
+                      border: `1px solid ${project.color}30`
+                    }}
+                  >
+                    {project.subtitle}
+                  </div>
+                </div>
+                
+                <h3 className="text-xl font-bold text-white mb-4 group-hover:text-white transition-colors">
+                  {project.title}
+                </h3>
+                
+                <p className="text-gray-400 text-sm leading-relaxed mb-6 flex-grow">
+                  {project.description}
+                </p>
+
+                <Button 
+                  className="w-full bg-white/5 hover:bg-white/10 border border-white/10 hover:border-white/20 text-white font-semibold py-4 transition-all duration-300 group/btn rounded-xl"
+                  variant="ghost"
+                  onClick={() => project.id === 'ai' ? setIsAIModalOpen(true) : handleTemplateSelection(project.id)}
+                >
+                  <Plus className="w-5 h-5 mr-2 group-hover/btn:rotate-90 transition-transform duration-300" />
+                  Create Project
+                  <ChevronRight className="w-5 h-5 ml-2 group-hover/btn:translate-x-1 transition-transform duration-300" />
+                </Button>
+              </CardContent>
+            </Card>
+          );
+        })}
+      </div>
+    
+      <AIProjectModal
+        isOpen={isAIModalOpen}
+        onClose={() => setIsAIModalOpen(false)}
+        onGenerate={handleAIGeneration}
+      />
     </div>
   );
-}
+};
+
+export default ProjectHub;
