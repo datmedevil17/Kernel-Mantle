@@ -567,7 +567,7 @@ const VisualSmartContractBuilder = () => {
   return (
      <div className="min-h-screen bg-black flex overflow-hidden">
       {/* Component Library Sidebar */}
-      <div className="w-80 bg-black/90 backdrop-blur-xl border-r border-gray-800/50 flex flex-col h-screen">
+      <div className="w-80 bg-black/90 backdrop-blur-xl border-r border-gray-800/50 flex flex-col h-screen pt-25">
         {/* Header section - fixed height */}
         <div className="p-6 border-b border-gray-800/50 flex-shrink-0">
           <div className="bg-gradient-to-r from-purple-400/20 to-violet-400/20 backdrop-blur-sm rounded-xl p-4 border border-purple-400/30">
@@ -644,7 +644,7 @@ const VisualSmartContractBuilder = () => {
 
 
       {/* Main Area */}
-      <div className="flex-1 flex flex-col">
+      <div className="flex-1 flex flex-col pt-25">
         {/* Header */}
         <div className="bg-black/90 backdrop-blur-xl p-6 border-b border-gray-800/50">
           <div className="flex justify-between items-center">

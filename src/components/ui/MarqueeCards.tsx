@@ -2,30 +2,30 @@
 import { motion } from "framer-motion"
 import { ContractStore } from "@/data/contracts"
 import { Code, Shield, Layers, Zap, Users, Globe, Coins } from "lucide-react"
-import Link from "next/link"
+
 
 export const MarqueeCards = () => {
   const getContractIcon = (name: string) => {
     const lower = name.toLowerCase();
     if (lower.includes("token") && lower.includes("erc20")) {
-      return <Coins className="w-6 h-6 text-purple-400" />;
+      return <Coins className="w-7 h-7 text-purple-300" />;
     }
     if (lower.includes("token") && lower.includes("erc721")) {
-      return <Shield className="w-6 h-6 text-purple-300" />;
+      return <Shield className="w-7 h-7 text-indigo-300" />;
     }
     if (lower.includes("token") && lower.includes("erc1155")) {
-      return <Layers className="w-6 h-6 text-purple-500" />;
+      return <Layers className="w-7 h-7 text-purple-400" />;
     }
     if (lower.includes("marketplace")) {
-      return <Globe className="w-6 h-6 text-purple-300" />;
+      return <Globe className="w-7 h-7 text-indigo-300" />;
     }
     if (lower.includes("vote") || lower.includes("split")) {
-      return <Users className="w-6 h-6 text-purple-400" />;
+      return <Users className="w-7 h-7 text-purple-300" />;
     }
     if (lower.includes("account")) {
-      return <Shield className="w-6 h-6 text-purple-300" />;
+      return <Shield className="w-7 h-7 text-indigo-300" />;
     }
-    return <Code className="w-6 h-6 text-purple-200" />;
+    return <Code className="w-7 h-7 text-indigo-200" />;
   };
 
   const getContractCategory = (identifier: string | string[]) => {
@@ -41,7 +41,7 @@ export const MarqueeCards = () => {
   const contracts = ContractStore[0].contracts;
 
   return (
-    <div className="relative w-full overflow-hidden">
+    <div className="relative w-full overflow-hidden py-4">
       {/* Gradient overlays for smooth edges */}
       <div className="absolute left-0 top-0 z-10 h-full w-32 bg-gradient-to-r from-black to-transparent" />
       <div className="absolute right-0 top-0 z-10 h-full w-32 bg-gradient-to-l from-black to-transparent" />
@@ -50,34 +50,41 @@ export const MarqueeCards = () => {
         {[...contracts, ...contracts].map((contract, index) => (
           <motion.div
             key={`${contract.identifier}-${index}`}
-            whileHover={{ scale: 1.05, y: -5 }}
-            className="group relative flex-shrink-0 w-80 h-52 rounded-2xl bg-gradient-to-br from-black/40 to-purple-950/40 backdrop-blur-sm border border-purple-800 hover:border-purple-500 p-6 transition-all duration-300 cursor-pointer"
+            whileHover={{ 
+              scale: 1.02, 
+              y: -2,
+              transition: { duration: 0.2 }
+            }}
+            className="group relative flex-shrink-0 w-96 h-64 rounded-2xl bg-gradient-to-br from-black/50 to-indigo-950/60 backdrop-blur-sm border border-indigo-700/50 hover:border-purple-400 p-8 transition-all duration-300 cursor-pointer hover:shadow-xl hover:shadow-purple-400/30"
           >
             {/* Category Badge */}
             <div className="absolute top-4 right-4">
-              <span className="px-2 py-1 text-xs font-medium bg-purple-800/30 text-purple-300 rounded-full">
+              <span className="px-3 py-1.5 text-xs font-medium bg-indigo-800/40 text-indigo-200 rounded-full border border-indigo-600/30">
                 {getContractCategory(contract.identifier)}
               </span>
             </div>
 
             <div className="flex items-start gap-4 mb-4">
-              <div className="p-2 rounded-lg bg-purple-900/30 group-hover:bg-purple-500/20 transition-colors">
+              <motion.div 
+                className="p-3 rounded-xl bg-indigo-900/40 group-hover:bg-purple-600/25 transition-colors border border-indigo-700/30"
+                whileHover={{ rotate: 5 }}
+              >
                 {getContractIcon(contract.name)}
-              </div>
+              </motion.div>
               <div className="flex-1">
-                <h3 className="text-lg font-bold text-white group-hover:text-purple-300 transition-colors">
+                <h3 className="text-xl font-bold text-white group-hover:text-purple-200 transition-colors">
                   {contract.name}
                 </h3>
-                <p className="text-sm text-purple-400">v{contract.version}</p>
+                <p className="text-sm text-indigo-300">v{contract.version}</p>
               </div>
             </div>
 
-            <p className="text-sm text-purple-100 leading-relaxed line-clamp-3">
+            <p className="text-base text-indigo-100 leading-relaxed line-clamp-3">
               {contract.description}
             </p>
 
             {/* Hover overlay */}
-            <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-purple-800/10 to-purple-900/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+            <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-purple-700/15 to-indigo-900/15 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
           </motion.div>
         ))}
       </div>

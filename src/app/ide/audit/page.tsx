@@ -74,8 +74,6 @@ export default function AuditPage() {
   const [isGenerating, setIsGenerating] = useState(false);
   const [generatingType, setGeneratingType] = useState<string>('');
 
-
-
   const generateAuditReport = async (file: FileItem): Promise<SecurityIssue[]> => {
     const language = file.extension ?? 'unknown';
     return await querySecurityAudit(file.content, language);
@@ -87,7 +85,7 @@ export default function AuditPage() {
   };
 
   const generateAnalytics = async (file: FileItem): Promise<AnalyticsData> => {
-    const language = file.extension??'unknown';
+    const language = file.extension ?? 'unknown';
     return await queryCodeAnalytics(file.content, language);
   };
 
@@ -177,13 +175,26 @@ export default function AuditPage() {
     }
   }, [selectedFile]);
 
+  // Handle file selection - ensure it's synchronized across pages
+  const handleFileSelect = useCallback((file: FileItem) => {
+    setSelectedFile(file);
+  }, [setSelectedFile]);
+
+  // Handle file creation with proper extension detection
+  const handleFileCreate = useCallback((name: string) => {
+    const extension = name.split('.').pop()?.toLowerCase() || '';
+    const language = getLanguageFromExtension(extension);
+    
+    createFile(name, language);
+  }, [createFile]);
+
   return (
     <div className="flex h-full">
       <FileNavigator
         files={files}
         selectedFile={selectedFile}
-        onFileSelect={setSelectedFile}
-        onFileCreate={createFile}
+        onFileSelect={handleFileSelect}
+        onFileCreate={handleFileCreate}
         onFileDelete={deleteFile}
       />
       <AuditReport
@@ -205,4 +216,26 @@ export default function AuditPage() {
       />
     </div>
   );
+}
+
+// Helper function to determine language from file extension
+function getLanguageFromExtension(extension: string): string {
+  switch (extension) {
+    case 'sol':
+      return 'solidity';
+    case 'js':
+      return 'javascript';
+    case 'ts':
+      return 'typescript';
+    case 'rs':
+      return 'rust';
+    case 'json':
+      return 'json';
+    case 'css':
+      return 'css';
+    case 'html':
+      return 'html';
+    default:
+      return 'text';
+  }
 }

@@ -32,23 +32,46 @@ export const AIAssistantModal: React.FC<AIAssistantModalProps> = ({ isOpen, onCl
     }
   }, [isOpen]);
 
- const handleSubmit = async () => {
-  if (!input.trim()) return;
+  const handleSubmit = async () => {
+    if (!input.trim()) return;
 
-  const userMessage = input.trim();
-  setInput('');
-  setMessages(prev => [...prev, { type: 'user', content: userMessage }]);
-  setIsTyping(true);
+    const userMessage = input.trim();
+    setInput('');
+    setMessages(prev => [...prev, { type: 'user', content: userMessage }]);
+    setIsTyping(true);
 
-  try {
-    const response = await makeGeminiRequest(userMessage);
-    setMessages(prev => [...prev, { type: 'bot', content: response }]);
-    setIsTyping(false);
-  } catch (error) {
-    setMessages(prev => [...prev, { type: 'bot', content: 'I encountered an error. Please try again.' }]);
-    setIsTyping(false);
-  }
-};
+    try {
+      const response = await makeGeminiRequest(userMessage);
+      
+      // Extract the content from the response object
+      let botResponse = '';
+      if (typeof response === 'string') {
+        botResponse = response;
+      } else if (response && typeof response === 'object') {
+        // Handle different possible response structures
+        if (response.content) {
+          botResponse = response.content;
+        } else if (response.message) {
+          botResponse = response.message;
+        } else if (response.text) {
+          botResponse = response.text;
+        } else {
+          // If we can't find the content, stringify the response for debugging
+          botResponse = 'I received an unexpected response format. Please try again.';
+          console.error('Unexpected response format:', response);
+        }
+      } else {
+        botResponse = 'I encountered an unexpected response. Please try again.';
+      }
+
+      setMessages(prev => [...prev, { type: 'bot', content: botResponse }]);
+      setIsTyping(false);
+    } catch (error) {
+      console.error('Error making Gemini request:', error);
+      setMessages(prev => [...prev, { type: 'bot', content: 'I encountered an error. Please try again.' }]);
+      setIsTyping(false);
+    }
+  };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' && !e.shiftKey) {

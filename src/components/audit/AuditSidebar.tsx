@@ -34,7 +34,7 @@ const AuditSidebar = ({
 
   if (!selectedFile) {
     return (
-      <div className="w-80 bg-black border-l border-gray-800 p-6">
+      <div className="w-80 bg-black border-l border-gray-800 p-6 pt-30">
         <div className="text-center text-gray-400">
           <div className="w-12 h-12 mx-auto mb-4 rounded-full bg-gray-900 flex items-center justify-center">
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -121,7 +121,7 @@ const AuditSidebar = ({
   }
 
   return (
-    <div className="w-80 bg-black border-l border-gray-800 p-6 overflow-y-auto">
+    <div className="w-80 bg-black border-l border-gray-800 p-6 overflow-y-auto pt-30">
       <div className="mb-6">
         <div className="flex items-center space-x-3 mb-4">
           <div className="w-6 h-6 rounded-md bg-gradient-to-br from-gray-600 to-gray-700 flex items-center justify-center">

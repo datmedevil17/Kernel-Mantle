@@ -42,12 +42,13 @@ export default function EditorPage() {
           content: contract.content,
           language: contract.language || 'solidity',
           type: 'file',
-          size: contract.content.length // Calculate size from content length
+          size: contract.content.length,
+          extension: contract.language === 'solidity' ? 'sol' : 'js' // Add extension for proper file type detection
         };
         
         addFile(fileItem);
         
-        // Auto-select the newly created file
+        // Auto-select the newly created file if no file is currently selected
         if (!selectedFile) {
           setSelectedFile(fileItem);
         }
@@ -65,10 +66,18 @@ export default function EditorPage() {
     updateFile(updatedFile);
   }, [selectedFile, updateFile]);
 
-  // Handle file selection with proper typing
-  const handleFileSelect = useCallback((file: FileItem | null) => {
+  // Handle file selection - ensure it's properly typed and synchronized
+  const handleFileSelect = useCallback((file: FileItem) => {
     setSelectedFile(file);
   }, [setSelectedFile]);
+
+  // Handle file creation with proper extension detection
+  const handleFileCreate = useCallback((name: string) => {
+    const extension = name.split('.').pop()?.toLowerCase() || '';
+    const language = getLanguageFromExtension(extension);
+    
+    createFile(name, language);
+  }, [createFile]);
 
   return (
     <div className="flex h-screen bg-gray-900">
@@ -76,7 +85,7 @@ export default function EditorPage() {
         files={files}
         selectedFile={selectedFile}
         onFileSelect={handleFileSelect}
-        onFileCreate={createFile}
+        onFileCreate={handleFileCreate}
         onFileDelete={deleteFile}
       />
       
@@ -97,4 +106,26 @@ export default function EditorPage() {
       </div>
     </div>
   );
+}
+
+// Helper function to determine language from file extension
+function getLanguageFromExtension(extension: string): string {
+  switch (extension) {
+    case 'sol':
+      return 'solidity';
+    case 'js':
+      return 'javascript';
+    case 'ts':
+      return 'typescript';
+    case 'rs':
+      return 'rust';
+    case 'json':
+      return 'json';
+    case 'css':
+      return 'css';
+    case 'html':
+      return 'html';
+    default:
+      return 'text';
+  }
 }

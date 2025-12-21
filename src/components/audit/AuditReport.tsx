@@ -18,7 +18,7 @@ const AuditReport: React.FC<AuditReportProps> = ({
   generatingType
 }) => {
   const renderSecurityIssues = (issues: SecurityIssue[]) => (
-    <div className="space-y-4">
+    <div className="space-y-4 pt-25">
       {issues.map((issue) => (
         <div key={issue.id} className="bg-gray-900/80 backdrop-blur-sm border border-gray-800 rounded-xl p-5 shadow-lg hover:shadow-purple-900/20 transition-all">
           <div className="flex items-center justify-between mb-3">
@@ -54,7 +54,7 @@ const AuditReport: React.FC<AuditReportProps> = ({
   );
 
   const renderSuggestions = (suggestions: Suggestion[]) => (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-25">
       {suggestions.map((suggestion) => (
         <div key={suggestion.id} className="bg-gray-900/80 backdrop-blur-sm border border-gray-800 rounded-xl p-5 hover:shadow-purple-900/20 transition-all">
           <div className="flex items-start justify-between mb-3">
@@ -135,7 +135,7 @@ const AuditReport: React.FC<AuditReportProps> = ({
     };
 
     return (
-      <div className="space-y-6">
+      <div className="space-y-6 pt-25">
         {/* Complexity Analysis */}
         <div className="bg-gray-900/80 backdrop-blur-sm border border-gray-800 rounded-xl p-6 shadow-lg">
           <h3 className="text-xl font-bold text-white mb-4 flex items-center">
@@ -269,7 +269,7 @@ const AuditReport: React.FC<AuditReportProps> = ({
 
   if (!file) {
     return (
-      <div className="flex-1 p-6 flex items-center justify-center bg-gray-950 text-gray-500">
+      <div className="flex-1 p-6 flex items-center justify-center bg-gray-950 text-gray-500 pt-25">
         <div className="text-center max-w-md">
           <svg className="w-12 h-12 mx-auto text-purple-900/50 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
@@ -283,7 +283,7 @@ const AuditReport: React.FC<AuditReportProps> = ({
 
   if (isGenerating) {
     return (
-      <div className="flex-1 p-6 bg-gray-950 flex flex-col items-center justify-center">
+      <div className="flex-1 p-6 bg-gray-950 flex flex-col items-center justify-center pt-25">
         <div className="relative w-16 h-16 mb-6">
           <div className="absolute inset-0 rounded-full border-4 border-purple-900/50 animate-ping"></div>
           <div className="absolute inset-2 rounded-full border-4 border-purple-500 animate-spin"></div>
@@ -298,7 +298,7 @@ const AuditReport: React.FC<AuditReportProps> = ({
 
   if (!currentReport) {
     return (
-      <div className="flex-1 p-6 bg-gray-950 flex items-center justify-center">
+      <div className="flex-1 p-6 bg-gray-950 flex items-center justify-center pt-25">
         <div className="text-center max-w-md">
           <svg className="w-12 h-12 mx-auto text-purple-900/50 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
@@ -311,7 +311,7 @@ const AuditReport: React.FC<AuditReportProps> = ({
   }
 
   return (
-    <div className="flex-1 p-6 bg-gray-950 overflow-y-auto">
+    <div className="flex-1 p-6 bg-gray-950 overflow-y-auto pt-25">
       <div className="max-w-6xl mx-auto">
         <div className="mb-8 p-6 bg-gray-900/50 border border-gray-800 rounded-xl">
           <div className="flex flex-col md:flex-row md:items-center md:justify-between">

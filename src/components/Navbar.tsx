@@ -40,11 +40,6 @@ export function FloatingNavDemo() {
       link: "/nlp",
       icon: <IconCode className="h-4 w-4 text-white" />,
     },
-      {
-      name: "Recraft",
-      link: "/minecraft",
-      icon: <IconCode className="h-4 w-4 text-white" />,
-    },
   ];
 
   return (
