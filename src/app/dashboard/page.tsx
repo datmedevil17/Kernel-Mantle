@@ -4,54 +4,77 @@ import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { useContractStore } from "@/stores/contractStore"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Search, Plus, BookOpen, Bot, Activity, Code, Zap, Shield, Layers, Wallet } from "lucide-react"
+import { Search, Plus, Bot, Activity,  Zap,  Layers, Wallet } from "lucide-react"
 import { Input } from "@/components/ui/input"
-import { ContractCard } from "@/components/contracts/ContractCard"
 import { TransactionList } from "@/components/TransactionList"
 import { motion, AnimatePresence } from "framer-motion"
 import { useAccount, useConnect } from 'wagmi'
 import { injected } from 'wagmi/connectors'
+import { useRouter } from "next/navigation" // or "next/navigation" for App Router
+import Threads from "@/components/ui/threads"
+import { AIAssistantModal } from "@/components/modals/AIAssistantModal"
+
 
 
 export default function DashboardPage() {
-  const { contracts } = useContractStore()
   const [searchQuery, setSearchQuery] = useState("")
-  const [activeTab, setActiveTab] = useState("contracts")
   const { address, isConnected } = useAccount()
   const { connect } = useConnect()
   const [mounted, setMounted] = useState(false)
+   const [isNeuronAssistantOpen, setIsNeuronAssistantOpen] = useState(false)
+  const router = useRouter() 
+
+  const handleActionClick = (actionType: any) => {
+    if (!mounted) return
+    switch (actionType) {
+      case 'deploy':
+        router.push('/ide/editor')
+        break
+      case 'templates':
+        router.push('/explore')
+        break
+      case 'ai-assistant':
+        setIsNeuronAssistantOpen(true)
+        break
+      default:
+        break
+    }
+  }
+  
 
   useEffect(() => {
     setMounted(true)
   }, [])
 
-  const quickActions = [
-    {
-      title: "Deploy New Contract",
-      description: "Create and deploy a new smart contract",
-      href: "/ide",
-      icon: <Plus className="w-5 h-5 text-purple-400" />,
-      gradient: "from-gray-800/20 to-gray-900/20",
-      borderGradient: "from-purple-500/10 to-purple-600/10",
-    },
-    {
-      title: "Browse Templates",
-      description: "Explore pre-built contract templates",
-      href: "/templates",
-      icon: <Layers className="w-5 h-5 text-purple-400" />,
-      gradient: "from-gray-800/20 to-gray-900/20",
-      borderGradient: "from-purple-500/10 to-purple-600/10",
-    },
-    {
-      title: "AI Assistant",
-      description: "Get help with smart contract development",
-      href: "/ai",
-      icon: <Bot className="w-5 h-5 text-purple-400" />,
-      gradient: "from-gray-800/20 to-gray-900/20",
-      borderGradient: "from-purple-500/10 to-purple-600/10",
-    },
-  ]
+const quickActions = [
+  {
+    type: 'deploy', // Add this
+    title: "Deploy New Contract",
+    description: "Create and deploy a new smart contract",
+    href: "/ide",
+    icon: <Plus className="w-5 h-5 text-purple-400" />,
+    gradient: "from-gray-800/20 to-gray-900/20",
+    borderGradient: "from-purple-500/10 to-purple-600/10",
+  },
+  {
+    type: 'templates', // Add this
+    title: "Browse Templates",
+    description: "Explore pre-built contract templates",
+    href: "/templates",
+    icon: <Layers className="w-5 h-5 text-purple-400" />,
+    gradient: "from-gray-800/20 to-gray-900/20",
+    borderGradient: "from-purple-500/10 to-purple-600/10",
+  },
+  {
+    type: 'ai-assistant', // Add this
+    title: "AI Assistant",
+    description: "Get help with smart contract development",
+    href: "/ai",
+    icon: <Bot className="w-5 h-5 text-purple-400" />,
+    gradient: "from-gray-800/20 to-gray-900/20",
+    borderGradient: "from-purple-500/10 to-purple-600/10",
+  },
+]
 
 
   // Modify the wallet button render logic:
@@ -138,23 +161,25 @@ export default function DashboardPage() {
               transition={{ delay: 0.2 }}
               className="lg:col-span-3"
             >
-              <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-                <TabsList className="grid w-full grid-cols-2 bg-gray-900/50 backdrop-blur-sm border border-gray-800/50 p-1">
                 
-                  <TabsTrigger
-                    value="transactions"
-                    className="data-[state=active]:bg-gray-800 data-[state=active]:text-purple-200 data-[state=active]:border-purple-500/30 text-gray-400 transition-all duration-300"
-                  >
+                
                     <Activity className="w-4 h-4 mr-2 text-purple-400" />
-                    Transactions
-                  </TabsTrigger>
-                </TabsList>
+
+<div className="flex justify-between items-center ">
+                     <h3>Transactions</h3>
+                    <div className="h-40 w-200"> <Threads
+    amplitude={1}
+    distance={0}
+    enableMouseInteraction={true}
+  /> 
+  </div>
+</div>
+
 
                 <AnimatePresence mode="wait">
-                  <div className="mt-20"> {/* Added wrapper div with margin-top */}
+                  <div className="mt-10"> {/* Added wrapper div with margin-top */}
                  
 
-                    <TabsContent value="transactions">
                       <motion.div
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
@@ -163,78 +188,85 @@ export default function DashboardPage() {
                       >
                         <TransactionList />
                       </motion.div>
-                    </TabsContent>
                   </div>
                 </AnimatePresence>
-              </Tabs>
             </motion.div>
 
             {/* Enhanced Right Sidebar - Quick Actions */}
+           <motion.div
+        initial={{ opacity: 0, x: 20 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ delay: 0.3 }}
+        className="space-y-6"
+      >
+        <div>
+          <h2 className="text-xl font-semibold text-white mb-1">Quick Actions</h2>
+          <p className="text-gray-400 text-sm">Streamline your workflow</p>
+        </div>
+
+        <div className="space-y-4">
+          {quickActions.map((action, index) => (
             <motion.div
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.3 }}
-              className="space-y-6"
+              key={index}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3 + index * 0.05 }}
             >
-              <div>
-                <h2 className="text-xl font-semibold text-white mb-1">Quick Actions</h2>
-                <p className="text-gray-400 text-sm">Streamline your workflow</p>
-              </div>
+              <Card 
+                className="group relative overflow-hidden p-6 transition-all duration-300 hover:-translate-y-1 bg-gray-900/30 backdrop-blur-xl border-gray-800/50 hover:border-purple-500/30 cursor-pointer"
+                onClick={() => handleActionClick(action.type)}
+              >
+                {/* Glowing border effect */}
+                <motion.div
+                  className={`absolute inset-0 rounded-lg bg-gradient-to-r ${action.borderGradient} opacity-0 group-hover:opacity-30 blur-lg transition-opacity duration-300`}
+                  initial={false}
+                />
 
-              <div className="space-y-4">
-                {quickActions.map((action, index) => (
-                  <motion.div
-                    key={index}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.3 + index * 0.05 }}
-                  >
-                    <Card className="group relative overflow-hidden p-6 transition-all duration-300 hover:-translate-y-1 bg-gray-900/30 backdrop-blur-xl border-gray-800/50 hover:border-purple-500/30 cursor-pointer">
-                      {/* Glowing border effect */}
-                      <motion.div
-                        className={`absolute inset-0 rounded-lg bg-gradient-to-r ${action.borderGradient} opacity-0 group-hover:opacity-30 blur-lg transition-opacity duration-300`}
-                        initial={false}
-                      />
-
-                      <div className="relative z-10">
-                        <div className="flex items-start justify-between mb-3">
-                          <div className="w-10 h-10 bg-gray-800/50 backdrop-blur-sm rounded-lg border border-purple-500/30 flex items-center justify-center text-purple-400 group-hover:scale-110 transition-transform duration-300">
-                            {action.icon}
-                          </div>
-                          <motion.div
-                            className="w-2 h-2 bg-purple-400 rounded-full opacity-0 group-hover:opacity-100"
-                            initial={false}
-                            whileHover={{ scale: 1.5 }}
-                          />
-                        </div>
-
-                        <h3 className="font-semibold text-white group-hover:text-purple-200 transition-colors duration-300">
-                          {action.title}
-                        </h3>
-                        <p className="mt-2 text-sm text-gray-400 group-hover:text-gray-300 transition-colors duration-300">
-                          {action.description}
-                        </p>
-                      </div>
-                    </Card>
-                  </motion.div>
-                ))}
-              </div>
-
-              {/* Additional Info Card */}
-              <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5 }}>
-                <Card className="p-6 bg-gray-800/20 backdrop-blur-xl border-purple-500/20">
-                  <div className="flex items-center gap-3 mb-3">
-                    <div className="w-8 h-8 bg-purple-500/20 rounded-lg flex items-center justify-center">
-                      <Zap className="w-4 h-4 text-purple-400" />
+                <div className="relative z-10">
+                  <div className="flex items-start justify-between mb-3">
+                    <div className="w-10 h-10 bg-gray-800/50 backdrop-blur-sm rounded-lg border border-purple-500/30 flex items-center justify-center text-purple-400 group-hover:scale-110 transition-transform duration-300">
+                      {action.icon}
                     </div>
-                    <h3 className="font-semibold text-white">Pro Tip</h3>
+                    <motion.div
+                      className="w-2 h-2 bg-purple-400 rounded-full opacity-0 group-hover:opacity-100"
+                      initial={false}
+                      whileHover={{ scale: 1.5 }}
+                    />
                   </div>
-                  <p className="text-sm text-gray-300 leading-relaxed">
-                    Use our AI assistant to optimize your smart contracts and reduce gas costs by up to 30%.
+
+                  <h3 className="font-semibold text-white group-hover:text-purple-200 transition-colors duration-300">
+                    {action.title}
+                  </h3>
+                  <p className="mt-2 text-sm text-gray-400 group-hover:text-gray-300 transition-colors duration-300">
+                    {action.description}
                   </p>
-                </Card>
-              </motion.div>
+                </div>
+              </Card>
             </motion.div>
+          ))}
+        </div>
+
+        {/* Additional Info Card */}
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5 }}>
+          <Card className="p-6 bg-gray-800/20 backdrop-blur-xl border-purple-500/20">
+            <div className="flex items-center gap-3 mb-3">
+              <div className="w-8 h-8 bg-purple-500/20 rounded-lg flex items-center justify-center">
+                <Zap className="w-4 h-4 text-purple-400" />
+              </div>
+              <h3 className="font-semibold text-white">Pro Tip</h3>
+            </div>
+            <p className="text-sm text-gray-300 leading-relaxed">
+              Use our AI assistant to optimize your smart contracts and reduce gas costs by up to 30%.
+            </p>
+          </Card>
+        </motion.div>
+      </motion.div>
+
+      {/* NeuronAssistant Modal */}
+      <AIAssistantModal
+        isOpen={isNeuronAssistantOpen}
+        onClose={() => setIsNeuronAssistantOpen(false)}
+      />
           </div>
         </main>
       </div>

@@ -114,7 +114,7 @@ const FileNavigator = ({ files, selectedFile, onFileSelect, onFileCreate, onFile
   }
 
   return (
-    <div className="w-64 bg-black border-r border-gray-800/50 flex flex-col h-full">
+    <div className="w-64 bg-black border-r border-gray-800/50 flex flex-col h-full pt-25">
       {/* Header */}
       <div className="relative p-4 border-b border-gray-800/50">
         <div className="absolute inset-0 bg-gradient-to-b from-gray-900/20 to-transparent"></div>

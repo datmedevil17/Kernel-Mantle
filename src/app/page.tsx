@@ -99,8 +99,7 @@ export default function Home() {
         <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-[#0a0a0a] to-transparent" />
       </section>
 
-      {/* Hero Parallax Section - Uniform background */}
-      <div id="explore" className="relative py-24 bg-[#0a0a0a]">
+      {/* <div id="explore" className="relative py-24 bg-[#0a0a0a]">
         <motion.div
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
@@ -109,10 +108,10 @@ export default function Home() {
         >
           <HeroParallax products={products} />
         </motion.div>
-      </div>
+      </div> */}
 
       {/* Features Section - Enhanced with uniform styling */}
-      <div id="features" className="relative py-24 bg-[#0a0a0a]">
+      {/* <div id="features" className="relative py-24 bg-[#0a0a0a]">
         <motion.div
           className="text-center mb-20"
           initial={{ opacity: 0, y: 20 }}
@@ -139,7 +138,7 @@ export default function Home() {
         >
           <FeaturesSectionDemo />
         </motion.div>
-      </div>
+      </div> */}
 
       {/* Contracts Section - Enhanced with better spacing */}
       <section className="relative py-32 px-6 sm:px-12 overflow-hidden bg-[#0a0a0a]">
@@ -163,7 +162,7 @@ export default function Home() {
       </section>
 
       {/* CTA Section - Enhanced with modern styling */}
-      <section className="relative py-32 px-6 sm:px-12 bg-[#0a0a0a]">
+      {/* <section className="relative py-32 px-6 sm:px-12 bg-[#0a0a0a]">
         <motion.div
           className="relative z-10 max-w-5xl mx-auto text-center"
           initial={{ opacity: 0, y: 30 }}
@@ -180,7 +179,6 @@ export default function Home() {
           </p>
 
           <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
-            {/* Primary CTA */}
             <a
               href="#"
               className="group relative inline-flex items-center justify-center px-10 py-5 text-lg font-medium text-white transition-all duration-300 ease-out bg-gradient-to-r from-gray-800 to-gray-900 hover:from-gray-700 hover:to-gray-800 rounded-2xl border border-purple-500/30 hover:border-purple-400/50 shadow-xl hover:shadow-purple-500/20 hover:shadow-2xl"
@@ -192,7 +190,6 @@ export default function Home() {
               <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-purple-600/15 to-indigo-600/15 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
             </a>
 
-            {/* Secondary CTA */}
             <a
               href="#"
               className="group relative inline-flex items-center justify-center px-10 py-5 text-lg font-medium text-neutral-300 transition-all duration-300 ease-out bg-gray-900/60 hover:bg-gray-800/70 rounded-2xl border border-gray-700/60 hover:border-gray-600/70 backdrop-blur-sm"
@@ -201,7 +198,7 @@ export default function Home() {
             </a>
           </div>
         </motion.div>
-      </section>
+      </section> */}
 
       {/* Footer */}
       <Footer />
@@ -209,80 +206,80 @@ export default function Home() {
   )
 }
 
-export const products = [
-  {
-    title: "Moonbeam",
-    link: "https://gomoonbeam.com",
-    thumbnail: "https://aceternity.com/images/products/thumbnails/new/moonbeam.png",
-  },
-  {
-    title: "Cursor",
-    link: "https://cursor.so",
-    thumbnail: "https://aceternity.com/images/products/thumbnails/new/cursor.png",
-  },
-  {
-    title: "Rogue",
-    link: "https://userogue.com",
-    thumbnail: "https://aceternity.com/images/products/thumbnails/new/rogue.png",
-  },
-  {
-    title: "Editorially",
-    link: "https://editorially.org",
-    thumbnail: "https://aceternity.com/images/products/thumbnails/new/editorially.png",
-  },
-  {
-    title: "Editrix AI",
-    link: "https://editrix.ai",
-    thumbnail: "https://aceternity.com/images/products/thumbnails/new/editrix.png",
-  },
-  {
-    title: "Pixel Perfect",
-    link: "https://app.pixelperfect.quest",
-    thumbnail: "https://aceternity.com/images/products/thumbnails/new/pixelperfect.png",
-  },
-  {
-    title: "Algochurn",
-    link: "https://algochurn.com",
-    thumbnail: "https://aceternity.com/images/products/thumbnails/new/algochurn.png",
-  },
-  {
-    title: "Aceternity UI",
-    link: "https://ui.aceternity.com",
-    thumbnail: "https://aceternity.com/images/products/thumbnails/new/aceternityui.png",
-  },
-  {
-    title: "Tailwind Master Kit",
-    link: "https://tailwindmasterkit.com",
-    thumbnail: "https://aceternity.com/images/products/thumbnails/new/tailwindmasterkit.png",
-  },
-  {
-    title: "SmartBridge",
-    link: "https://smartbridgetech.com",
-    thumbnail: "https://aceternity.com/images/products/thumbnails/new/smartbridge.png",
-  },
-  {
-    title: "Renderwork Studio",
-    link: "https://renderwork.studio",
-    thumbnail: "https://aceternity.com/images/products/thumbnails/new/renderwork.png",
-  },
-  {
-    title: "Creme Digital",
-    link: "https://cremedigital.com",
-    thumbnail: "https://aceternity.com/images/products/thumbnails/new/cremedigital.png",
-  },
-  {
-    title: "Golden Bells Academy",
-    link: "https://goldenbellsacademy.com",
-    thumbnail: "https://aceternity.com/images/products/thumbnails/new/goldenbellsacademy.png",
-  },
-  {
-    title: "Invoker Labs",
-    link: "https://invoker.lol",
-    thumbnail: "https://aceternity.com/images/products/thumbnails/new/invoker.png",
-  },
-  {
-    title: "E Free Invoice",
-    link: "https://efreeinvoice.com",
-    thumbnail: "https://aceternity.com/images/products/thumbnails/new/efreeinvoice.png",
-  },
-]
+// export const products = [
+//   {
+//     title: "Moonbeam",
+//     link: "https://gomoonbeam.com",
+//     thumbnail: "https://aceternity.com/images/products/thumbnails/new/moonbeam.png",
+//   },
+//   {
+//     title: "Cursor",
+//     link: "https://cursor.so",
+//     thumbnail: "https://aceternity.com/images/products/thumbnails/new/cursor.png",
+//   },
+//   {
+//     title: "Rogue",
+//     link: "https://userogue.com",
+//     thumbnail: "https://aceternity.com/images/products/thumbnails/new/rogue.png",
+//   },
+//   {
+//     title: "Editorially",
+//     link: "https://editorially.org",
+//     thumbnail: "https://aceternity.com/images/products/thumbnails/new/editorially.png",
+//   },
+//   {
+//     title: "Editrix AI",
+//     link: "https://editrix.ai",
+//     thumbnail: "https://aceternity.com/images/products/thumbnails/new/editrix.png",
+//   },
+//   {
+//     title: "Pixel Perfect",
+//     link: "https://app.pixelperfect.quest",
+//     thumbnail: "https://aceternity.com/images/products/thumbnails/new/pixelperfect.png",
+//   },
+//   {
+//     title: "Algochurn",
+//     link: "https://algochurn.com",
+//     thumbnail: "https://aceternity.com/images/products/thumbnails/new/algochurn.png",
+//   },
+//   {
+//     title: "Aceternity UI",
+//     link: "https://ui.aceternity.com",
+//     thumbnail: "https://aceternity.com/images/products/thumbnails/new/aceternityui.png",
+//   },
+//   {
+//     title: "Tailwind Master Kit",
+//     link: "https://tailwindmasterkit.com",
+//     thumbnail: "https://aceternity.com/images/products/thumbnails/new/tailwindmasterkit.png",
+//   },
+//   {
+//     title: "SmartBridge",
+//     link: "https://smartbridgetech.com",
+//     thumbnail: "https://aceternity.com/images/products/thumbnails/new/smartbridge.png",
+//   },
+//   {
+//     title: "Renderwork Studio",
+//     link: "https://renderwork.studio",
+//     thumbnail: "https://aceternity.com/images/products/thumbnails/new/renderwork.png",
+//   },
+//   {
+//     title: "Creme Digital",
+//     link: "https://cremedigital.com",
+//     thumbnail: "https://aceternity.com/images/products/thumbnails/new/cremedigital.png",
+//   },
+//   {
+//     title: "Golden Bells Academy",
+//     link: "https://goldenbellsacademy.com",
+//     thumbnail: "https://aceternity.com/images/products/thumbnails/new/goldenbellsacademy.png",
+//   },
+//   {
+//     title: "Invoker Labs",
+//     link: "https://invoker.lol",
+//     thumbnail: "https://aceternity.com/images/products/thumbnails/new/invoker.png",
+//   },
+//   {
+//     title: "E Free Invoice",
+//     link: "https://efreeinvoice.com",
+//     thumbnail: "https://aceternity.com/images/products/thumbnails/new/efreeinvoice.png",
+//   },
+// ]

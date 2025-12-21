@@ -1,56 +1,67 @@
-'use client';
-import React, { useState, useCallback, useEffect } from 'react';
-import { makeGeminiRequest } from '../../utils/api';
-import { 
-  Send, Code, MessageSquare, Loader2, 
-  CheckCircle, AlertCircle, Copy, Play, 
-  Settings, Book 
-} from 'lucide-react';
-import { ConnectWalletButton } from '@/components/ConnectWalletButton';// Add these types
-import { useWriteContract,useReadContract,useSendTransaction ,useAccount} from 'wagmi';
+"use client"
+import { useState, useCallback } from "react"
+import { makeGeminiRequest } from "@/utils/api"
+import {
+  Code,
+  MessageSquare,
+  Loader2,
+  CheckCircle,
+  AlertCircle,
+  Copy,
+  Play,
+  Settings,
+  Book,
+  Zap,
+  Terminal,
+} from "lucide-react"
+import { useWriteContract, useSendTransaction, useAccount } from "wagmi"
+import Squares from "@/components/Squares"
+
 interface ConversionResult {
-  naturalLanguage?: string;
-  explanation?: string;
-  gasEstimate?: string;
-  requirements?: string[];
-  functionCall?: string;
-  contractMethod?: string;
+  naturalLanguage?: string
+  explanation?: string
+  gasEstimate?: string
+  requirements?: string[]
+  functionCall?: string
+  contractMethod?: string
   parameters?: Array<{
-    name: string;
-    type: string;
-    value: string;
-  }>;
-  abi?: string;
-  error?: string;
+    name: string
+    type: string
+    value: string
+  }>
+  abi?: string
+  error?: string
 }
 
 const NaturalLanguageContractInteraction = () => {
-  // Add these hooks from wagmi
-  const { address } = useAccount();
-  const { writeContract } = useWriteContract();
-  const { sendTransaction } = useSendTransaction();
-  
-  const [activeTab, setActiveTab] = useState('nl-to-contract');
-  const [input, setInput] = useState('');
-  const [result, setResult] = useState<ConversionResult | null>(null);
-  const [isProcessing, setIsProcessing] = useState(false);
-  const [contractABI, setContractABI] = useState('');
-  const [contractAddress, setContractAddress] = useState('');
-  const [history, setHistory] = useState<Array<{
-    id: number;
-    input: string;
-    result: ConversionResult;
-    type: string;
-    timestamp: string;
-  }>>([]);
-  const [savedCommands, setSavedCommands] = useState<Array<{
-    id: number;
-    command: string | undefined;
-    type: string;
-    timestamp: string;
-  }>>([]);
+  const { address } = useAccount()
+  const { writeContract } = useWriteContract()
+  const { sendTransaction } = useSendTransaction()
 
-  // Sample contract ABI for demonstration
+  const [activeTab, setActiveTab] = useState("nl-to-contract")
+  const [input, setInput] = useState("")
+  const [result, setResult] = useState<ConversionResult | null>(null)
+  const [isProcessing, setIsProcessing] = useState(false)
+  const [contractABI, setContractABI] = useState("")
+  const [contractAddress, setContractAddress] = useState("")
+  const [history, setHistory] = useState<
+    Array<{
+      id: number
+      input: string
+      result: ConversionResult
+      type: string
+      timestamp: string
+    }>
+  >([])
+  const [savedCommands, setSavedCommands] = useState<
+    Array<{
+      id: number
+      command: string | undefined
+      type: string
+      timestamp: string
+    }>
+  >([])
+
   const sampleABI = `[
     {
       "inputs": [{"name": "to", "type": "address"}, {"name": "amount", "type": "uint256"}],
@@ -64,19 +75,19 @@ const NaturalLanguageContractInteraction = () => {
       "outputs": [{"name": "", "type": "uint256"}],
       "type": "function"
     }
-  ]`;
+  ]`
 
-  // Sample natural language commands
   const sampleCommands = [
     "Send 100 tokens to 0x1234567890123456789012345678901234567890",
     "Check balance of 0xabcdef1234567890abcdef1234567890abcdef12",
     "Approve 50 tokens for 0x9876543210987654321098765432109876543210",
     "Get total supply of the token",
-    "Transfer 25.5 tokens from my account to Alice's wallet"
-  ];
+    "Transfer 25.5 tokens from my account to Alice's wallet",
+  ]
 
-  const convertNLToContract = useCallback(async (naturalLanguage: string): Promise<ConversionResult> => {
-    const prompt = `Convert this natural language command to a smart contract function call.
+  const convertNLToContract = useCallback(
+    async (naturalLanguage: string): Promise<ConversionResult> => {
+      const prompt = `Convert this natural language command to a smart contract function call.
     
     Natural Language: "${naturalLanguage}"
     Contract ABI: ${contractABI || sampleABI}
@@ -89,18 +100,21 @@ const NaturalLanguageContractInteraction = () => {
       "abi": "relevant ABI fragment",
       "gasEstimate": "estimated gas",
       "explanation": "detailed explanation"
-    }`;
+    }`
 
-    try {
-      return await makeGeminiRequest(prompt);
-    } catch (error) {
-      console.error('NL to Contract conversion error:', error);
-      throw new Error('Failed to convert natural language to contract call');
-    }
-  }, [contractABI, sampleABI]);
+      try {
+        return await makeGeminiRequest(prompt)
+      } catch (error) {
+        console.error("NL to Contract conversion error:", error)
+        throw new Error("Failed to convert natural language to contract call")
+      }
+    },
+    [contractABI, sampleABI],
+  )
 
-  const convertContractToNL = useCallback(async (contractCode: string): Promise<ConversionResult> => {
-    const prompt = `Convert this smart contract function call to natural language.
+  const convertContractToNL = useCallback(
+    async (contractCode: string): Promise<ConversionResult> => {
+      const prompt = `Convert this smart contract function call to natural language.
     
     Contract Call: "${contractCode}"
     Contract ABI: ${contractABI || sampleABI}
@@ -111,146 +125,147 @@ const NaturalLanguageContractInteraction = () => {
       "explanation": "detailed explanation",
       "gasEstimate": "estimated gas usage",
       "requirements": ["requirement1", "requirement2"]
-    }`;
+    }`
 
-    try {
-      return await makeGeminiRequest(prompt);
-    } catch (error) {
-      console.error('Contract to NL conversion error:', error);
-      throw new Error('Failed to convert contract call to natural language');
-    }
-  }, [contractABI, sampleABI]);
+      try {
+        return await makeGeminiRequest(prompt)
+      } catch (error) {
+        console.error("Contract to NL conversion error:", error)
+        throw new Error("Failed to convert contract call to natural language")
+      }
+    },
+    [contractABI, sampleABI],
+  )
 
   const handleProcess = useCallback(async () => {
-    if (!input.trim()) return;
+    if (!input.trim()) return
 
-    setIsProcessing(true);
-    setResult(null);
+    setIsProcessing(true)
+    setResult(null)
 
     try {
-      let response: ConversionResult;
-      
-      if (activeTab === 'nl-to-contract') {
-        response = await convertNLToContract(input);
+      let response: ConversionResult
+
+      if (activeTab === "nl-to-contract") {
+        response = await convertNLToContract(input)
       } else {
-        response = await convertContractToNL(input);
+        response = await convertContractToNL(input)
       }
 
-      if (!response || typeof response !== 'object') {
-        throw new Error('Invalid response from AI service');
+      if (!response || typeof response !== "object") {
+        throw new Error("Invalid response from AI service")
       }
 
-      setResult(response);
-      
-      // Add to history with type checking
+      setResult(response)
+
       const historyItem = {
         id: Date.now(),
         input,
         result: response,
         type: activeTab,
-        timestamp: new Date().toLocaleString()
-      };
-      setHistory(prev => [historyItem, ...prev.slice(0, 9)]);
-
+        timestamp: new Date().toLocaleString(),
+      }
+      setHistory((prev) => [historyItem, ...prev.slice(0, 9)])
     } catch (error) {
-      setResult({ 
-        error: error instanceof Error ? error.message : 'Processing failed' 
-      });
+      setResult({
+        error: error instanceof Error ? error.message : "Processing failed",
+      })
     } finally {
-      setIsProcessing(false);
+      setIsProcessing(false)
     }
-  }, [input, activeTab, convertNLToContract, convertContractToNL]);
+  }, [input, activeTab, convertNLToContract, convertContractToNL])
 
   const copyToClipboard = (text: string | undefined) => {
     if (text) {
-      navigator.clipboard.writeText(text);
+      navigator.clipboard.writeText(text)
     }
-  };
+  }
 
   const saveCommand = (command: string | undefined) => {
     const saved = {
       id: Date.now(),
       command,
       type: activeTab,
-      timestamp: new Date().toLocaleString()
-    };
-    setSavedCommands(prev => [saved, ...prev.slice(0, 4)]);
-  };
-
-const executeContract = async () => {
-  if (!result || !contractAddress) {
-    console.error('Missing result or contract address');
-    return;
+      timestamp: new Date().toLocaleString(),
+    }
+    setSavedCommands((prev) => [saved, ...prev.slice(0, 4)])
   }
 
-  try {
-    // Ensure user is connected
-    if (!address) {
-      throw new Error('Please connect your wallet first');
+  const executeContract = async () => {
+    if (!result || !contractAddress) {
+      console.error("Missing result or contract address")
+      return
     }
 
-    // Handle ABI - it might be a string or already parsed object
-    let abiFragment;
-    if (result.abi) {
-      if (typeof result.abi === 'string') {
-        abiFragment = JSON.parse(result.abi);
-      } else {
-        abiFragment = result.abi;
+    try {
+      if (!address) {
+        throw new Error("Please connect your wallet first")
       }
-    } else {
-      throw new Error('No ABI fragment available');
+
+      let abiFragment
+      if (result.abi) {
+        if (typeof result.abi === "string") {
+          abiFragment = JSON.parse(result.abi)
+        } else {
+          abiFragment = result.abi
+        }
+      } else {
+        throw new Error("No ABI fragment available")
+      }
+
+      if (!abiFragment) {
+        throw new Error("Invalid ABI fragment")
+      }
+
+      const params = result.parameters?.map((param) => param.value) || []
+
+      await writeContract({
+        address: contractAddress as `0x${string}`,
+        abi: Array.isArray(abiFragment) ? abiFragment : [abiFragment],
+        functionName: result.contractMethod || "",
+        args: params,
+      })
+
+      console.log("Contract execution initiated")
+    } catch (error) {
+      console.error("Contract execution failed:", error)
     }
-
-    if (!abiFragment) {
-      throw new Error('Invalid ABI fragment');
-    }
-
-    // Prepare parameters
-    const params = result.parameters?.map(param => param.value) || [];
-
-    // Execute the contract call
-    await writeContract({
-      address: contractAddress as `0x${string}`,
-      abi: Array.isArray(abiFragment) ? abiFragment : [abiFragment],
-      functionName: result.contractMethod || '',
-      args: params,
-    });
-
-    console.log('Contract execution initiated');
-  } catch (error) {
-    console.error('Contract execution failed:', error);
-    // You may want to set an error state here to show to the user
   }
-};
 
   return (
-    <div className="flex flex-col h-full bg-gray-900 text-white">
+    <div className="flex flex-col h-screen bg-black text-white">
+
       {/* Header */}
-      <div className="flex items-center justify-between p-4 border-b border-gray-700 pt-30">
-        <div className="flex items-center space-x-3">
-          <MessageSquare className="w-6 h-6 text-blue-400" />
-          <h2 className="text-xl font-semibold">Natural Language Contract Interaction</h2>
+      <div className="flex items-center justify-between p-6 border-b border-gray-800 bg-gradient-to-r from-black to-gray-900 pt-30">
+        <div className="flex items-center space-x-4">
+          <div className="p-2 bg-purple-500/10 rounded-lg border border-purple-500/20">
+            <Terminal className="w-6 h-6 text-purple-400" />
+          </div>
+          <div>
+            <h2 className="text-xl font-bold text-white">Smart Contract Interface</h2>
+            <p className="text-sm text-gray-400">Natural language to blockchain interaction</p>
+          </div>
         </div>
-        <div className="flex items-center space-x-2">
+        <div className="flex items-center space-x-3">
           <button
-            onClick={() => setActiveTab('nl-to-contract')}
-            className={`px-3 py-1 rounded-md text-sm font-medium transition-colors ${
-              activeTab === 'nl-to-contract'
-                ? 'bg-blue-600 text-white'
-                : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
+            onClick={() => setActiveTab("nl-to-contract")}
+            className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
+              activeTab === "nl-to-contract"
+                ? "bg-purple-600 text-white shadow-lg shadow-purple-600/25"
+                : "bg-gray-800 text-gray-300 hover:bg-gray-700 border border-gray-700"
             }`}
           >
-            NL → Contract
+            Language → Contract
           </button>
           <button
-            onClick={() => setActiveTab('contract-to-nl')}
-            className={`px-3 py-1 rounded-md text-sm font-medium transition-colors ${
-              activeTab === 'contract-to-nl'
-                ? 'bg-blue-600 text-white'
-                : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
+            onClick={() => setActiveTab("contract-to-nl")}
+            className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
+              activeTab === "contract-to-nl"
+                ? "bg-purple-600 text-white shadow-lg shadow-purple-600/25"
+                : "bg-gray-800 text-gray-300 hover:bg-gray-700 border border-gray-700"
             }`}
           >
-            Contract → NL
+            Contract → Language
           </button>
         </div>
       </div>
@@ -259,161 +274,175 @@ const executeContract = async () => {
         {/* Main Content */}
         <div className="flex-1 flex flex-col">
           {/* Contract Configuration */}
-          <div className="p-4 bg-gray-800 border-b border-gray-700">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm font-medium mb-2 text-gray-300">
-                  Contract Address
-                </label>
-                <input
-                  type="text"
-                  value={contractAddress}
-                  onChange={(e) => setContractAddress(e.target.value)}
-                  placeholder="0x1234...abcd"
-                  className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
+          <div className="p-6 bg-gray-900/50 border-b border-gray-800">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <div className="space-y-2">
+                <label className="block text-sm font-semibold text-gray-300">Contract Address</label>
+                <div className="relative">
+                  <input
+                    type="text"
+                    value={contractAddress}
+                    onChange={(e) => setContractAddress(e.target.value)}
+                    placeholder="0x1234...abcd"
+                    className="w-full px-4 py-3 bg-black border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
+                  />
+                  <div className="absolute inset-y-0 right-0 flex items-center pr-3">
+                    <Code className="w-4 h-4 text-gray-500" />
+                  </div>
+                </div>
               </div>
-              <div>
-                <label className="block text-sm font-medium mb-2 text-gray-300">
-                  Contract ABI (Optional)
-                </label>
+              <div className="space-y-2">
+                <label className="block text-sm font-semibold text-gray-300">Contract ABI (Optional)</label>
                 <textarea
                   value={contractABI}
                   onChange={(e) => setContractABI(e.target.value)}
                   placeholder="Paste contract ABI here..."
-                  rows={2}
-                  className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+                  rows={3}
+                  className="w-full px-4 py-3 bg-black border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all resize-none"
                 />
               </div>
             </div>
           </div>
 
           {/* Input Section */}
-          <div className="p-4 border-b border-gray-700">
-            <div className="flex items-start space-x-3">
-              <div className="flex-1">
-                <label className="block text-sm font-medium mb-2 text-gray-300">
-                  {activeTab === 'nl-to-contract' 
-                    ? 'Natural Language Command' 
-                    : 'Smart Contract Function Call'
-                  }
+          <div className="p-6 border-b border-gray-800">
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-semibold text-gray-300 mb-3">
+                  {activeTab === "nl-to-contract" ? "Natural Language Command" : "Smart Contract Function Call"}
                 </label>
-                <textarea
-                  value={input}
-                  onChange={(e) => setInput(e.target.value)}
-                  placeholder={
-                    activeTab === 'nl-to-contract'
-                      ? 'e.g., "Send 100 tokens to Alice\'s wallet"'
-                      : 'e.g., "transfer(0x1234...abcd, 100000000000000000000)"'
-                  }
-                  rows={3}
-                  className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
-              </div>
-              <button
-                onClick={handleProcess}
-                disabled={isProcessing || !input.trim()}
-                className="mt-7 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2"
-              >
-                {isProcessing ? (
-                  <Loader2 className="w-4 h-4 animate-spin" />
-                ) : (
-                  <Send className="w-4 h-4" />
-                )}
-                <span>{isProcessing ? 'Processing...' : 'Convert'}</span>
-              </button>
-            </div>
-
-            {/* Sample Commands */}
-            {activeTab === 'nl-to-contract' && (
-              <div className="mt-3">
-                <p className="text-sm text-gray-400 mb-2">Sample commands:</p>
-                <div className="flex flex-wrap gap-2">
-                  {sampleCommands.slice(0, 3).map((cmd, idx) => (
-                    <button
-                      key={idx}
-                      onClick={() => setInput(cmd)}
-                      className="px-2 py-1 text-xs bg-gray-700 text-gray-300 rounded hover:bg-gray-600 transition-colors"
-                    >
-                      {cmd.slice(0, 30)}...
-                    </button>
-                  ))}
+                <div className="flex gap-4">
+                  <div className="flex-1">
+                    <textarea
+                      value={input}
+                      onChange={(e) => setInput(e.target.value)}
+                      placeholder={
+                        activeTab === "nl-to-contract"
+                          ? 'e.g., "Send 100 tokens to Alice\'s wallet"'
+                          : 'e.g., "transfer(0x1234...abcd, 100000000000000000000)"'
+                      }
+                      rows={4}
+                      className="w-full px-4 py-3 bg-black border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
+                    />
+                  </div>
+                  <button
+                    onClick={handleProcess}
+                    disabled={isProcessing || !input.trim()}
+                    className="px-6 py-3 bg-gradient-to-r from-purple-600 to-purple-700 text-white rounded-lg hover:from-purple-700 hover:to-purple-800 disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2 font-medium shadow-lg shadow-purple-600/25 transition-all duration-200"
+                  >
+                    {isProcessing ? <Loader2 className="w-5 h-5 animate-spin" /> : <Zap className="w-5 h-5" />}
+                    <span>{isProcessing ? "Processing..." : "Convert"}</span>
+                  </button>
                 </div>
               </div>
-            )}
+
+              {/* Sample Commands */}
+              {activeTab === "nl-to-contract" && (
+                <div>
+                  <p className="text-sm text-gray-400 mb-3">Quick examples:</p>
+                  <div className="flex flex-wrap gap-2">
+                    {sampleCommands.slice(0, 3).map((cmd, idx) => (
+                      <button
+                        key={idx}
+                        onClick={() => setInput(cmd)}
+                        className="px-3 py-2 text-xs bg-gray-800 text-gray-300 rounded-md hover:bg-gray-700 border border-gray-700 transition-all duration-200"
+                      >
+                        {cmd.slice(0, 35)}...
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
 
           {/* Results Section */}
-          <div className="flex-1 p-4 overflow-auto">
+          <div className="flex-1 p-6 overflow-auto">
             {result && (
-              <div className="space-y-4">
+              <div className="space-y-6">
                 {result.error ? (
-                  <div className="flex items-start space-x-3 p-4 bg-red-900/20 border border-red-500/30 rounded-lg">
-                    <AlertCircle className="w-5 h-5 text-red-400 mt-0.5" />
+                  <div className="flex items-start space-x-4 p-6 bg-red-500/5 border border-red-500/20 rounded-xl">
+                    <div className="p-2 bg-red-500/10 rounded-lg">
+                      <AlertCircle className="w-5 h-5 text-red-400" />
+                    </div>
                     <div>
-                      <h3 className="font-medium text-red-400">Error</h3>
-                      <p className="text-red-300 mt-1">{result.error}</p>
+                      <h3 className="font-semibold text-red-400 mb-2">Error</h3>
+                      <p className="text-red-300">{result.error}</p>
                     </div>
                   </div>
                 ) : (
-                  <div className="space-y-4">
+                  <div className="space-y-6">
                     {/* Main Result */}
-                    <div className="p-4 bg-gray-800 rounded-lg border border-gray-700">
-                      <div className="flex items-center justify-between mb-3">
-                        <h3 className="font-medium text-green-400 flex items-center space-x-2">
-                          <CheckCircle className="w-4 h-4" />
-                          <span>
-                            {activeTab === 'nl-to-contract' ? 'Smart Contract Call' : 'Natural Language'}
-                          </span>
+                    <div className="p-6 bg-gradient-to-br from-gray-900 to-black rounded-xl border border-gray-800">
+                      <div className="flex items-center justify-between mb-4">
+                        <h3 className="font-semibold text-purple-400 flex items-center space-x-3">
+                          <div className="p-1 bg-purple-500/10 rounded">
+                            <CheckCircle className="w-4 h-4" />
+                          </div>
+                          <span>{activeTab === "nl-to-contract" ? "Smart Contract Call" : "Natural Language"}</span>
                         </h3>
                         <div className="flex space-x-2">
                           <button
-                            onClick={() => copyToClipboard(
-                              activeTab === 'nl-to-contract' 
-                                ? result.functionCall 
-                                : result.naturalLanguage
-                            )}
-                            className="p-1 text-gray-400 hover:text-white transition-colors"
+                            onClick={() =>
+                              copyToClipboard(
+                                activeTab === "nl-to-contract" ? result.functionCall : result.naturalLanguage,
+                              )
+                            }
+                            className="p-2 text-gray-400 hover:text-purple-400 hover:bg-purple-500/10 rounded-lg transition-all"
                             title="Copy to clipboard"
                           >
                             <Copy className="w-4 h-4" />
                           </button>
                           <button
-                            onClick={() => saveCommand(
-                              activeTab === 'nl-to-contract' 
-                                ? result.functionCall 
-                                : result.naturalLanguage
-                            )}
-                            className="p-1 text-gray-400 hover:text-white transition-colors"
+                            onClick={() =>
+                              saveCommand(activeTab === "nl-to-contract" ? result.functionCall : result.naturalLanguage)
+                            }
+                            className="p-2 text-gray-400 hover:text-purple-400 hover:bg-purple-500/10 rounded-lg transition-all"
                             title="Save command"
                           >
                             <Settings className="w-4 h-4" />
                           </button>
                         </div>
                       </div>
-                      <code className="block p-3 bg-gray-900 rounded text-green-300 font-mono text-sm overflow-x-auto">
-                        {activeTab === 'nl-to-contract' ? result.functionCall : result.naturalLanguage}
-                      </code>
+                      <div className="p-4 bg-black rounded-lg border border-gray-800">
+                        <code className="text-purple-300 font-mono text-sm break-all">
+                          {activeTab === "nl-to-contract" ? result.functionCall : result.naturalLanguage}
+                        </code>
+                      </div>
                     </div>
 
                     {/* Explanation */}
-                    <div className="p-4 bg-gray-800 rounded-lg border border-gray-700">
-                      <h4 className="font-medium text-blue-400 mb-2">Explanation</h4>
-                      <p className="text-gray-300">{result.explanation}</p>
+                    <div className="p-6 bg-gradient-to-br from-gray-900 to-black rounded-xl border border-gray-800">
+                      <h4 className="font-semibold text-purple-400 mb-3 flex items-center space-x-2">
+                        <MessageSquare className="w-4 h-4" />
+                        <span>Explanation</span>
+                      </h4>
+                      <p className="text-gray-300 leading-relaxed">{result.explanation}</p>
                     </div>
 
-                    {/* Parameters (for NL to Contract) */}
-                    {activeTab === 'nl-to-contract' && result.parameters && (
-                      <div className="p-4 bg-gray-800 rounded-lg border border-gray-700">
-                        <h4 className="font-medium text-blue-400 mb-3">Parameters</h4>
-                        <div className="space-y-2">
+                    {/* Parameters */}
+                    {activeTab === "nl-to-contract" && result.parameters && (
+                      <div className="p-6 bg-gradient-to-br from-gray-900 to-black rounded-xl border border-gray-800">
+                        <h4 className="font-semibold text-purple-400 mb-4 flex items-center space-x-2">
+                          <Settings className="w-4 h-4" />
+                          <span>Parameters</span>
+                        </h4>
+                        <div className="space-y-3">
                           {result.parameters.map((param, idx) => (
-                            <div key={idx} className="flex items-center justify-between py-2 px-3 bg-gray-900 rounded">
-                              <div>
-                                <span className="font-medium text-white">{param.name}</span>
-                                <span className="text-gray-400 ml-2">({param.type})</span>
+                            <div
+                              key={idx}
+                              className="flex items-center justify-between p-4 bg-black rounded-lg border border-gray-800"
+                            >
+                              <div className="flex items-center space-x-3">
+                                <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
+                                <div>
+                                  <span className="font-medium text-white">{param.name}</span>
+                                  <span className="text-gray-400 ml-2 text-sm">({param.type})</span>
+                                </div>
                               </div>
-                              <code className="text-green-300 font-mono text-sm">{param.value}</code>
+                              <code className="text-purple-300 font-mono text-sm bg-gray-900 px-3 py-1 rounded">
+                                {param.value}
+                              </code>
                             </div>
                           ))}
                         </div>
@@ -421,21 +450,27 @@ const executeContract = async () => {
                     )}
 
                     {/* Gas & Requirements */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                       {result.gasEstimate && (
-                        <div className="p-4 bg-gray-800 rounded-lg border border-gray-700">
-                          <h4 className="font-medium text-blue-400 mb-2">Gas Estimate</h4>
-                          <p className="text-gray-300">{result.gasEstimate}</p>
+                        <div className="p-6 bg-gradient-to-br from-gray-900 to-black rounded-xl border border-gray-800">
+                          <h4 className="font-semibold text-purple-400 mb-3 flex items-center space-x-2">
+                            <Zap className="w-4 h-4" />
+                            <span>Gas Estimate</span>
+                          </h4>
+                          <p className="text-gray-300 font-mono">{result.gasEstimate}</p>
                         </div>
                       )}
                       {result.requirements && (
-                        <div className="p-4 bg-gray-800 rounded-lg border border-gray-700">
-                          <h4 className="font-medium text-blue-400 mb-2">Requirements</h4>
-                          <ul className="text-gray-300 space-y-1">
+                        <div className="p-6 bg-gradient-to-br from-gray-900 to-black rounded-xl border border-gray-800">
+                          <h4 className="font-semibold text-purple-400 mb-3 flex items-center space-x-2">
+                            <CheckCircle className="w-4 h-4" />
+                            <span>Requirements</span>
+                          </h4>
+                          <ul className="text-gray-300 space-y-2">
                             {result.requirements.map((req, idx) => (
-                              <li key={idx} className="flex items-center space-x-2">
-                                <div className="w-1.5 h-1.5 bg-blue-400 rounded-full"></div>
-                                <span>{req}</span>
+                              <li key={idx} className="flex items-center space-x-3">
+                                <div className="w-1.5 h-1.5 bg-purple-500 rounded-full"></div>
+                                <span className="text-sm">{req}</span>
                               </li>
                             ))}
                           </ul>
@@ -444,11 +479,11 @@ const executeContract = async () => {
                     </div>
 
                     {/* Execute Button */}
-                    {activeTab === 'nl-to-contract' && (
+                    {activeTab === "nl-to-contract" && (
                       <div className="flex justify-center pt-4">
                         <button
                           onClick={executeContract}
-                          className="px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 flex items-center space-x-2 font-medium"
+                          className="px-8 py-4 bg-gradient-to-r from-purple-600 to-purple-700 text-white rounded-xl hover:from-purple-700 hover:to-purple-800 flex items-center space-x-3 font-semibold shadow-lg shadow-purple-600/25 transition-all duration-200"
                         >
                           <Play className="w-5 h-5" />
                           <span>Execute Contract Function</span>
@@ -463,24 +498,26 @@ const executeContract = async () => {
         </div>
 
         {/* Sidebar */}
-        <div className="w-80 bg-gray-800 border-l border-gray-700 flex flex-col">
+        <div className="w-80 bg-gradient-to-b from-gray-900 to-black border-l border-gray-800 flex flex-col">
           {/* History */}
-          <div className="p-4 border-b border-gray-700">
-            <h3 className="font-medium text-gray-300 mb-3 flex items-center space-x-2">
-              <Book className="w-4 h-4" />
+          <div className="p-6 border-b border-gray-800">
+            <h3 className="font-semibold text-gray-300 mb-4 flex items-center space-x-3">
+              <div className="p-1 bg-purple-500/10 rounded">
+                <Book className="w-4 h-4 text-purple-400" />
+              </div>
               <span>Recent History</span>
             </h3>
-            <div className="space-y-2 max-h-60 overflow-y-auto">
+            <div className="space-y-3 max-h-80 overflow-y-auto">
               {history.map((item) => (
                 <div
                   key={item.id}
-                  className="p-3 bg-gray-700 rounded cursor-pointer hover:bg-gray-600 transition-colors"
+                  className="p-4 bg-black rounded-lg border border-gray-800 cursor-pointer hover:border-purple-500/30 hover:bg-gray-900/50 transition-all duration-200"
                   onClick={() => setInput(item.input)}
                 >
-                  <div className="text-xs text-gray-400 mb-1">{item.timestamp}</div>
-                  <div className="text-sm text-white truncate">{item.input}</div>
-                  <div className="text-xs text-blue-400 mt-1">
-                    {item.type === 'nl-to-contract' ? 'NL → Contract' : 'Contract → NL'}
+                  <div className="text-xs text-gray-500 mb-2">{item.timestamp}</div>
+                  <div className="text-sm text-white truncate mb-2">{item.input}</div>
+                  <div className="text-xs text-purple-400 font-medium">
+                    {item.type === "nl-to-contract" ? "Language → Contract" : "Contract → Language"}
                   </div>
                 </div>
               ))}
@@ -488,17 +525,22 @@ const executeContract = async () => {
           </div>
 
           {/* Saved Commands */}
-          <div className="p-4">
-            <h3 className="font-medium text-gray-300 mb-3">Saved Commands</h3>
-            <div className="space-y-2">
+          <div className="p-6 flex-1">
+            <h3 className="font-semibold text-gray-300 mb-4 flex items-center space-x-3">
+              <div className="p-1 bg-purple-500/10 rounded">
+                <Settings className="w-4 h-4 text-purple-400" />
+              </div>
+              <span>Saved Commands</span>
+            </h3>
+            <div className="space-y-3">
               {savedCommands.map((saved) => (
                 <div
                   key={saved.id}
-                  className="p-2 bg-gray-700 rounded cursor-pointer hover:bg-gray-600 transition-colors"
-                  onClick={() => setInput(saved.command || '')}
-                    >
-                  <div className="text-sm text-white truncate">{saved.command}</div>
-                  <div className="text-xs text-gray-400 mt-1">{saved.timestamp}</div>
+                  className="p-3 bg-black rounded-lg border border-gray-800 cursor-pointer hover:border-purple-500/30 hover:bg-gray-900/50 transition-all duration-200"
+                  onClick={() => setInput(saved.command || "")}
+                >
+                  <div className="text-sm text-white truncate mb-1">{saved.command}</div>
+                  <div className="text-xs text-gray-500">{saved.timestamp}</div>
                 </div>
               ))}
             </div>
@@ -506,7 +548,7 @@ const executeContract = async () => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default NaturalLanguageContractInteraction;
+export default NaturalLanguageContractInteraction

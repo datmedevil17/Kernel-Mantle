@@ -62,17 +62,26 @@ export function useContractOperations() {
 
       const compiledAbi = JSON.stringify(contract.abi);
       const compiledBytecode = contract.bytecode;
+       const newCompilationResult = {
+      abi: compiledAbi,
+      bytecode: compiledBytecode,
+    };
 
       setCompilationResult({
         abi: compiledAbi,
         bytecode: compiledBytecode,
       });
 
+
       console.log(`Successfully compiled contract: ${contractName}`);
       
       if (result.warnings && result.warnings.length > 0) {
         console.warn('Compilation warnings:', result.warnings);
       }
+
+
+      return newCompilationResult;
+
       
     } catch (error) {
       console.error("Compilation Error:", error);
@@ -86,32 +95,51 @@ export function useContractOperations() {
     }
   }, []);
 
-  const handleDeploy = useCallback(async () => {
-    await switchChain({ chainId: 420420421 });
+ const handleDeploy = useCallback(async () => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      await switchChain({ chainId: 420420421 });
 
-    const contract = deployContract(
-      {
-        abi: compilationResult?.abi ? JSON.parse(compilationResult.abi) : [],
-        bytecode: `0x${compilationResult?.bytecode?.startsWith('0x') ? compilationResult.bytecode.slice(2) : compilationResult?.bytecode || ''}`,
-        args: [], 
-      },
-      {
-        onError: (error) => {
-          console.log("Deployment error:", error);
+      const deployResult = await deployContract(
+        {
+          abi: compilationResult?.abi ? JSON.parse(compilationResult.abi) : [],
+          bytecode: `0x${compilationResult?.bytecode?.startsWith('0x') ? compilationResult.bytecode.slice(2) : compilationResult?.bytecode || ''}`,
+          args: [], 
         },
-        onSuccess: (data) => {
-          console.log("Contract deployed successfully:", data);
-          if (publicClient) {
-            publicClient.waitForTransactionReceipt({ hash: data }).then((receipt) => {
-              if (receipt.contractAddress) {
-                setDeployedAddress(receipt.contractAddress);
+        {
+          onError: (error) => {
+            console.log("Deployment error:", error);
+            reject(error);
+          },
+          onSuccess: async (data) => {
+            console.log("Contract deployed successfully:", data);
+            if (publicClient) {
+              try {
+                const receipt = await publicClient.waitForTransactionReceipt({ hash: data });
+                if (receipt.contractAddress) {
+                  setDeployedAddress(receipt.contractAddress);
+                  resolve({
+                    contractAddress: receipt.contractAddress,
+                    transactionHash: data,
+                    gasUsed: receipt.gasUsed?.toString()
+                  });
+                } else {
+                  reject(new Error("Contract address not found in receipt"));
+                }
+              } catch (error) {
+                reject(error);
               }
-            });
-          }
-        },
-      }
-    );
-  }, [compilationResult, switchChain, deployContract, publicClient]);
+            } else {
+              reject(new Error("Public client not available"));
+            }
+          },
+        }
+      );
+    } catch (error) {
+      reject(error);
+    }
+  });
+}, [compilationResult, switchChain, deployContract, publicClient]);
 
   return {
     compilationResult,

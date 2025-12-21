@@ -46,7 +46,7 @@ const CodeEditor = ({ file, onContentChange }: CodeEditorProps) => {
   const language = getLanguage(file.name);
 
   return (
-    <div className="flex-1 flex flex-col bg-[var(--bg-panel)] rounded-xl shadow-lg overflow-hidden border border-[var(--border)]">
+    <div className="flex-1 flex flex-col bg-[var(--bg-panel)] rounded-xl shadow-lg overflow-hidden border border-[var(--border)] pt-25">
       {/* File Tab Header */}
       <div className="flex items-center bg-[#1c1c24] border-b border-[var(--border)] px-4 py-2">
         <span className="text-white font-medium text-sm flex items-center">
