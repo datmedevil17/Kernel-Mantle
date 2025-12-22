@@ -3,7 +3,6 @@
 import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
-import { useContractStore } from "@/stores/contractStore"
 import { Search, Plus, Bot, Activity,  Zap,  Layers, Wallet } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import { TransactionList } from "@/components/TransactionList"
@@ -13,6 +12,8 @@ import { injected } from 'wagmi/connectors'
 import { useRouter } from "next/navigation" // or "next/navigation" for App Router
 import Threads from "@/components/ui/threads"
 import { AIAssistantModal } from "@/components/modals/AIAssistantModal"
+
+type ActionType = 'deploy' | 'templates' | 'ai-assistant';
 
 
 
@@ -24,7 +25,7 @@ export default function DashboardPage() {
    const [isNeuronAssistantOpen, setIsNeuronAssistantOpen] = useState(false)
   const router = useRouter() 
 
-  const handleActionClick = (actionType: any) => {
+const handleActionClick = (actionType: ActionType) => {
     if (!mounted) return
     switch (actionType) {
       case 'deploy':
@@ -48,7 +49,7 @@ export default function DashboardPage() {
 
 const quickActions = [
   {
-    type: 'deploy', // Add this
+    type: 'deploy' as const, // Add this
     title: "Deploy New Contract",
     description: "Create and deploy a new smart contract",
     href: "/ide",
@@ -57,7 +58,7 @@ const quickActions = [
     borderGradient: "from-purple-500/10 to-purple-600/10",
   },
   {
-    type: 'templates', // Add this
+    type: 'templates' as const, // Add this
     title: "Browse Templates",
     description: "Explore pre-built contract templates",
     href: "/templates",
@@ -66,7 +67,7 @@ const quickActions = [
     borderGradient: "from-purple-500/10 to-purple-600/10",
   },
   {
-    type: 'ai-assistant', // Add this
+    type: 'ai-assistant' as const, // Add this
     title: "AI Assistant",
     description: "Get help with smart contract development",
     href: "/ai",

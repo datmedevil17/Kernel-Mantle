@@ -5,7 +5,7 @@ import { useTransactionStore } from '@/stores/transactionStore'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { formatDistanceToNow } from 'date-fns'
-import { Copy, ChevronDown, ChevronUp, Activity, ExternalLink, Zap } from 'lucide-react'
+import { Copy, ChevronDown,  Activity, ExternalLink, Zap } from 'lucide-react'
 import { useTransactions } from '@/hooks/useTransactions'
 import { useAccount } from 'wagmi'
 import { makeGeminiRequest } from '@/utils/api'
@@ -27,7 +27,7 @@ interface Transaction {
 interface DecodedTransaction {
   explanation: string;
   type: string;
-  details: Record<string, any>;
+  details: Record<string, unknown>;
 }
 
 export function TransactionList() {

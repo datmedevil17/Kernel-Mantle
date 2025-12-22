@@ -4,6 +4,37 @@ import { useTransactionStore } from '@/stores/transactionStore'
 
 const BLOCKSCOUT_API = 'https://blockscout-passet-hub.parity-testnet.parity.io/api'
 
+// Define interfaces for the Blockscout API response
+interface BlockscoutAddress {
+  hash: string;
+  name?: string;
+  implementation_name?: string;
+}
+
+interface BlockscoutTransaction {
+  type?: string;
+  chain_id?: string;
+  nonce: string;
+  to?: BlockscoutAddress;
+  from?: BlockscoutAddress;
+  gas_limit?: string;
+  gas_price?: string;
+  value?: string;
+  raw_input?: string;
+  v?: string;
+  r?: string;
+  s?: string;
+  hash: string;
+  status: string;
+  timestamp: string;
+  block: string;
+}
+
+interface BlockscoutResponse {
+  items: BlockscoutTransaction[];
+  next_page_params?: Record<string, unknown>;
+}
+
 export function useTransactions(address: string | undefined, isConnected: boolean) {
   const { setTransactions, setLoading } = useTransactionStore()
 
@@ -17,11 +48,11 @@ export function useTransactions(address: string | undefined, isConnected: boolea
       setLoading(true)
       
       try {
-        const response = await axios.get(
+        const response = await axios.get<BlockscoutResponse>(
           `${BLOCKSCOUT_API}/v2/addresses/${address}/transactions`
         )
 
-        const formattedTransactions = response.data.items.map((tx: any) => ({
+        const formattedTransactions = response.data.items.map((tx: BlockscoutTransaction) => ({
           transaction: {
             type: tx.type || '0x0',
             chainId: tx.chain_id || '0x75bc371',

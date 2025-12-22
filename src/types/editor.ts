@@ -1,4 +1,28 @@
 // types/editor.ts
+
+// Define specific ABI item types
+interface ABIInput {
+  name: string;
+  type: string;
+  indexed?: boolean;
+  components?: ABIInput[];
+}
+
+interface ABIOutput {
+  name: string;
+  type: string;
+  components?: ABIOutput[];
+}
+
+interface ABIItem {
+  type: 'function' | 'constructor' | 'event' | 'fallback' | 'receive' | 'error';
+  name?: string;
+  inputs?: ABIInput[];
+  outputs?: ABIOutput[];
+  stateMutability?: 'pure' | 'view' | 'nonpayable' | 'payable';
+  anonymous?: boolean;
+}
+
 export interface FileItem {
   id: string;
   name: string;
@@ -12,7 +36,7 @@ export interface FileItem {
   path?: string;
   isReadOnly?: boolean;
   metadata?: {
-    [key: string]: any;
+    [key: string]: string | number | boolean | Date;
   };
 }
 
@@ -35,7 +59,7 @@ export interface CompilationResult {
   errors: CompilerError[];
   warnings: CompilerWarning[];
   bytecode?: string;
-  abi?: any[];
+  abi?: ABIItem[];
   gasEstimate?: number;
 }
 

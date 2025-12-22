@@ -38,7 +38,7 @@ export function WobbleCardDemo() {
             No complexity, no barriers, no limits.
           </h2>
           <p className="mt-4 max-w-[26rem] text-left text-base/6 text-neutral-200">
-            If someone says "it's too hard", gets stuck, or gives up, the solution is here.
+            If someone says &quotit&aposs too hard&quot, gets stuck, or gives up, the solution is here.
           </p>
         </div>
         

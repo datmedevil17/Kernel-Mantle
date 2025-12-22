@@ -100,7 +100,7 @@ export function useContractOperations() {
     try {
       await switchChain({ chainId: 420420421 });
 
-      const deployResult = await deployContract(
+     await deployContract(
         {
           abi: compilationResult?.abi ? JSON.parse(compilationResult.abi) : [],
           bytecode: `0x${compilationResult?.bytecode?.startsWith('0x') ? compilationResult.bytecode.slice(2) : compilationResult?.bytecode || ''}`,

@@ -14,6 +14,10 @@ interface AuditSidebarProps {
   isGenerating: boolean
   generatingType: string
 }
+interface SecurityIssue {
+  severity: 'critical' | 'high' | 'medium' | 'low';
+  // Add other properties as needed based on your actual data structure
+}
 
 const AuditSidebar = ({
   selectedFile,
@@ -321,14 +325,13 @@ const AuditSidebar = ({
                 <div className="flex justify-between text-xs">
                   <span className="text-gray-400">Critical:</span>
                   <span className="text-gray-300 font-medium">
-                    {currentReport.data.securityIssues?.filter((i: any) => i.severity === "critical").length || 0}
+{currentReport.data.securityIssues?.filter((i: SecurityIssue) => i.severity === "critical").length || 0}
                   </span>
                 </div>
                 <div className="flex justify-between text-xs">
                   <span className="text-gray-400">High:</span>
                   <span className="text-gray-300 font-medium">
-                    {currentReport.data.securityIssues?.filter((i: any) => i.severity === "high").length || 0}
-                  </span>
+{currentReport.data.securityIssues?.filter((i: SecurityIssue) => i.severity === "high").length || 0}                  </span>
                 </div>
               </>
             )}

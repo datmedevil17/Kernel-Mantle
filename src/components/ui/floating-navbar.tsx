@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
   motion,
   AnimatePresence,
@@ -33,7 +33,7 @@ export const FloatingNav: React.FC<FloatingNavProps> = ({ navItems, className })
     // Check if 'current' is a valid number
     if (typeof current === "number") {
       // Determine scroll direction
-      let direction = current - (scrollYProgress.getPrevious() ?? current);
+      const direction = current - (scrollYProgress.getPrevious() ?? current);
 
       // Once the user passes 0.05 in scroll progress, we consider them to have scrolled
       if (!hasScrolled && scrollYProgress.get() > 0.05) {

@@ -50,7 +50,7 @@ const PipelineBuilder: React.FC = () => {
 
   // Import the hook functions
   const { handleCompile, handleDeploy } = useContractOperations()
-  const [compilationResult, setCompilationResult] = useState<any>(null)  
+const [compilationResult, setCompilationResult] = useState<{ abi: string; bytecode: unknown } | null>(null)
   const { address, isConnected } = useAccount()
     const { connect } = useConnect()
     const [mounted, setMounted] = useState(false)
@@ -254,10 +254,10 @@ const templates: Record<string, Template> = {
         return {}
     }
   }
-  const deployToTestnet = async (
+const deployToTestnet = async (
   node: Node,
   logger: (msg: string, type?: ExecutionLog["type"]) => void,
-  compilationResult: any
+  compilationResult: { abi: string; bytecode: unknown } | null // Changed from any
 ) => {
   logger(`🚀 Deploying to Asset Hub Testnet`, "info")
   
@@ -274,16 +274,16 @@ const templates: Record<string, Template> = {
   }
 
   try {
-    const deployResult = await handleDeploy()
-    console.log("Testnet deploy result:", deployResult)
+    const deploymentResult = await handleDeploy()
+    console.log("Testnet deploy result:", deploymentResult)
 
-    if (deployResult && deployResult.contractAddress) {
+    if (deploymentResult && deploymentResult.contractAddress) {
       logger(`✅ Contract deployed to testnet successfully`, "success")
-      logger(`📍 Testnet Address: ${deployResult.contractAddress}`, "success")
-      logger(`🔗 Transaction Hash: ${deployResult.transactionHash}`, "info")
+      logger(`📍 Testnet Address: ${deploymentResult.contractAddress}`, "success")
+      logger(`🔗 Transaction Hash: ${deploymentResult.transactionHash}`, "info")
       return true
     } else {
-      logger(`❌ Testnet deployment failed: ${deployResult?.error || "Unknown error"}`, "error")
+      logger(`❌ Testnet deployment failed: ${deploymentResult?.error || "Unknown error"}`, "error")
       return false
     }
   } catch (error) {
@@ -295,7 +295,7 @@ const templates: Record<string, Template> = {
 const deployToMainnet = async (
   node: Node,
   logger: (msg: string, type?: ExecutionLog["type"]) => void,
-  compilationResult: any
+  compilationResult: { abi: string; bytecode: unknown } | null // Changed from any
 ) => {
   logger(`🚨 MAINNET DEPLOYMENT INITIATED`, "info")
   logger(`⚠️ Network: Asset Hub Mainnet`, "info")
@@ -333,7 +333,7 @@ const deployToMainnet = async (
     
     // For safety, we'll simulate mainnet deployment but not actually deploy
     // In a real implementation, you would uncomment the line below:
-    // const deployResult = await handleDeploy(compilationResult)
+    // const deploymentResult = await handleDeploy(compilationResult)
     
     // Simulation for demo purposes
     await new Promise(resolve => setTimeout(resolve, 3000))
@@ -612,12 +612,12 @@ Manual review recommended for further improvements.`
     }
   }
 
-let globalCompilationResult: { abi: string; bytecode: any } | null | undefined = null;
+let globalCompilationResult: { abi: string; bytecode: unknown } | null | undefined = null; // Changed from any
 
 const simulateNodeExecution = async (
   node: Node,
   logger: (msg: string, type?: ExecutionLog["type"]) => void,
-  uploadedFiles: Record<string, any> = {},
+  uploadedFiles: Record<string, string> = {},
 ) => {
   console.log("uploadedFiles received:", Object.keys(uploadedFiles))
   console.log("Looking for contract file:", node.config.contractFile || "Contract.sol")
@@ -821,22 +821,22 @@ case "deployMainnet":
     return null
   }
 
-  interface SolidityNodeConfigProps {
-    node: Node | undefined
-    onUpdate: (config: Partial<NodeConfig>) => void
-  }
+interface SolidityNodeConfigProps {
+  node: Node | undefined
+  onUpdate: (config: Partial<NodeConfig>) => void
+}
 
   const SolidityNodeConfig: React.FC<SolidityNodeConfigProps> = ({ node, onUpdate }) => {
     if (!node) return null
 
-    const handleInputChange = (key: string, value: any) => {
-      if (key === "contractFile" && node.type === "import") {
-        onUpdate({ [key]: value })
-        syncContractFileAcrossNodes(value, node.id)
-      } else {
-        onUpdate({ [key]: value })
-      }
-    }
+const handleInputChange = (key: string, value: string | number | boolean) => { // Changed from any
+  if (key === "contractFile" && node.type === "import") {
+    onUpdate({ [key]: value })
+    syncContractFileAcrossNodes(value as string, node.id)
+  } else {
+    onUpdate({ [key]: value })
+  }
+}
 
     return (
       <div className="space-y-4">

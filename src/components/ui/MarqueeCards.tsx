@@ -1,7 +1,7 @@
 "use client"
 import { motion } from "framer-motion"
 import { ContractStore } from "@/data/contracts"
-import { Code, Shield, Layers, Zap, Users, Globe, Coins } from "lucide-react"
+import { Code, Shield, Layers,  Users, Globe, Coins } from "lucide-react"
 
 
 export const MarqueeCards = () => {

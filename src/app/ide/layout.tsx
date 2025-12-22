@@ -4,6 +4,7 @@ import { useState, useContext, createContext, useCallback } from "react"
 import { IconBrandTabler, IconUserBolt, IconSettings } from "@tabler/icons-react"
 import { Sidebar,SidebarBody,SidebarLink } from "@/components/ui/sidebar"
 import LogoIcon from "@/components/logo"
+import Image from "next/image"
 
 // Create a wallet context
 export const WalletContext = createContext<{
@@ -149,7 +150,7 @@ export default function IDELayout({ children }: IDELayoutProps) {
                   className="group relative w-full py-4 px-6 bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-500 hover:to-purple-600 rounded-xl text-white font-semibold transition-all duration-200 flex items-center justify-center space-x-3 shadow-xl hover:shadow-purple-500/25 hover:scale-105"
                 >
                   <div className="absolute inset-0 bg-gradient-to-r from-purple-600 to-purple-700 rounded-xl blur opacity-30 group-hover:opacity-50 transition-opacity"></div>
-                  <img src="/metamask-fox.svg" alt="MetaMask" className="relative w-6 h-6" />
+                  <Image src="/metamask-fox.svg" alt="MetaMask" className="relative w-6 h-6" />
                   <span className="relative">Connect with MetaMask</span>
                 </button>
 

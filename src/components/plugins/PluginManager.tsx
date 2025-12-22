@@ -39,15 +39,7 @@ interface VulnerabilityAnalysis {
   summary: string;
 }
 
-type PluginFeature = 
-  | 'hardhat' 
-  | 'viem' 
-  | 'ethers' 
-  | 'tests' 
-  | 'vulnerability' 
-  | 'documentation' 
-  | 'gas-optimization'
-  | 'deployment-scripts';
+
 
 // ============================================================================
 // Constants
@@ -120,7 +112,6 @@ const createZipAndDownload = async (files: { name: string; content: string }[], 
 const PluginManager: React.FC<PluginManagerProps> = ({
   selectedFile,
   files,
-  onFileUpdate,
   onAddFile,
   isGenerating,
   setIsGenerating,

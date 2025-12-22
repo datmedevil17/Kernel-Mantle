@@ -14,8 +14,7 @@ import {
   Zap,
   Terminal,
 } from "lucide-react"
-import { useWriteContract, useSendTransaction, useAccount } from "wagmi"
-import Squares from "@/components/Squares"
+import { useWriteContract, useAccount } from "wagmi"
 
 interface ConversionResult {
   naturalLanguage?: string
@@ -36,7 +35,6 @@ interface ConversionResult {
 const NaturalLanguageContractInteraction = () => {
   const { address } = useAccount()
   const { writeContract } = useWriteContract()
-  const { sendTransaction } = useSendTransaction()
 
   const [activeTab, setActiveTab] = useState("nl-to-contract")
   const [input, setInput] = useState("")

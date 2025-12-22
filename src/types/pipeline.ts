@@ -25,7 +25,7 @@ export interface NodeConfig {
   confirmations?: number;
   explorer?: string;
   apiKey?: string;
-  constructorArgs?: any[];
+constructorArgs?: (string | number | boolean | bigint)[];
   condition?: string;
   waitFor?: string;
   retryCount?: number;

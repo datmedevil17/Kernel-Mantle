@@ -7,7 +7,7 @@ export interface Component {
   color: string;
   description: string;
   gasEstimate: number;
-  properties: Record<string, any>;
+properties: Record<string, string | number | boolean | object>;
 }
 
 export interface SecurityIssue {

@@ -2,14 +2,51 @@ import { readFileSync, writeFileSync, existsSync } from 'fs';
 import { basename, join, resolve, dirname } from 'path';
 import { NextRequest, NextResponse } from 'next/server';
 
+// Define proper types for ABI and contract compilation
+interface ABIItem {
+  type: string;
+  name?: string;
+  inputs?: Array<{ name: string; type: string; indexed?: boolean }>;
+  outputs?: Array<{ name: string; type: string }>;
+  stateMutability?: string;
+  anonymous?: boolean;
+}
+
+interface ContractBytecode {
+  object: string;
+  opcodes?: string;
+  sourceMap?: string;
+  linkReferences?: Record<string, unknown>;
+}
+
+interface ContractEVM {
+  bytecode: ContractBytecode;
+  deployedBytecode?: ContractBytecode;
+}
+
+interface CompiledContract {
+  abi: ABIItem[];
+  evm: ContractEVM;
+}
+
+interface CompilationOutput {
+  contracts: {
+    [sourcePath: string]: {
+      [contractName: string]: CompiledContract;
+    };
+  };
+  errors?: Array<{ severity: string; message: string }>;
+  sources?: Record<string, unknown>;
+}
+
 interface CompilationResult {
-  contracts: { [contractName: string]: { abi: any; bytecode: string } };
+  contracts: { [contractName: string]: { abi: ABIItem[]; bytecode: string } };
   warnings?: string[];
   error?: string;
 }
 
 // Dynamic import for resolc to handle WASM loading
-const loadResolc = async () => {
+const loadResolc = async (): Promise<(sources: Record<string, { content: string }>) => Promise<CompilationOutput>> => {
   try {
     // Set WASM path before importing
     process.env.RESOLC_WASM_PATH = join(process.cwd(), 'public', 'resolc.wasm');
@@ -22,7 +59,7 @@ const loadResolc = async () => {
   }
 };
 
-const resolveImportPath = (importPath: string, currentPath?: string) => {
+const resolveImportPath = (importPath: string, currentPath?: string): string => {
   if (importPath.startsWith("@openzeppelin/contracts/")) {
     return resolve(
       __dirname,
@@ -44,14 +81,14 @@ const resolveImportPath = (importPath: string, currentPath?: string) => {
   return resolve(__dirname, "..", "..", "..", "..", "..", "openzeppelin", importPath);
 };
 
-const readSourceFile = (filePath: string) => {
+const readSourceFile = (filePath: string): string => {
   if (existsSync(filePath)) {
     return readFileSync(filePath, "utf8");
   }
   throw new Error(`File not found: ${filePath}`);
 };
 
-const resolveSources = (sources: Record<string, { content: string }>, parent?: string) => {
+const resolveSources = (sources: Record<string, { content: string }>, parent?: string): Record<string, { content: string }> => {
   const modifiedSources: Record<string, { content: string }> = {};
 
   const queue = Object.entries(sources);
@@ -79,12 +116,9 @@ const resolveSources = (sources: Record<string, { content: string }>, parent?: s
 };
 
 // Modify compileFromSources to use the new resolveSources function
-const compileFromSources: (
+const compileFromSources = async (
   sources: { [key: string]: { content: string } },
   outputDir?: string
-) => Promise<CompilationResult> = async (
-  sources,
-  outputDir
 ): Promise<CompilationResult> => {
   try {
     console.log('Compiling contracts from sources...');
@@ -98,11 +132,11 @@ const compileFromSources: (
 
     // Compile using resolved sources
     const out = await compile(resolvedSources);
-    const contracts: { [contractName: string]: { abi: any; bytecode: string } } = {};
+    const contracts: { [contractName: string]: { abi: ABIItem[]; bytecode: string } } = {};
     const warnings: string[] = [];
 
     // Process compilation output
-    for (const [sourcePath, sourceContracts] of Object.entries(out.contracts)) {
+    for (const [, sourceContracts] of Object.entries(out.contracts)) {
       for (const [name, contract] of Object.entries(sourceContracts)) {
         console.log(`Compiled contract: ${name}`);
 

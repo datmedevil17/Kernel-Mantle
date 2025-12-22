@@ -10,10 +10,14 @@ import { FileItem } from '@/types/editor';
 
 export interface AuditResult {
   type: 'audit' | 'suggestions' | 'analytics';
-  data: any;
+  data: AuditResultData;
   timestamp: Date;
   fileId: string;
 }
+export type AuditResultData = 
+  | { securityIssues: SecurityIssue[] }
+  | { suggestions: Suggestion[] }
+  | { analytics: AnalyticsData }
 
 export interface SecurityIssue {
   id: string;

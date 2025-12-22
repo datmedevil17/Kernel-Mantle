@@ -47,18 +47,19 @@ export const NeuronAssistant = () => {
         setMessages(prev => [...prev, { type: 'bot', content: randomResponse }]);
         setIsTyping(false);
       }, 1500);
-    } catch (error) {
+    } catch {
       setMessages(prev => [...prev, { type: 'bot', content: 'Sorry, I encountered an error. Please try again.' }]);
       setIsTyping(false);
     }
   };
 
-  const handleKeyPress = (e: { key: string; shiftKey: any; preventDefault: () => void; }) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault();
-      handleSubmit();
-    }
-  };
+const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
+  if (e.key === 'Enter' && !e.shiftKey) {
+    e.preventDefault();
+    handleSubmit();
+  }
+};
+
 
   return (
     <>

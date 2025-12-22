@@ -19,17 +19,13 @@ const Page = (): JSX.Element => {
   const [aiQuery, setAiQuery] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [showScrollTop, setShowScrollTop] = useState<boolean>(false);
-
-  // Find contract data
-  const contracts = ContractStore.find((ct) =>
+    const contracts = ContractStore.find((ct) =>
     ct.contracts.some((c) => c.identifier === `${author}/${slug}`)
   );
   const contract = contracts?.contracts.find(
     (c) => c.identifier === `${author}/${slug}`
   );
-
-  // Fetch source code
-  useEffect(() => {
+    useEffect(() => {
     const fetchCode = async () => {
       if (!contract) return;
       try {
@@ -45,6 +41,19 @@ const Page = (): JSX.Element => {
     };
     if (contract) fetchCode();
   }, [contract]);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setShowScrollTop(window.scrollY > 400);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+  // Find contract data
+
+
+  // Fetch source code
 
   // AI Query Handler
   const handleAiQuery = async (query: string): Promise<void> => {
@@ -116,14 +125,7 @@ Keep the response technical but understandable.`;
       </div>
     );
   }
-  useEffect(() => {
-    const handleScroll = () => {
-      setShowScrollTop(window.scrollY > 400);
-    };
 
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
 
   // Add this function with other handlers
   const scrollToTop = () => {

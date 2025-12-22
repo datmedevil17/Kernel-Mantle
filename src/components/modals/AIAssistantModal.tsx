@@ -1,6 +1,6 @@
 'use client';
 import React, { useState, useRef, useEffect } from 'react';
-import { Send, X } from 'lucide-react';
+import { Send } from 'lucide-react';
 import Orb from './Orb';
 import { makeGeminiRequest } from '@/utils/api';
 

@@ -25,7 +25,7 @@ const VisualSmartContractBuilder = () => {
     icon: string | React.JSX.Element
     color: string
     properties: {
-      [key: string]: any
+    [key: string]: string | number | boolean | undefined
     }
   }
 
@@ -39,36 +39,31 @@ const VisualSmartContractBuilder = () => {
   }
 
   // Handle drop on canvas
-  const handleCanvasDrop = (e: {
-    preventDefault: () => void
-    currentTarget: { getBoundingClientRect: () => any }
-    clientX: number
-    clientY: number
-  }) => {
-    e.preventDefault()
-    if (!draggedComponent) return
+const handleCanvasDrop = (e: React.DragEvent<HTMLDivElement>) => {
+  e.preventDefault()
+  if (!draggedComponent) return
 
-    const rect = e.currentTarget.getBoundingClientRect()
-    const x = e.clientX - rect.left
-    const y = e.clientY - rect.top
+  const rect = e.currentTarget.getBoundingClientRect()
+  const x = e.clientX - rect.left
+  const y = e.clientY - rect.top
 
-    const newComponent = {
-      ...draggedComponent,
-      id: generateId(),
-      originalId: draggedComponent.id,
-      x: Math.max(0, x - 75),
-      y: Math.max(0, y - 25),
-    }
-
-    setCanvasComponents((prev) => [...prev, newComponent])
-    setDraggedComponent(null)
+  const newComponent = {
+    ...draggedComponent,
+    id: generateId(),
+    originalId: draggedComponent.id,
+    x: Math.max(0, x - 75),
+    y: Math.max(0, y - 25),
   }
+
+  setCanvasComponents((prev) => [...prev, newComponent])
+  setDraggedComponent(null)
+}
 
   // Handle canvas drag over
-  const handleCanvasDragOver = (e: { preventDefault: () => void; dataTransfer: { dropEffect: string } }) => {
-    e.preventDefault()
-    e.dataTransfer.dropEffect = "copy"
-  }
+const handleCanvasDragOver = (e: React.DragEvent<HTMLDivElement>) => {
+  e.preventDefault()
+  e.dataTransfer.dropEffect = "copy"
+}
 
   // Handle component selection
   const handleComponentClick = (component: ComponentType) => {
@@ -76,31 +71,31 @@ const VisualSmartContractBuilder = () => {
   }
 
   // Update component properties
-  const updateComponentProperty = (componentId: any, property: string, value: string | boolean) => {
-    setCanvasComponents((prev) =>
-      prev.map((comp) =>
-        comp.id === componentId ? { ...comp, properties: { ...comp.properties, [property]: value } } : comp,
-      ),
-    )
+const updateComponentProperty = (componentId: string, property: string, value: string | boolean) => {
+  setCanvasComponents((prev) =>
+    prev.map((comp) =>
+      comp.id === componentId ? { ...comp, properties: { ...comp.properties, [property]: value } } : comp,
+    ),
+  )
 
-    if (selectedComponent && selectedComponent.id === componentId) {
-      setSelectedComponent((prev) => {
-        if (!prev) return null
-        return {
-          ...prev,
-          originalId: prev.originalId,
-          y: prev.y,
-          x: prev.x,
-          id: prev.id,
-          type: prev.type,
-          name: prev.name,
-          icon: prev.icon,
-          color: prev.color,
-          properties: { ...prev.properties, [property]: value },
-        }
-      })
-    }
+  if (selectedComponent && selectedComponent.id === componentId) {
+    setSelectedComponent((prev) => {
+      if (!prev) return null
+      return {
+        ...prev,
+        originalId: prev.originalId,
+        y: prev.y,
+        x: prev.x,
+        id: prev.id,
+        type: prev.type,
+        name: prev.name,
+        icon: prev.icon,
+        color: prev.color,
+        properties: { ...prev.properties, [property]: value },
+      }
+    })
   }
+}
 
   // Remove component from canvas
   const removeComponent = (componentId: string) => {
@@ -334,14 +329,12 @@ const VisualSmartContractBuilder = () => {
       if (constructorParams) allConstructorParams.push(constructorParams)
 
       if (hasERC20) {
-        const token = templates.find((t) => t.originalId === "erc20-advanced")
         if (!constructorParams.includes("string")) {
           allConstructorParams.push("string memory name", "string memory symbol")
         }
       }
 
       if (hasERC721) {
-        const nft = templates.find((t) => t.originalId === "erc721")
         if (!constructorParams.includes("string")) {
           allConstructorParams.push("string memory name", "string memory symbol")
         }
@@ -461,7 +454,7 @@ const VisualSmartContractBuilder = () => {
         constructor: /^\s*constructor\s*$$(.*?)$$\s*{/,
       }
 
-      lines.forEach((line, index) => {
+      lines.forEach((line) => {
         let match
         let component: ComponentType | null = null
 

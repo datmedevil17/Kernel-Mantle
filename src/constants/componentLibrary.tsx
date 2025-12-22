@@ -24,7 +24,140 @@ interface Category {
   icon: React.ReactElement;
 }
 
-// Define the Component interface to match the imported type
+// Define specific property interfaces for different component types
+interface BaseProperties {
+  name?: string;
+  visibility?: string;
+  description?: string;
+}
+
+interface FunctionProperties extends BaseProperties {
+  payable?: boolean;
+  parameters?: string;
+  returns?: string;
+  view?: boolean;
+  functionBody?: string;
+  minAmount?: string;
+  initCode?: string;
+}
+
+interface VariableProperties extends BaseProperties {
+  dataType?: string;
+  defaultValue?: string;
+  constant?: boolean;
+  immutable?: boolean;
+  keyType1?: string;
+  keyType2?: string;
+  valueType?: string;
+  fields?: string;
+}
+
+interface ModifierProperties extends BaseProperties {
+  condition?: string;
+  errorMessage?: string;
+  roleType?: string;
+  requiredSignatures?: number;
+  signers?: string;
+  proposalId?: string;
+  status?: string;
+  entered?: string;
+  notEntered?: string;
+  timeCondition?: string;
+  releaseTime?: string;
+}
+
+interface EventProperties extends BaseProperties {
+  parameters?: string;
+  indexed?: boolean;
+  anonymous?: boolean;
+}
+
+interface TokenProperties extends BaseProperties {
+  symbol?: string;
+  supply?: number;
+  decimals?: number;
+  mintable?: boolean;
+  burnable?: boolean;
+  pausable?: boolean;
+  maxSupply?: number;
+  baseURI?: string;
+  mintPrice?: number;
+  royaltyFee?: number;
+}
+
+interface DeFiProperties extends BaseProperties {
+  tokenA?: string;
+  tokenB?: string;
+  fee?: number;
+  slippage?: number;
+  minLiquidity?: number;
+  lendingPool?: string;
+  flashLoanFee?: string;
+  supportedTokens?: string[];
+  maxLoanAmount?: string;
+}
+
+interface GovernanceProperties extends BaseProperties {
+  votingPeriod?: string;
+  quorum?: string;
+  proposalThreshold?: string;
+  votingDelay?: string;
+  proposalLifetime?: string;
+}
+
+interface OracleProperties extends BaseProperties {
+  pair?: string;
+  heartbeat?: string;
+  deviation?: string;
+  aggregatorAddress?: string;
+  decimals?: number;
+}
+
+interface StorageProperties extends BaseProperties {
+  namespace?: string;
+  storageSlot?: string;
+  variables?: string;
+}
+
+interface CrossChainProperties extends BaseProperties {
+  targetChain?: string;
+  bridgeAddress?: string;
+  lockPeriod?: string;
+  minAmount?: string;
+  maxAmount?: string;
+}
+
+interface BatchProperties extends BaseProperties {
+  maxBatchSize?: number;
+  arrayType?: string;
+  valueType?: string;
+  checkSuccess?: boolean;
+}
+
+interface ProxyProperties extends BaseProperties {
+  proxyType?: string;
+  initializeData?: string;
+  adminAddress?: string;
+  implementationAddress?: string;
+}
+
+// Union type for all possible properties
+type ComponentProperties = 
+  | FunctionProperties
+  | VariableProperties
+  | ModifierProperties
+  | EventProperties
+  | TokenProperties
+  | DeFiProperties
+  | GovernanceProperties
+  | OracleProperties
+  | StorageProperties
+  | CrossChainProperties
+  | BatchProperties
+  | ProxyProperties
+  | BaseProperties;
+
+// Updated ComponentItem interface
 interface ComponentItem extends Component {
   id: string;
   type: string;
@@ -34,9 +167,8 @@ interface ComponentItem extends Component {
   color: string;
   description: string;
   gasEstimate: number;
-  properties: Record<string, any>;
+  properties: ComponentProperties;
 }
-
 const componentLibrary: ComponentItem[] = [
   // Core Components
   {
