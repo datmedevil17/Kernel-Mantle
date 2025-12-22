@@ -1,7 +1,7 @@
 # Kernel AI-Powered IDE for Polkadot AssetHub
 
 A versatile and production-ready smart contract development environment that redefines the experience of blockchain developers on Polkadot AssetHub. Kernel AI combines exceptional speed, security, and intelligence to provide a seamless experience to develop, audit, and deploy smart contracts.
-![image](https://github.com/user-attachments/assets/87d37a92-489a-4254-b6f6-757592e5c3a7)
+![Screenshot from 2025-06-06 21-44-34](https://github.com/user-attachments/assets/a7fe06e0-16f5-4368-b2a9-24b673525bb7)
 
 
 ## Table of Contents
