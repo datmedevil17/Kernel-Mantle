@@ -11,14 +11,14 @@ export function HeroScrollDemo() {
             <h1 className="text-4xl font-semibold text-white">
               Unleash the power of <br />
               <span className="text-4xl md:text-[6rem] font-bold mt-1 leading-none">
-                Scroll Animations
+                Polkadot Asset-Hub
               </span>
             </h1>
           </>
         }
       >
         <img
-          src={`/linear.webp`}
+          src={`/d1.png`}
           alt="hero"
           height={720}
           width={1400}

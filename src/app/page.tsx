@@ -54,7 +54,7 @@ export default function Home() {
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 0.3, duration: 1, ease: "easeOut" }}
           >
-            Welcome to <Cover>Kerenl</Cover>
+            Welcome to <Cover>Kerenel</Cover>
           </motion.h1>
           <motion.p
             className="mx-auto mt-8 max-w-2xl text-center text-xl font-light text-neutral-400 leading-relaxed"
@@ -100,6 +100,7 @@ export default function Home() {
         {/* Smooth transition to next section */}
         <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-[#0a0a0a] to-transparent" />
       </section>
+<FeaturesSectionDemo/>      
 
 <HeroScrollDemo/>
 
