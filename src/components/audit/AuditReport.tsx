@@ -335,10 +335,9 @@ const AuditReport: React.FC<AuditReportProps> = ({
         </div>
 
         <div className="space-y-8">
-          {currentReport.type === 'audit' && renderSecurityIssues(currentReport.data.securityIssues)}
-          {currentReport.type === 'suggestions' && renderSuggestions(currentReport.data.suggestions)}
-          {currentReport.type === 'analytics' && renderAnalytics(currentReport.data.analytics)}
-        </div>
+{currentReport.type === 'audit' && 'securityIssues' in currentReport.data && renderSecurityIssues(currentReport.data.securityIssues)}
+{currentReport.type === 'suggestions' && 'suggestions' in currentReport.data && renderSuggestions(currentReport.data.suggestions)}
+{currentReport.type === 'analytics' && 'analytics' in currentReport.data && renderAnalytics(currentReport.data.analytics)}        </div>
       </div>
     </div>
   );

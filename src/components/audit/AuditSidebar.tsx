@@ -301,9 +301,9 @@ const AuditSidebar = ({
                   </div>
                 </div>
                 <div className="text-xs text-gray-400 ml-9">
-                  {result.type === "audit" && `${result.data.securityIssues?.length || 0} issues found`}
-                  {result.type === "suggestions" && `${result.data.suggestions?.length || 0} suggestions`}
-                  {result.type === "analytics" && `Quality Score: ${result.data.analytics?.codeQuality?.overall || 0}%`}
+{result.type === "audit" && `${(result.data as { securityIssues: SecurityIssue[] }).securityIssues?.length || 0} issues found`}
+{result.type === "suggestions" && `${(result.data as { suggestions: any[] }).suggestions?.length || 0} suggestions`}
+{result.type === "analytics" && `Quality Score: ${(result.data as { analytics: any }).analytics?.codeQuality?.overall || 0}%`}
                 </div>
               </button>
             ))
@@ -320,25 +320,26 @@ const AuditSidebar = ({
               <>
                 <div className="flex justify-between text-xs">
                   <span className="text-gray-400">Total Issues:</span>
-                  <span className="text-white font-medium">{currentReport.data.securityIssues?.length || 0}</span>
+<span className="text-white font-medium">{(currentReport.data as { suggestions: any[] }).suggestions?.length || 0}</span>
                 </div>
                 <div className="flex justify-between text-xs">
                   <span className="text-gray-400">Critical:</span>
                   <span className="text-gray-300 font-medium">
-{currentReport.data.securityIssues?.filter((i: SecurityIssue) => i.severity === "critical").length || 0}
+{(currentReport.data as { securityIssues: SecurityIssue[] }).securityIssues?.filter((i: SecurityIssue) => i.severity === "critical").length || 0}
                   </span>
                 </div>
                 <div className="flex justify-between text-xs">
                   <span className="text-gray-400">High:</span>
                   <span className="text-gray-300 font-medium">
-{currentReport.data.securityIssues?.filter((i: SecurityIssue) => i.severity === "high").length || 0}                  </span>
+{(currentReport.data as { securityIssues: SecurityIssue[] }).securityIssues?.filter((i: SecurityIssue) => i.severity === "high").length || 0}
+</span>
                 </div>
               </>
             )}
             {currentReport.type === "suggestions" && (
               <div className="flex justify-between text-xs">
                 <span className="text-gray-400">Suggestions:</span>
-                <span className="text-white font-medium">{currentReport.data.suggestions?.length || 0}</span>
+<span className="text-white font-medium">{(currentReport.data as { suggestions: any[] }).suggestions?.length || 0}</span>
               </div>
             )}
             {currentReport.type === "analytics" && (
@@ -346,20 +347,19 @@ const AuditSidebar = ({
                 <div className="flex justify-between text-xs">
                   <span className="text-gray-400">Overall Quality:</span>
                   <span className="text-gray-300 font-medium">
-                    {currentReport.data.analytics?.codeQuality?.overall || 0}%
+{(currentReport.data as { analytics: any }).analytics?.codeQuality?.overall || 0}%
                   </span>
                 </div>
                 <div className="flex justify-between text-xs">
                   <span className="text-gray-400">Complexity:</span>
                   <span className="text-gray-300 font-medium capitalize">
-                    {currentReport.data.analytics?.complexity?.score || "N/A"}
+{(currentReport.data as { analytics: any }).analytics?.complexity?.score || "N/A"}
                   </span>
                 </div>
                 <div className="flex justify-between text-xs">
                   <span className="text-gray-400">Lines of Code:</span>
                   <span className="text-white font-medium">
-                    {currentReport.data.analytics?.metrics?.linesOfCode || 0}
-                  </span>
+{(currentReport.data as { analytics: any }).analytics?.metrics?.linesOfCode || 0}</span>
                 </div>
               </>
             )}

@@ -15,18 +15,20 @@ const VisualSmartContractBuilder = () => {
   const [copied, setCopied] = useState(false)
   const [isCategoryDropdownOpen, setIsCategoryDropdownOpen] = useState(false)
 
+
   interface ComponentType {
     originalId: string
-    y: string | number | undefined
-    x: string | number | undefined
+    y?: string | number
+    x?: string | number
     id: string
     type: string
     name: string
     icon: string | React.JSX.Element
     color: string
-    properties: {
-    [key: string]: string | number | boolean | undefined
-    }
+    properties: Record<string, any>
+    category?: string
+    description?: string
+    gasEstimate?: number
   }
 
   // Generate unique ID
@@ -234,7 +236,7 @@ const updateComponentProperty = (componentId: string, property: string, value: s
       code += `    // Structs\n`
       structs.forEach((struct) => {
         code += `    struct ${struct.properties.name} {\n`
-        const fields = struct.properties.fields.split(";").filter((field: string) => field.trim())
+const fields = String(struct.properties.fields || "").split(";").filter((field: string) => field.trim())
         fields.forEach((field: string) => {
           code += `        ${field.trim()};\n`
         })
@@ -253,16 +255,18 @@ const updateComponentProperty = (componentId: string, property: string, value: s
           code += `    mapping(${variable.properties.keyType1} => mapping(${variable.properties.keyType2} => ${variable.properties.valueType})) ${variable.properties.visibility} ${variable.properties.name};\n`
         } else if (variable.originalId === "diamond-storage") {
           code += `    // Diamond Storage Pattern\n`
-          code += `    bytes32 constant ${variable.properties.namespace.toUpperCase()}_STORAGE_POSITION = ${variable.properties.storageSlot};\n`
-          code += `    \n`
+const namespace = String(variable.properties.namespace || 'DEFAULT')
+code += `    bytes32 constant ${namespace.toUpperCase()}_STORAGE_POSITION = ${variable.properties.storageSlot};\n`
+
+// And replace other namespace usages:          code += `    \n`
           code += `    struct ${variable.properties.namespace}Storage {\n`
-          const storageVars = variable.properties.variables.split(";").filter((v: string) => v.trim())
+const storageVars = String(variable.properties.variables || "").split(";").filter((v: string) => v.trim())
           storageVars.forEach((v: string) => {
             code += `        ${v.trim()};\n`
           })
           code += `    }\n\n`
-          code += `    function ${variable.properties.namespace.toLowerCase()}Storage() internal pure returns (${variable.properties.namespace}Storage storage ds) {\n`
-          code += `        bytes32 position = ${variable.properties.namespace.toUpperCase()}_STORAGE_POSITION;\n`
+code += `    function ${namespace.toLowerCase()}Storage() internal pure returns (${namespace}Storage storage ds) {\n`
+code += `        bytes32 position = ${namespace.toUpperCase()}_STORAGE_POSITION;\n`
           code += `        assembly {\n`
           code += `            ds.slot := position\n`
           code += `        }\n`
@@ -329,13 +333,13 @@ const updateComponentProperty = (componentId: string, property: string, value: s
       if (constructorParams) allConstructorParams.push(constructorParams)
 
       if (hasERC20) {
-        if (!constructorParams.includes("string")) {
+if (!String(constructorParams).includes("string")) {
           allConstructorParams.push("string memory name", "string memory symbol")
         }
       }
 
       if (hasERC721) {
-        if (!constructorParams.includes("string")) {
+if (!String(constructorParams).includes("string")) {
           allConstructorParams.push("string memory name", "string memory symbol")
         }
       }
@@ -793,8 +797,7 @@ const updateComponentProperty = (componentId: string, property: string, value: s
                     </label>
                     {key === "visibility" ? (
                       <select
-                        value={value}
-                        onChange={(e) => updateComponentProperty(selectedComponent.id, key, e.target.value)}
+value={String(value || '')}                        onChange={(e) => updateComponentProperty(selectedComponent.id, key, e.target.value)}
                         className="w-full p-3 bg-gray-900/50 backdrop-blur-sm border border-gray-700/50 rounded-lg focus:ring-2 focus:ring-purple-400/50 focus:border-purple-400/50 transition-all text-white"
                       >
                         <option value="public">Public</option>
@@ -804,8 +807,7 @@ const updateComponentProperty = (componentId: string, property: string, value: s
                       </select>
                     ) : key === "dataType" ? (
                       <select
-                        value={value}
-                        onChange={(e) => updateComponentProperty(selectedComponent.id, key, e.target.value)}
+value={String(value || '')}                        onChange={(e) => updateComponentProperty(selectedComponent.id, key, e.target.value)}
                         className="w-full p-3 bg-gray-900/50 backdrop-blur-sm border border-gray-700/50 rounded-lg focus:ring-2 focus:ring-purple-400/50 focus:border-purple-400/50 transition-all text-white"
                       >
                         <option value="uint256">uint256</option>
@@ -819,8 +821,7 @@ const updateComponentProperty = (componentId: string, property: string, value: s
                       </select>
                     ) : key === "keyType" || key === "valueType" ? (
                       <select
-                        value={value}
-                        onChange={(e) => updateComponentProperty(selectedComponent.id, key, e.target.value)}
+value={String(value || '')}                        onChange={(e) => updateComponentProperty(selectedComponent.id, key, e.target.value)}
                         className="w-full p-3 bg-gray-900/50 backdrop-blur-sm border border-gray-700/50 rounded-lg focus:ring-2 focus:ring-purple-400/50 focus:border-purple-400/50 transition-all text-white"
                       >
                         <option value="address">address</option>
@@ -833,7 +834,7 @@ const updateComponentProperty = (componentId: string, property: string, value: s
                       <label className="flex items-center space-x-3 cursor-pointer">
                         <input
                           type="checkbox"
-                          checked={value}
+                          checked={Boolean(value)}
                           onChange={(e) => updateComponentProperty(selectedComponent.id, key, e.target.checked)}
                           className="w-4 h-4 text-purple-400 bg-gray-900 border-gray-600 rounded focus:ring-purple-400 focus:ring-2"
                         />
@@ -842,8 +843,7 @@ const updateComponentProperty = (componentId: string, property: string, value: s
                     ) : (
                       <input
                         type="text"
-                        value={value}
-                        onChange={(e) => updateComponentProperty(selectedComponent.id, key, e.target.value)}
+value={String(value || '')}                        onChange={(e) => updateComponentProperty(selectedComponent.id, key, e.target.value)}
                         className="w-full p-3 bg-gray-900/50 backdrop-blur-sm border border-gray-700/50 rounded-lg focus:ring-2 focus:ring-purple-400/50 focus:border-purple-400/50 transition-all text-white placeholder-gray-500"
                         placeholder={`Enter ${key}`}
                       />
