@@ -1,16 +1,9 @@
-import type { NextApiRequest, NextApiResponse } from 'next';
+import { NextRequest, NextResponse } from 'next/server';
 import axios from 'axios';
 
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse
-) {
-  if (req.method !== 'POST') {
-    return res.status(405).json({ message: 'Method not allowed' });
-  }
-
+export async function POST(request: NextRequest) {
   try {
-    const { question } = req.body;
+    const { question } = await request.json();
 
     const response = await axios({
       url: "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent",
@@ -28,9 +21,22 @@ export default async function handler(
       },
     });
 
-    return res.status(200).json({ response: response.data.candidates[0].content.parts[0].text });
+    return NextResponse.json({ 
+      response: response.data.candidates[0].content.parts[0].text 
+    });
   } catch (error) {
     console.error('Error:', error);
-    return res.status(500).json({ message: 'Internal server error' });
+    return NextResponse.json(
+      { message: 'Internal server error' },
+      { status: 500 }
+    );
   }
+}
+
+// Optional: Handle other HTTP methods
+export async function GET() {
+  return NextResponse.json(
+    { message: 'Method not allowed' },
+    { status: 405 }
+  );
 }
