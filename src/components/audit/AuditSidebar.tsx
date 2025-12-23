@@ -14,10 +14,42 @@ interface AuditSidebarProps {
   isGenerating: boolean
   generatingType: string
 }
+
 interface SecurityIssue {
   severity: 'critical' | 'high' | 'medium' | 'low';
   // Add other properties as needed based on your actual data structure
 }
+
+interface Suggestion {
+  id: string;
+  description: string;
+  // Add other properties as needed
+}
+
+interface Analytics {
+  codeQuality?: {
+    overall: number;
+  };
+  complexity?: {
+    score: string | number;
+  };
+  metrics?: {
+    linesOfCode: number;
+  };
+}
+
+interface AuditData {
+  securityIssues: SecurityIssue[];
+}
+
+interface SuggestionsData {
+  suggestions: Suggestion[];
+}
+
+interface AnalyticsData {
+  analytics: Analytics;
+}
+
 
 const AuditSidebar = ({
   selectedFile,
@@ -124,8 +156,7 @@ const AuditSidebar = ({
     })
   }
 
-  return (
-    <div className="w-80 bg-black border-l border-gray-800 p-6 overflow-y-auto pt-30">
+ return( <div className="w-80 bg-black border-l border-gray-800 p-6 overflow-y-auto pt-30">
       <div className="mb-6">
         <div className="flex items-center space-x-3 mb-4">
           <div className="w-6 h-6 rounded-md bg-gradient-to-br from-gray-600 to-gray-700 flex items-center justify-center">
@@ -301,9 +332,9 @@ const AuditSidebar = ({
                   </div>
                 </div>
                 <div className="text-xs text-gray-400 ml-9">
-{result.type === "audit" && `${(result.data as { securityIssues: SecurityIssue[] }).securityIssues?.length || 0} issues found`}
-{result.type === "suggestions" && `${(result.data as { suggestions: any[] }).suggestions?.length || 0} suggestions`}
-{result.type === "analytics" && `Quality Score: ${(result.data as { analytics: any }).analytics?.codeQuality?.overall || 0}%`}
+                  {result.type === "audit" && `${(result.data as AuditData).securityIssues?.length || 0} issues found`}
+                  {result.type === "suggestions" && `${(result.data as SuggestionsData).suggestions?.length || 0} suggestions`}
+                  {result.type === "analytics" && `Quality Score: ${(result.data as AnalyticsData).analytics?.codeQuality?.overall || 0}%`}
                 </div>
               </button>
             ))
@@ -320,26 +351,26 @@ const AuditSidebar = ({
               <>
                 <div className="flex justify-between text-xs">
                   <span className="text-gray-400">Total Issues:</span>
-<span className="text-white font-medium">{(currentReport.data as { suggestions: any[] }).suggestions?.length || 0}</span>
+                  <span className="text-white font-medium">{(currentReport.data as AuditData).securityIssues?.length || 0}</span>
                 </div>
                 <div className="flex justify-between text-xs">
                   <span className="text-gray-400">Critical:</span>
                   <span className="text-gray-300 font-medium">
-{(currentReport.data as { securityIssues: SecurityIssue[] }).securityIssues?.filter((i: SecurityIssue) => i.severity === "critical").length || 0}
+                    {(currentReport.data as AuditData).securityIssues?.filter((i: SecurityIssue) => i.severity === "critical").length || 0}
                   </span>
                 </div>
                 <div className="flex justify-between text-xs">
                   <span className="text-gray-400">High:</span>
                   <span className="text-gray-300 font-medium">
-{(currentReport.data as { securityIssues: SecurityIssue[] }).securityIssues?.filter((i: SecurityIssue) => i.severity === "high").length || 0}
-</span>
+                    {(currentReport.data as AuditData).securityIssues?.filter((i: SecurityIssue) => i.severity === "high").length || 0}
+                  </span>
                 </div>
               </>
             )}
             {currentReport.type === "suggestions" && (
               <div className="flex justify-between text-xs">
                 <span className="text-gray-400">Suggestions:</span>
-<span className="text-white font-medium">{(currentReport.data as { suggestions: any[] }).suggestions?.length || 0}</span>
+                <span className="text-white font-medium">{(currentReport.data as SuggestionsData).suggestions?.length || 0}</span>
               </div>
             )}
             {currentReport.type === "analytics" && (
@@ -347,19 +378,20 @@ const AuditSidebar = ({
                 <div className="flex justify-between text-xs">
                   <span className="text-gray-400">Overall Quality:</span>
                   <span className="text-gray-300 font-medium">
-{(currentReport.data as { analytics: any }).analytics?.codeQuality?.overall || 0}%
+                    {(currentReport.data as AnalyticsData).analytics?.codeQuality?.overall || 0}%
                   </span>
                 </div>
                 <div className="flex justify-between text-xs">
                   <span className="text-gray-400">Complexity:</span>
                   <span className="text-gray-300 font-medium capitalize">
-{(currentReport.data as { analytics: any }).analytics?.complexity?.score || "N/A"}
+                    {(currentReport.data as AnalyticsData).analytics?.complexity?.score || "N/A"}
                   </span>
                 </div>
                 <div className="flex justify-between text-xs">
                   <span className="text-gray-400">Lines of Code:</span>
                   <span className="text-white font-medium">
-{(currentReport.data as { analytics: any }).analytics?.metrics?.linesOfCode || 0}</span>
+                    {(currentReport.data as AnalyticsData).analytics?.metrics?.linesOfCode || 0}
+                  </span>
                 </div>
               </>
             )}
