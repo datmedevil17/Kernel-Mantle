@@ -16,64 +16,64 @@ const VisualSmartContractBuilder = () => {
   const [isCategoryDropdownOpen, setIsCategoryDropdownOpen] = useState(false)
 
 
-interface ComponentType {
-  originalId: string
-  y?: string | number
-  x?: string | number
-  id: string
-  type: string
-  name: string
-  icon: string | React.JSX.Element
-  color: string
-  properties: Record<string, string | number | boolean | undefined> // Specific allowed types
-  category?: string
-  description?: string
-  gasEstimate?: number
-}
+  interface ComponentType {
+    originalId: string
+    y?: string | number
+    x?: string | number
+    id: string
+    type: string
+    name: string
+    icon: string | React.JSX.Element
+    color: string
+    properties: Record<string, string | number | boolean | undefined> // Specific allowed types
+    category?: string
+    description?: string
+    gasEstimate?: number
+  }
 
   // Generate unique ID
   const generateId = () => `component_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
 
   // Handle component drag start
-const handleDragStart = (e: React.DragEvent<HTMLDivElement>, component: ComponentType) => {
-  // Ensure the component has the correct structure
-  const typedComponent: ComponentType = {
-    ...component,
-    originalId: component.id,
-    x: undefined,
-    y: undefined,
-    properties: component.properties || {} // Ensure properties is always an object
+  const handleDragStart = (e: React.DragEvent<HTMLDivElement>, component: ComponentType) => {
+    // Ensure the component has the correct structure
+    const typedComponent: ComponentType = {
+      ...component,
+      originalId: component.id,
+      x: undefined,
+      y: undefined,
+      properties: component.properties || {} // Ensure properties is always an object
+    }
+    setDraggedComponent(typedComponent)
+    e.dataTransfer.effectAllowed = "copy"
   }
-  setDraggedComponent(typedComponent)
-  e.dataTransfer.effectAllowed = "copy"
-}
 
   // Handle drop on canvas
-const handleCanvasDrop = (e: React.DragEvent<HTMLDivElement>) => {
-  e.preventDefault()
-  if (!draggedComponent) return
+  const handleCanvasDrop = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault()
+    if (!draggedComponent) return
 
-  const rect = e.currentTarget.getBoundingClientRect()
-  const x = e.clientX - rect.left
-  const y = e.clientY - rect.top
+    const rect = e.currentTarget.getBoundingClientRect()
+    const x = e.clientX - rect.left
+    const y = e.clientY - rect.top
 
-  const newComponent = {
-    ...draggedComponent,
-    id: generateId(),
-    originalId: draggedComponent.id,
-    x: Math.max(0, x - 75),
-    y: Math.max(0, y - 25),
+    const newComponent = {
+      ...draggedComponent,
+      id: generateId(),
+      originalId: draggedComponent.id,
+      x: Math.max(0, x - 75),
+      y: Math.max(0, y - 25),
+    }
+
+    setCanvasComponents((prev) => [...prev, newComponent])
+    setDraggedComponent(null)
   }
 
-  setCanvasComponents((prev) => [...prev, newComponent])
-  setDraggedComponent(null)
-}
-
   // Handle canvas drag over
-const handleCanvasDragOver = (e: React.DragEvent<HTMLDivElement>) => {
-  e.preventDefault()
-  e.dataTransfer.dropEffect = "copy"
-}
+  const handleCanvasDragOver = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault()
+    e.dataTransfer.dropEffect = "copy"
+  }
 
   // Handle component selection
   const handleComponentClick = (component: ComponentType) => {
@@ -81,31 +81,31 @@ const handleCanvasDragOver = (e: React.DragEvent<HTMLDivElement>) => {
   }
 
   // Update component properties
-const updateComponentProperty = (componentId: string, property: string, value: string | boolean) => {
-  setCanvasComponents((prev) =>
-    prev.map((comp) =>
-      comp.id === componentId ? { ...comp, properties: { ...comp.properties, [property]: value } } : comp,
-    ),
-  )
+  const updateComponentProperty = (componentId: string, property: string, value: string | boolean) => {
+    setCanvasComponents((prev) =>
+      prev.map((comp) =>
+        comp.id === componentId ? { ...comp, properties: { ...comp.properties, [property]: value } } : comp,
+      ),
+    )
 
-  if (selectedComponent && selectedComponent.id === componentId) {
-    setSelectedComponent((prev) => {
-      if (!prev) return null
-      return {
-        ...prev,
-        originalId: prev.originalId,
-        y: prev.y,
-        x: prev.x,
-        id: prev.id,
-        type: prev.type,
-        name: prev.name,
-        icon: prev.icon,
-        color: prev.color,
-        properties: { ...prev.properties, [property]: value },
-      }
-    })
+    if (selectedComponent && selectedComponent.id === componentId) {
+      setSelectedComponent((prev) => {
+        if (!prev) return null
+        return {
+          ...prev,
+          originalId: prev.originalId,
+          y: prev.y,
+          x: prev.x,
+          id: prev.id,
+          type: prev.type,
+          name: prev.name,
+          icon: prev.icon,
+          color: prev.color,
+          properties: { ...prev.properties, [property]: value },
+        }
+      })
+    }
   }
-}
 
   // Remove component from canvas
   const removeComponent = (componentId: string) => {
@@ -244,7 +244,7 @@ const updateComponentProperty = (componentId: string, property: string, value: s
       code += `    // Structs\n`
       structs.forEach((struct) => {
         code += `    struct ${struct.properties.name} {\n`
-const fields = String(struct.properties.fields || "").split(";").filter((field: string) => field.trim())
+        const fields = String(struct.properties.fields || "").split(";").filter((field: string) => field.trim())
         fields.forEach((field: string) => {
           code += `        ${field.trim()};\n`
         })
@@ -263,18 +263,18 @@ const fields = String(struct.properties.fields || "").split(";").filter((field: 
           code += `    mapping(${variable.properties.keyType1} => mapping(${variable.properties.keyType2} => ${variable.properties.valueType})) ${variable.properties.visibility} ${variable.properties.name};\n`
         } else if (variable.originalId === "diamond-storage") {
           code += `    // Diamond Storage Pattern\n`
-const namespace = String(variable.properties.namespace || 'DEFAULT')
-code += `    bytes32 constant ${namespace.toUpperCase()}_STORAGE_POSITION = ${variable.properties.storageSlot};\n`
+          const namespace = String(variable.properties.namespace || 'DEFAULT')
+          code += `    bytes32 constant ${namespace.toUpperCase()}_STORAGE_POSITION = ${variable.properties.storageSlot};\n`
 
-// And replace other namespace usages:          code += `    \n`
+          // And replace other namespace usages:          code += `    \n`
           code += `    struct ${variable.properties.namespace}Storage {\n`
-const storageVars = String(variable.properties.variables || "").split(";").filter((v: string) => v.trim())
+          const storageVars = String(variable.properties.variables || "").split(";").filter((v: string) => v.trim())
           storageVars.forEach((v: string) => {
             code += `        ${v.trim()};\n`
           })
           code += `    }\n\n`
-code += `    function ${namespace.toLowerCase()}Storage() internal pure returns (${namespace}Storage storage ds) {\n`
-code += `        bytes32 position = ${namespace.toUpperCase()}_STORAGE_POSITION;\n`
+          code += `    function ${namespace.toLowerCase()}Storage() internal pure returns (${namespace}Storage storage ds) {\n`
+          code += `        bytes32 position = ${namespace.toUpperCase()}_STORAGE_POSITION;\n`
           code += `        assembly {\n`
           code += `            ds.slot := position\n`
           code += `        }\n`
@@ -341,13 +341,13 @@ code += `        bytes32 position = ${namespace.toUpperCase()}_STORAGE_POSITION;
       if (constructorParams) allConstructorParams.push(constructorParams)
 
       if (hasERC20) {
-if (!String(constructorParams).includes("string")) {
+        if (!String(constructorParams).includes("string")) {
           allConstructorParams.push("string memory name", "string memory symbol")
         }
       }
 
       if (hasERC721) {
-if (!String(constructorParams).includes("string")) {
+        if (!String(constructorParams).includes("string")) {
           allConstructorParams.push("string memory name", "string memory symbol")
         }
       }
@@ -408,9 +408,8 @@ if (!String(constructorParams).includes("string")) {
         const returnsKeyword = func.properties.returns ? ` returns (${func.properties.returns})` : ""
         const modifiersList = func.properties.modifiers ? ` ${func.properties.modifiers}` : ""
 
-        code += `    function ${func.properties.name}(${func.properties.parameters || ""}) ${
-          func.properties.visibility
-        }${viewKeyword}${pureKeyword}${payableKeyword}${returnsKeyword}${modifiersList} {\n`
+        code += `    function ${func.properties.name}(${func.properties.parameters || ""}) ${func.properties.visibility
+          }${viewKeyword}${pureKeyword}${payableKeyword}${returnsKeyword}${modifiersList} {\n`
 
         if (func.originalId === "payable-function") {
           code += `        if (msg.value < ${func.properties.minAmount}) revert InsufficientBalance();\n`
@@ -570,7 +569,7 @@ if (!String(constructorParams).includes("string")) {
   )
 
   return (
-     <div className="min-h-screen bg-black flex overflow-hidden">
+    <div className="min-h-screen bg-black flex overflow-hidden">
       {/* Component Library Sidebar */}
       <div className="w-80 bg-black/90 backdrop-blur-xl border-r border-gray-800/50 flex flex-col h-screen pt-25">
         {/* Header section - fixed height */}
@@ -592,7 +591,7 @@ if (!String(constructorParams).includes("string")) {
             </span>
             <ChevronDown className={`w-4 h-4 transition-transform ${isCategoryDropdownOpen ? "transform rotate-180" : ""}`} />
           </button>
-          
+
           {isCategoryDropdownOpen && (
             <div className="absolute z-10 mt-2 w-full bg-gray-800 rounded-lg shadow-lg border border-gray-700/50 overflow-hidden">
               {categories.map((category) => (
@@ -602,11 +601,10 @@ if (!String(constructorParams).includes("string")) {
                     setSelectedCategory(category.id)
                     setIsCategoryDropdownOpen(false)
                   }}
-                  className={`w-full text-left px-4 py-2 text-sm flex items-center gap-2 transition-colors ${
-                    selectedCategory === category.id
+                  className={`w-full text-left px-4 py-2 text-sm flex items-center gap-2 transition-colors ${selectedCategory === category.id
                       ? "bg-purple-500/20 text-purple-300"
                       : "text-gray-300 hover:bg-gray-700"
-                  }`}
+                    }`}
                 >
                   {category.icon}
                   <span>{category.name}</span>
@@ -619,24 +617,31 @@ if (!String(constructorParams).includes("string")) {
         {/* Component list - scrollable area */}
         <div className="flex-1 overflow-y-auto">
           <div className="p-4 space-y-3">
-       {filteredComponents.map((component) => (
-  <div
-    key={component.id}
-    draggable
-    onDragStart={(e) =>
-      handleDragStart(e, {
-        ...component,
-        originalId: component.id,
-        x: undefined,
-        y: undefined,
-        properties: component.properties || {} // Ensure properties exists
-      } as ComponentType) // Type assertion to ensure compatibility
-    }
-    className="group p-4 rounded-xl bg-gray-900/50 backdrop-blur-sm border border-gray-700/50 cursor-move hover:bg-gray-800/50 hover:border-purple-400/30 transition-all duration-300 transform hover:scale-105"
-  >
-    {/* ... rest of component JSX ... */}
-  </div>
-))}
+            {filteredComponents.map((component) => (
+              <div
+                key={component.id}
+                draggable
+                onDragStart={(e) =>
+                  handleDragStart(e, {
+                    ...component,
+                    originalId: component.id,
+                    x: undefined,
+                    y: undefined,
+                    properties: component.properties || {} // Ensure properties exists
+                  } as ComponentType) // Type assertion to ensure compatibility
+                }
+                className="group p-4 rounded-xl bg-gray-900/50 backdrop-blur-sm border border-gray-700/50 cursor-move hover:bg-gray-800/50 hover:border-purple-400/30 transition-all duration-300 transform hover:scale-105"
+              >
+                <div className="flex items-center space-x-3">
+                  <div className="text-purple-400 group-hover:text-purple-300 transition-colors">{component.icon}</div>
+                  <div>
+                    <div className="font-semibold text-sm text-white">{component.name}</div>
+                    <div className="text-xs text-gray-400">{component.description}</div>
+                    <div className="text-xs text-gray-500">Gas: ~{component.gasEstimate}</div>
+                  </div>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       </div>
@@ -702,11 +707,10 @@ if (!String(constructorParams).includes("string")) {
               <div
                 key={component.id}
                 onClick={() => handleComponentClick(component)}
-                className={`absolute p-4 rounded-xl backdrop-blur-sm border cursor-pointer transition-all duration-300 hover:scale-105 ${
-                  selectedComponent?.id === component.id
+                className={`absolute p-4 rounded-xl backdrop-blur-sm border cursor-pointer transition-all duration-300 hover:scale-105 ${selectedComponent?.id === component.id
                     ? "ring-2 ring-purple-400/50 bg-gray-800/80 border-purple-400/50 shadow-lg shadow-purple-400/25"
                     : "bg-gray-900/70 border-gray-700/50 hover:bg-gray-800/70 hover:border-gray-600/50"
-                }`}
+                  }`}
                 style={{
                   left: component.x,
                   top: component.y,
@@ -745,22 +749,22 @@ if (!String(constructorParams).includes("string")) {
             {/* Empty state */}
             {canvasComponents.length === 0 && (
               <div className="absolute inset-0 flex items-center justify-center text-gray-400">
-              <div className="text-center">
-  <div className="text-8xl mb-6">🎯</div>
-  <div className="text-2xl font-semibold mb-2 text-white">Start Building</div>
-  <div className="text-lg text-gray-300">
-    Drag components from the sidebar to create your smart contract
-  </div>
-  <div className="text-sm mt-6 bg-gray-900/80 backdrop-blur-sm p-6 rounded-xl border border-gray-700/50 max-w-md">
-    <div className="font-medium mb-3 text-purple-400">Quick Start:</div>
-    <div className="text-left space-y-2 text-gray-300">
-      <div>1. Drag a <strong className="text-white">Constructor</strong> to initialize your contract</div>
-      <div>2. Add <strong className="text-white">State Variables</strong> to store data</div>
-      <div>3. Create <strong className="text-white">Functions</strong> for contract logic</div>
-      <div>4. Click <strong className="text-white">Generate Code</strong> to see Solidity</div>
-    </div>
-  </div>
-</div>
+                <div className="text-center">
+                  <div className="text-8xl mb-6">🎯</div>
+                  <div className="text-2xl font-semibold mb-2 text-white">Start Building</div>
+                  <div className="text-lg text-gray-300">
+                    Drag components from the sidebar to create your smart contract
+                  </div>
+                  <div className="text-sm mt-6 bg-gray-900/80 backdrop-blur-sm p-6 rounded-xl border border-gray-700/50 max-w-md">
+                    <div className="font-medium mb-3 text-purple-400">Quick Start:</div>
+                    <div className="text-left space-y-2 text-gray-300">
+                      <div>1. Drag a <strong className="text-white">Constructor</strong> to initialize your contract</div>
+                      <div>2. Add <strong className="text-white">State Variables</strong> to store data</div>
+                      <div>3. Create <strong className="text-white">Functions</strong> for contract logic</div>
+                      <div>4. Click <strong className="text-white">Generate Code</strong> to see Solidity</div>
+                    </div>
+                  </div>
+                </div>
               </div>
             )}
           </div>
@@ -791,7 +795,7 @@ if (!String(constructorParams).includes("string")) {
                     </label>
                     {key === "visibility" ? (
                       <select
-value={String(value || '')}                        onChange={(e) => updateComponentProperty(selectedComponent.id, key, e.target.value)}
+                        value={String(value || '')} onChange={(e) => updateComponentProperty(selectedComponent.id, key, e.target.value)}
                         className="w-full p-3 bg-gray-900/50 backdrop-blur-sm border border-gray-700/50 rounded-lg focus:ring-2 focus:ring-purple-400/50 focus:border-purple-400/50 transition-all text-white"
                       >
                         <option value="public">Public</option>
@@ -801,7 +805,7 @@ value={String(value || '')}                        onChange={(e) => updateCompon
                       </select>
                     ) : key === "dataType" ? (
                       <select
-value={String(value || '')}                        onChange={(e) => updateComponentProperty(selectedComponent.id, key, e.target.value)}
+                        value={String(value || '')} onChange={(e) => updateComponentProperty(selectedComponent.id, key, e.target.value)}
                         className="w-full p-3 bg-gray-900/50 backdrop-blur-sm border border-gray-700/50 rounded-lg focus:ring-2 focus:ring-purple-400/50 focus:border-purple-400/50 transition-all text-white"
                       >
                         <option value="uint256">uint256</option>
@@ -815,7 +819,7 @@ value={String(value || '')}                        onChange={(e) => updateCompon
                       </select>
                     ) : key === "keyType" || key === "valueType" ? (
                       <select
-value={String(value || '')}                        onChange={(e) => updateComponentProperty(selectedComponent.id, key, e.target.value)}
+                        value={String(value || '')} onChange={(e) => updateComponentProperty(selectedComponent.id, key, e.target.value)}
                         className="w-full p-3 bg-gray-900/50 backdrop-blur-sm border border-gray-700/50 rounded-lg focus:ring-2 focus:ring-purple-400/50 focus:border-purple-400/50 transition-all text-white"
                       >
                         <option value="address">address</option>
@@ -837,7 +841,7 @@ value={String(value || '')}                        onChange={(e) => updateCompon
                     ) : (
                       <input
                         type="text"
-value={String(value || '')}                        onChange={(e) => updateComponentProperty(selectedComponent.id, key, e.target.value)}
+                        value={String(value || '')} onChange={(e) => updateComponentProperty(selectedComponent.id, key, e.target.value)}
                         className="w-full p-3 bg-gray-900/50 backdrop-blur-sm border border-gray-700/50 rounded-lg focus:ring-2 focus:ring-purple-400/50 focus:border-purple-400/50 transition-all text-white placeholder-gray-500"
                         placeholder={`Enter ${key}`}
                       />
