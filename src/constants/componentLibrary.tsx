@@ -1,10 +1,8 @@
 import React from 'react';
 import { Component } from '../types';
 import { 
-
   Settings, 
   Eye, 
-  
   Zap, 
   Shield, 
   Database, 
@@ -29,6 +27,7 @@ interface BaseProperties {
   name?: string;
   visibility?: string;
   description?: string;
+  [key: string]: string | number | boolean | object | undefined; // Allow undefined in index signature
 }
 
 interface FunctionProperties extends BaseProperties {
@@ -39,6 +38,7 @@ interface FunctionProperties extends BaseProperties {
   functionBody?: string;
   minAmount?: string;
   initCode?: string;
+  [key: string]: string | number | boolean | object | undefined;
 }
 
 interface VariableProperties extends BaseProperties {
@@ -50,6 +50,7 @@ interface VariableProperties extends BaseProperties {
   keyType2?: string;
   valueType?: string;
   fields?: string;
+  [key: string]: string | number | boolean | object | undefined;
 }
 
 interface ModifierProperties extends BaseProperties {
@@ -64,12 +65,14 @@ interface ModifierProperties extends BaseProperties {
   notEntered?: string;
   timeCondition?: string;
   releaseTime?: string;
+  [key: string]: string | number | boolean | object | undefined;
 }
 
 interface EventProperties extends BaseProperties {
   parameters?: string;
   indexed?: boolean;
   anonymous?: boolean;
+  [key: string]: string | number | boolean | object | undefined;
 }
 
 interface TokenProperties extends BaseProperties {
@@ -83,6 +86,7 @@ interface TokenProperties extends BaseProperties {
   baseURI?: string;
   mintPrice?: number;
   royaltyFee?: number;
+  [key: string]: string | number | boolean | object | undefined;
 }
 
 interface DeFiProperties extends BaseProperties {
@@ -95,6 +99,7 @@ interface DeFiProperties extends BaseProperties {
   flashLoanFee?: string;
   supportedTokens?: string[];
   maxLoanAmount?: string;
+  [key: string]: string | number | boolean | object | undefined;
 }
 
 interface GovernanceProperties extends BaseProperties {
@@ -103,6 +108,7 @@ interface GovernanceProperties extends BaseProperties {
   proposalThreshold?: string;
   votingDelay?: string;
   proposalLifetime?: string;
+  [key: string]: string | number | boolean | object | undefined;
 }
 
 interface OracleProperties extends BaseProperties {
@@ -111,12 +117,14 @@ interface OracleProperties extends BaseProperties {
   deviation?: string;
   aggregatorAddress?: string;
   decimals?: number;
+  [key: string]: string | number | boolean | object | undefined;
 }
 
 interface StorageProperties extends BaseProperties {
   namespace?: string;
   storageSlot?: string;
   variables?: string;
+  [key: string]: string | number | boolean | object | undefined;
 }
 
 interface CrossChainProperties extends BaseProperties {
@@ -125,6 +133,7 @@ interface CrossChainProperties extends BaseProperties {
   lockPeriod?: string;
   minAmount?: string;
   maxAmount?: string;
+  [key: string]: string | number | boolean | object | undefined;
 }
 
 interface BatchProperties extends BaseProperties {
@@ -132,6 +141,7 @@ interface BatchProperties extends BaseProperties {
   arrayType?: string;
   valueType?: string;
   checkSuccess?: boolean;
+  [key: string]: string | number | boolean | object | undefined;
 }
 
 interface ProxyProperties extends BaseProperties {
@@ -139,6 +149,7 @@ interface ProxyProperties extends BaseProperties {
   initializeData?: string;
   adminAddress?: string;
   implementationAddress?: string;
+  [key: string]: string | number | boolean | object | undefined;
 }
 
 // Union type for all possible properties
@@ -158,7 +169,7 @@ type ComponentProperties =
   | BaseProperties;
 
 // Updated ComponentItem interface
-interface ComponentItem extends Component {
+interface ComponentItem extends Omit<Component, 'properties'> {
   id: string;
   type: string;
   category: string;
@@ -169,6 +180,7 @@ interface ComponentItem extends Component {
   gasEstimate: number;
   properties: ComponentProperties;
 }
+
 const componentLibrary: ComponentItem[] = [
   // Core Components
   {

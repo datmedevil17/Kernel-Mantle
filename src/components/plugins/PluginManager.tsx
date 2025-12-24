@@ -182,7 +182,8 @@ const PluginManager: React.FC<PluginManagerProps> = ({
           content: JSON.stringify(report, null, 2),
           type: 'file',
           extension: 'json',
-          size: 0
+          size: 0,
+          language:""
         };
         
         onAddFile(reportFile);
@@ -337,7 +338,8 @@ Never commit your \`.env\` file or expose your private keys!`
           content: file.content,
           type: 'file',
           extension: file.name.split('.').pop() || 'txt',
-          size: 0
+          size: 0,
+          language:""
         };
         onAddFile(fileItem);
       });
@@ -545,7 +547,8 @@ export const deployContract = async ({
           content: file.content,
           type: 'file',
           extension: file.name.split('.').pop() || 'txt',
-          size: 0
+          size: 0,
+          language:""
         };
         onAddFile(fileItem);
       });
@@ -726,7 +729,8 @@ describe('${contractName}', function () {
           content: file.content,
           type: 'file',
           extension: file.name.split('.').pop() || 'txt',
-          size: 0
+          size: 0,
+          language:""
         };
         onAddFile(fileItem);
       });
@@ -828,7 +832,8 @@ Deploy with: \`npm run deploy\`
           content: file.content,
           type: 'file',
           extension: 'md',
-          size: 0
+          size: 0,
+          language:""
         };
         onAddFile(fileItem);
       });

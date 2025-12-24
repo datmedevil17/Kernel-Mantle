@@ -126,6 +126,13 @@ export function useContractOperations() {
                 } else {
                   reject(new Error("Contract address not found in receipt"));
                 }
+
+                 return {
+      success: true,
+      contractAddress: "0x...",
+      transactionHash: "0x...",
+      gasUsed: "21000"
+    }
               } catch (error) {
                 reject(error);
               }

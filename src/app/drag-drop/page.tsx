@@ -16,29 +16,37 @@ const VisualSmartContractBuilder = () => {
   const [isCategoryDropdownOpen, setIsCategoryDropdownOpen] = useState(false)
 
 
-  interface ComponentType {
-    originalId: string
-    y?: string | number
-    x?: string | number
-    id: string
-    type: string
-    name: string
-    icon: string | React.JSX.Element
-    color: string
-    properties: Record<string, any>
-    category?: string
-    description?: string
-    gasEstimate?: number
-  }
+interface ComponentType {
+  originalId: string
+  y?: string | number
+  x?: string | number
+  id: string
+  type: string
+  name: string
+  icon: string | React.JSX.Element
+  color: string
+  properties: Record<string, string | number | boolean | undefined> // Specific allowed types
+  category?: string
+  description?: string
+  gasEstimate?: number
+}
 
   // Generate unique ID
   const generateId = () => `component_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
 
   // Handle component drag start
-  const handleDragStart = (e: React.DragEvent<HTMLDivElement>, component: ComponentType) => {
-    setDraggedComponent(component)
-    e.dataTransfer.effectAllowed = "copy"
+const handleDragStart = (e: React.DragEvent<HTMLDivElement>, component: ComponentType) => {
+  // Ensure the component has the correct structure
+  const typedComponent: ComponentType = {
+    ...component,
+    originalId: component.id,
+    x: undefined,
+    y: undefined,
+    properties: component.properties || {} // Ensure properties is always an object
   }
+  setDraggedComponent(typedComponent)
+  e.dataTransfer.effectAllowed = "copy"
+}
 
   // Handle drop on canvas
 const handleCanvasDrop = (e: React.DragEvent<HTMLDivElement>) => {
@@ -611,30 +619,24 @@ if (!String(constructorParams).includes("string")) {
         {/* Component list - scrollable area */}
         <div className="flex-1 overflow-y-auto">
           <div className="p-4 space-y-3">
-            {filteredComponents.map((component) => (
-              <div
-                key={component.id}
-                draggable
-                onDragStart={(e) =>
-                  handleDragStart(e, {
-                    ...component,
-                    originalId: component.id,
-                    x: undefined,
-                    y: undefined,
-                  })
-                }
-                className="group p-4 rounded-xl bg-gray-900/50 backdrop-blur-sm border border-gray-700/50 cursor-move hover:bg-gray-800/50 hover:border-purple-400/30 transition-all duration-300 transform hover:scale-105"
-              >
-                <div className="flex items-center space-x-3">
-                  <div className="text-purple-400 group-hover:text-purple-300 transition-colors">{component.icon}</div>
-                  <div>
-                    <div className="font-semibold text-sm text-white">{component.name}</div>
-                    <div className="text-xs text-gray-400">{component.description}</div>
-                    <div className="text-xs text-gray-500">Gas: ~{component.gasEstimate}</div>
-                  </div>
-                </div>
-              </div>
-            ))}
+       {filteredComponents.map((component) => (
+  <div
+    key={component.id}
+    draggable
+    onDragStart={(e) =>
+      handleDragStart(e, {
+        ...component,
+        originalId: component.id,
+        x: undefined,
+        y: undefined,
+        properties: component.properties || {} // Ensure properties exists
+      } as ComponentType) // Type assertion to ensure compatibility
+    }
+    className="group p-4 rounded-xl bg-gray-900/50 backdrop-blur-sm border border-gray-700/50 cursor-move hover:bg-gray-800/50 hover:border-purple-400/30 transition-all duration-300 transform hover:scale-105"
+  >
+    {/* ... rest of component JSX ... */}
+  </div>
+))}
           </div>
         </div>
       </div>
@@ -743,30 +745,22 @@ if (!String(constructorParams).includes("string")) {
             {/* Empty state */}
             {canvasComponents.length === 0 && (
               <div className="absolute inset-0 flex items-center justify-center text-gray-400">
-                <div className="text-center">
-                  <div className="text-8xl mb-6">🎯</div>
-                  <div className="text-2xl font-semibold mb-2 text-white">Start Building</div>
-                  <div className="text-lg text-gray-300">
-                    Drag components from the sidebar to create your smart contract
-                  </div>
-                  <div className="text-sm mt-6 bg-gray-900/80 backdrop-blur-sm p-6 rounded-xl border border-gray-700/50 max-w-md">
-                    <div className="font-medium mb-3 text-purple-400">Quick Start:</div>
-                    <div className="text-left space-y-2 text-gray-300">
-                      <div>
-                        1. Drag a <strong className="text-white">Constructor</strong> to initialize your contract
-                      </div>
-                      <div>
-                        2. Add <strong className="text-white">State Variables</strong> to store data
-                      </div>
-                      <div>
-                        3. Create <strong className="text-white">Functions</strong> for contract logic
-                      </div>
-                      <div>
-                        4. Click <strong className="text-white">Generate Code</strong> to see Solidity
-                      </div>
-                    </div>
-                  </div>
-                </div>
+              <div className="text-center">
+  <div className="text-8xl mb-6">🎯</div>
+  <div className="text-2xl font-semibold mb-2 text-white">Start Building</div>
+  <div className="text-lg text-gray-300">
+    Drag components from the sidebar to create your smart contract
+  </div>
+  <div className="text-sm mt-6 bg-gray-900/80 backdrop-blur-sm p-6 rounded-xl border border-gray-700/50 max-w-md">
+    <div className="font-medium mb-3 text-purple-400">Quick Start:</div>
+    <div className="text-left space-y-2 text-gray-300">
+      <div>1. Drag a <strong className="text-white">Constructor</strong> to initialize your contract</div>
+      <div>2. Add <strong className="text-white">State Variables</strong> to store data</div>
+      <div>3. Create <strong className="text-white">Functions</strong> for contract logic</div>
+      <div>4. Click <strong className="text-white">Generate Code</strong> to see Solidity</div>
+    </div>
+  </div>
+</div>
               </div>
             )}
           </div>

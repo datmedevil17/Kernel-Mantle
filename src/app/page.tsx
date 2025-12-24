@@ -5,11 +5,12 @@ import { cn } from "@/lib/utils"
 import { MarqueeCards } from "@/components/ui/MarqueeCards"
 import Footer from "@/components/home/Footer"
 import { motion } from "framer-motion"
-import { ArrowRight, Link, Play } from "lucide-react"
+import { ArrowRight,Play } from "lucide-react"
 import { WobbleCardDemo } from "@/components/WobbleCard"
 import { FeaturesSectionDemo } from "@/components/Featuresection"
 import { HeroScrollDemo } from "@/components/HeroScrollDemo"
 import { Cover } from "@/components/ui/cover"
+import Link from "next/link"
 
 
 export default function Home() {

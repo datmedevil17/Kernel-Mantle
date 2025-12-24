@@ -33,6 +33,7 @@ constructorArgs?: (string | number | boolean | bigint)[];
   unit?: string;
   approvalRequired?: boolean;
   contract?: string;
+  contractAddress?: string;
 }
 
 export interface CompileResult {
@@ -41,7 +42,7 @@ export interface CompileResult {
   bytecodeSize?: string;
 }
 
-export interface DeployResult {
+export interface DeploymentResult {
   success: boolean;
   error?: string;
   contractAddress?: string;

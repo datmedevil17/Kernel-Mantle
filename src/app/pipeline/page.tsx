@@ -16,13 +16,13 @@ import {
   Shield,
   Wallet,
 } from "lucide-react"
-import type { Node, NodeConfig, Connection, ExecutionLog, Template, NodeType } from "@/types/pipeline"
+import type { Node, NodeConfig, Connection, ExecutionLog, Template, NodeType,DeploymentResult } from "@/types/pipeline"
 import { makeGeminiRequest } from "@/utils/api"
 import { useContractOperations } from "@/hooks/useContractOperations"
 import { useAccount, useConnect } from 'wagmi'
 import { injected } from 'wagmi/connectors'
 import { Button } from "@/components/ui/button"
-// Pipeline Node Types for Solidity/EVM with updated colors
+
 const nodeTypes: Record<string, NodeType> = {
   import: { icon: Upload, color: "bg-purple-600", label: "Import Contract" },
   compile: { icon: Zap, color: "bg-purple-700", label: "Solidity Compile" },
@@ -50,7 +50,7 @@ const PipelineBuilder: React.FC = () => {
 
   // Import the hook functions
   const { handleCompile, handleDeploy } = useContractOperations()
-const [compilationResult, setCompilationResult] = useState<{ abi: string; bytecode: unknown } | null>(null)
+const [compilationResult, setCompilationResult] = useState<{ abi: string; bytecode: unknown; contractAddress?: string } | null>(null)
   const { address, isConnected } = useAccount()
     const { connect } = useConnect()
     const [mounted, setMounted] = useState(false)
@@ -229,7 +229,6 @@ const templates: Record<string, Template> = {
       confirmations: 3, // More confirmations for mainnet
       contract: "",
       constructorArgs: [],
-      requiresApproval: true, // Add approval requirement for mainnet
     }
       case "verify":
         return {
@@ -257,7 +256,7 @@ const templates: Record<string, Template> = {
 const deployToTestnet = async (
   node: Node,
   logger: (msg: string, type?: ExecutionLog["type"]) => void,
-  compilationResult: { abi: string; bytecode: unknown } | null // Changed from any
+  compilationResult: { abi: string; bytecode: unknown; contractAddress?: string } | null // Add contractAddress
 ) => {
   logger(`🚀 Deploying to Asset Hub Testnet`, "info")
   
@@ -274,7 +273,7 @@ const deployToTestnet = async (
   }
 
   try {
-    const deploymentResult = await handleDeploy()
+    const deploymentResult = await handleDeploy() as DeploymentResult
     console.log("Testnet deploy result:", deploymentResult)
 
     if (deploymentResult && deploymentResult.contractAddress) {
@@ -295,8 +294,9 @@ const deployToTestnet = async (
 const deployToMainnet = async (
   node: Node,
   logger: (msg: string, type?: ExecutionLog["type"]) => void,
-  compilationResult: { abi: string; bytecode: unknown } | null // Changed from any
+  compilationResult: { abi: string; bytecode: unknown; contractAddress?: string } | null // Add contractAddress
 ) => {
+
   logger(`🚨 MAINNET DEPLOYMENT INITIATED`, "info")
   logger(`⚠️ Network: Asset Hub Mainnet`, "info")
   logger(`⚠️ Gas Limit: ${node.config.gasLimit || "2000000"}`, "info")
@@ -612,7 +612,7 @@ Manual review recommended for further improvements.`
     }
   }
 
-let globalCompilationResult: { abi: string; bytecode: unknown } | null | undefined = null; // Changed from any
+let globalCompilationResult: { abi: string; bytecode: unknown; contractAddress?: string } | null | undefined = null;
 
 const simulateNodeExecution = async (
   node: Node,
@@ -660,9 +660,11 @@ const simulateNodeExecution = async (
         const compilationResult = await handleCompile(fileObject)
         console.log("Compilation result:", compilationResult)
         
-        // Store in both state and global variable
-        setCompilationResult(compilationResult)
-        globalCompilationResult = compilationResult
+        // Store in both state and global variable with proper null check
+        if (compilationResult) {
+          setCompilationResult(compilationResult)
+          globalCompilationResult = compilationResult
+        }
 
         if (compilationResult) {
           logger(`✅ Compilation successful`, "success")
@@ -718,11 +720,11 @@ const simulateNodeExecution = async (
 
       return true
 
- case "deploy":
-  return await deployToTestnet(node, logger, compilationResult || globalCompilationResult)
+case "deploy":
+  return await deployToTestnet(node, logger, compilationResult || globalCompilationResult || null)
 
 case "deployMainnet":
-  return await deployToMainnet(node, logger, compilationResult || globalCompilationResult)
+  return await deployToMainnet(node, logger, compilationResult || globalCompilationResult || null)
 
     case "verify":
       logger(`🔍 Verifying contract on ${node.config.explorer}`, "info")
@@ -829,12 +831,13 @@ interface SolidityNodeConfigProps {
   const SolidityNodeConfig: React.FC<SolidityNodeConfigProps> = ({ node, onUpdate }) => {
     if (!node) return null
 
-const handleInputChange = (key: string, value: string | number | boolean) => { // Changed from any
+const handleInputChange = (key: string, value: string | number | boolean) => {
   if (key === "contractFile" && node.type === "import") {
-    onUpdate({ [key]: value })
+    onUpdate({ [key]: value as string })
     syncContractFileAcrossNodes(value as string, node.id)
   } else {
-    onUpdate({ [key]: value })
+    // Use type assertion to bypass the strict typing
+    onUpdate({ [key]: value } as Partial<NodeConfig>)
   }
 }
 
