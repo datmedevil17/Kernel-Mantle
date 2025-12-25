@@ -2,7 +2,6 @@ import { readFileSync, writeFileSync, existsSync } from 'fs';
 import { basename, join, resolve, dirname } from 'path';
 import { NextRequest, NextResponse } from 'next/server';
 
-// Define proper types for ABI and contract compilation
 interface ABIItem {
   type: string;
   name?: string;
@@ -49,7 +48,7 @@ interface CompilationResult {
 const loadResolc = async (): Promise<(sources: Record<string, { content: string }>) => Promise<CompilationOutput>> => {
   try {
     // Set WASM path before importing
-    process.env.RESOLC_WASM_PATH = join(process.cwd(), 'public', 'resolc.wasm');
+    // process.env.RESOLC_WASM_PATH = join(process.cwd(), 'public', 'resolc.wasm');
     
     const { compile } = await import('@parity/resolc');
     return compile;
@@ -60,25 +59,17 @@ const loadResolc = async (): Promise<(sources: Record<string, { content: string 
 };
 
 const resolveImportPath = (importPath: string, currentPath?: string): string => {
-  if (importPath.startsWith("@openzeppelin/contracts/")) {
+  if (!currentPath) {
+    console.warn('Current path is not provided, using default directory.');
     return resolve(
-      __dirname,
-      "..",
-      "..",
-      "..",
-      "..",
-      "..",
-      "..",
-      "openzeppelin",
-      importPath.replace("@openzeppelin/contracts/", "")
+      importPath.replace("@openzeppelin/contracts/", "openzeppelin/")
     );
   }
 
-  if (currentPath) {
+  else {
+    console.log(`Resolving import path: ${importPath} from current path: ${currentPath}`);
     return resolve(dirname(currentPath), importPath);
   }
-
-  return resolve(__dirname, "..", "..", "..", "..", "..", "openzeppelin", importPath);
 };
 
 const readSourceFile = (filePath: string): string => {
@@ -100,6 +91,8 @@ const resolveSources = (sources: Record<string, { content: string }>, parent?: s
     content = content.replace(/import\s+(\{.*?\}\s+from\s+)?["'](.*)["'];/g, (match, namedImports, importPath) => {
       console.log(`Resolving import: ${importPath}`);
       const localPath = resolveImportPath(importPath, parent);
+      // const localPath = "@/openzeppelin/token/ERC20/ERC20.sol"
+      console.log(`Resolved import path: ${localPath}`);
       const fileContent = readSourceFile(localPath);
       const filename = basename(localPath);
 
@@ -131,6 +124,7 @@ const compileFromSources = async (
     const compile = await loadResolc();
 
     // Compile using resolved sources
+    console.log(resolveSources)
     const out = await compile(resolvedSources);
     const contracts: { [contractName: string]: { abi: ABIItem[]; bytecode: string } } = {};
     const warnings: string[] = [];
@@ -231,6 +225,7 @@ export async function POST(request: NextRequest) {
       const { sources, outputDir, saveFiles = false } = body;
       
       const finalOutputDir = saveFiles ? (outputDir || './artifacts/') : undefined;
+      console.log(finalOutputDir, 'Final output directory for saving files');
       const result = await compileFromSources(sources, finalOutputDir);
       
       return NextResponse.json(result, { 

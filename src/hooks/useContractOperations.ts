@@ -39,7 +39,7 @@ export function useContractOperations() {
       }
 
       const result = response.data;
-
+      console.log("Compilation result:", result);
       if (result.error) {
         throw new Error(result.error);
       }
@@ -49,16 +49,16 @@ export function useContractOperations() {
         throw new Error("No contracts found in compilation result");
       }
 
-      const contractName = contractNames[0];
+      const contractName = selectedFile.name.replace('.sol', '')
       const contract = result.contracts[contractName];
-
+      console.log(`Compiling contract: ${contractName}`);
       if (!contract.abi) {
         throw new Error("No ABI found for compiled contract");
       }
 
-      if (!contract.bytecode) {
-        throw new Error("No bytecode found for compiled contract");
-      }
+      // if (!contract.bytecode) {
+      //   throw new Error("No bytecode found for compiled contract");
+      // }
 
       const compiledAbi = JSON.stringify(contract.abi);
       const compiledBytecode = contract.bytecode;

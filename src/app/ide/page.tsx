@@ -120,11 +120,12 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 
 contract MyToken is ERC20, Ownable {
     constructor(
+        address owner,
         string memory name,
         string memory symbol,
         uint256 initialSupply
-    ) ERC20(name, symbol) {
-        _mint(msg.sender, initialSupply * 10**decimals());
+    ) ERC20(name, symbol) Ownable(owner) {
+        _mint(owner, initialSupply * 10**decimals());
     }
 
     function mint(address to, uint256 amount) public onlyOwner {

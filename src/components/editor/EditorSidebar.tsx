@@ -81,7 +81,7 @@ const EditorSidebar = ({
   }
 
   const language = getFileLanguage(selectedFile.name)
-  const isCompiled = compilationResult && compilationResult.abi && compilationResult.bytecode
+  const isCompiled = compilationResult && compilationResult.abi
 
   const copyToClipboard = async (text: string, type: string) => {
   // Add check for browser environment
