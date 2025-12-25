@@ -220,6 +220,28 @@ export const SolidityEditor = ({ value = '', onChange }: SolidityEditorProps) =>
     setSelectedSuggestion(0);
   }, [onChange, getSuggestions]);
 
+
+    // Insert suggestion
+  const insertSuggestion = useCallback((textarea: HTMLTextAreaElement, suggestion: string) => {
+    const cursorPos = textarea.selectionStart;
+    const textBeforeCursor = textarea.value.substring(0, cursorPos);
+    const textAfterCursor = textarea.value.substring(cursorPos);
+    
+    // Find the start of the current word
+    const words = textBeforeCursor.split(/\s+/);
+    const currentWord = words[words.length - 1] || '';
+    const wordStart = cursorPos - currentWord.length;
+    
+    // Replace current word with suggestion
+    const newValue = textarea.value.substring(0, wordStart) + suggestion + textAfterCursor;
+    textarea.value = newValue;
+    textarea.selectionStart = textarea.selectionEnd = wordStart + suggestion.length;
+    
+    setShowSuggestions(false);
+    setCode(newValue);
+    onChange?.(newValue);
+  }, [onChange]);
+
   // Handle key events
   const handleKeyDown = useCallback((e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     const target = e.target as HTMLTextAreaElement;
@@ -291,28 +313,9 @@ export const SolidityEditor = ({ value = '', onChange }: SolidityEditorProps) =>
       setCode(newValue);
       onChange?.(newValue);
     }
-  }, [showSuggestions, suggestions, selectedSuggestion, onChange]);
+  }, [showSuggestions, suggestions, selectedSuggestion, onChange, insertSuggestion]);
 
-  // Insert suggestion
-  const insertSuggestion = useCallback((textarea: HTMLTextAreaElement, suggestion: string) => {
-    const cursorPos = textarea.selectionStart;
-    const textBeforeCursor = textarea.value.substring(0, cursorPos);
-    const textAfterCursor = textarea.value.substring(cursorPos);
-    
-    // Find the start of the current word
-    const words = textBeforeCursor.split(/\s+/);
-    const currentWord = words[words.length - 1] || '';
-    const wordStart = cursorPos - currentWord.length;
-    
-    // Replace current word with suggestion
-    const newValue = textarea.value.substring(0, wordStart) + suggestion + textAfterCursor;
-    textarea.value = newValue;
-    textarea.selectionStart = textarea.selectionEnd = wordStart + suggestion.length;
-    
-    setShowSuggestions(false);
-    setCode(newValue);
-    onChange?.(newValue);
-  }, [onChange]);
+
 
   // Insert template
   const insertTemplate = useCallback((template: string) => {

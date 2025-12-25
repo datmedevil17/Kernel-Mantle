@@ -197,7 +197,7 @@ const PluginManager: React.FC<PluginManagerProps> = ({
       setIsGenerating(false);
       setGeneratingType('');
     }
-  }, [selectedFile, onAddFile]);
+  }, [selectedFile, onAddFile, setIsGenerating, setGeneratingType]);
 
   // ============================================================================
   // Template Generators with Download

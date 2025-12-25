@@ -1,5 +1,5 @@
 import { Directory, File } from "@/interface/custom/folder-tree/folder-tree"
-
+import { AiFillHome, AiFillMessage, AiFillUsb } from "react-icons/ai"
 export const init: Directory = {
   id: "0",
   name: "root",
@@ -272,7 +272,6 @@ export const createProject = (projectName: string, templateKey: string | null) =
 
   return project
 }
-import { AiFillHome, AiFillMessage, AiFillUsb } from "react-icons/ai"
 
 export const navItems = [
   {
