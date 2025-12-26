@@ -35,11 +35,9 @@ export default function RootLayout({
         <ThemeProvider theme={theme}>
         <WagmiProvider config={config}>
           <QueryClientProvider client={queryClient}>
-        <Providers>
           <FloatingNavDemo/>
         {children}
         <NeuronAssistant/>
-        </Providers>
         </QueryClientProvider>
         </WagmiProvider>
         </ThemeProvider>

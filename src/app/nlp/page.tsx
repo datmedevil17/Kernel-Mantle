@@ -13,11 +13,12 @@ import {
   Book,
   Zap,
   Terminal,
+  FileText,
+  Hash
 } from "lucide-react"
 import { useWriteContract, useAccount } from "wagmi"
 
 interface ConversionResult {
-  naturalLanguage?: string
   explanation?: string
   gasEstimate?: string
   requirements?: string[]
@@ -36,7 +37,6 @@ const NaturalLanguageContractInteraction = () => {
   const { address } = useAccount()
   const { writeContract } = useWriteContract()
 
-  const [activeTab, setActiveTab] = useState("nl-to-contract")
   const [input, setInput] = useState("")
   const [result, setResult] = useState<ConversionResult | null>(null)
   const [isProcessing, setIsProcessing] = useState(false)
@@ -47,7 +47,6 @@ const NaturalLanguageContractInteraction = () => {
       id: number
       input: string
       result: ConversionResult
-      type: string
       timestamp: string
     }>
   >([])
@@ -55,7 +54,6 @@ const NaturalLanguageContractInteraction = () => {
     Array<{
       id: number
       command: string | undefined
-      type: string
       timestamp: string
     }>
   >([])
@@ -110,31 +108,6 @@ const NaturalLanguageContractInteraction = () => {
     [contractABI, sampleABI],
   )
 
-  const convertContractToNL = useCallback(
-    async (contractCode: string): Promise<ConversionResult> => {
-      const prompt = `Convert this smart contract function call to natural language.
-    
-    Contract Call: "${contractCode}"
-    Contract ABI: ${contractABI || sampleABI}
-    
-    Return a valid JSON object with:
-    {
-      "naturalLanguage": "human readable description",
-      "explanation": "detailed explanation",
-      "gasEstimate": "estimated gas usage",
-      "requirements": ["requirement1", "requirement2"]
-    }`
-
-      try {
-        return await makeGeminiRequest(prompt)
-      } catch (error) {
-        console.error("Contract to NL conversion error:", error)
-        throw new Error("Failed to convert contract call to natural language")
-      }
-    },
-    [contractABI, sampleABI],
-  )
-
   const handleProcess = useCallback(async () => {
     if (!input.trim()) return
 
@@ -142,13 +115,7 @@ const NaturalLanguageContractInteraction = () => {
     setResult(null)
 
     try {
-      let response: ConversionResult
-
-      if (activeTab === "nl-to-contract") {
-        response = await convertNLToContract(input)
-      } else {
-        response = await convertContractToNL(input)
-      }
+      const response = await convertNLToContract(input)
 
       if (!response || typeof response !== "object") {
         throw new Error("Invalid response from AI service")
@@ -160,7 +127,6 @@ const NaturalLanguageContractInteraction = () => {
         id: Date.now(),
         input,
         result: response,
-        type: activeTab,
         timestamp: new Date().toLocaleString(),
       }
       setHistory((prev) => [historyItem, ...prev.slice(0, 9)])
@@ -171,7 +137,7 @@ const NaturalLanguageContractInteraction = () => {
     } finally {
       setIsProcessing(false)
     }
-  }, [input, activeTab, convertNLToContract, convertContractToNL])
+  }, [input, convertNLToContract])
 
   const copyToClipboard = (text: string | undefined) => {
     if (text) {
@@ -183,7 +149,6 @@ const NaturalLanguageContractInteraction = () => {
     const saved = {
       id: Date.now(),
       command,
-      type: activeTab,
       timestamp: new Date().toLocaleString(),
     }
     setSavedCommands((prev) => [saved, ...prev.slice(0, 4)])
@@ -244,81 +209,180 @@ const NaturalLanguageContractInteraction = () => {
             <p className="text-sm text-gray-400">Natural language to blockchain interaction</p>
           </div>
         </div>
-        <div className="flex items-center space-x-3">
-          <button
-            onClick={() => setActiveTab("nl-to-contract")}
-            className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
-              activeTab === "nl-to-contract"
-                ? "bg-purple-600 text-white shadow-lg shadow-purple-600/25"
-                : "bg-gray-800 text-gray-300 hover:bg-gray-700 border border-gray-700"
-            }`}
-          >
-            Language → Contract
-          </button>
-          <button
-            onClick={() => setActiveTab("contract-to-nl")}
-            className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
-              activeTab === "contract-to-nl"
-                ? "bg-purple-600 text-white shadow-lg shadow-purple-600/25"
-                : "bg-gray-800 text-gray-300 hover:bg-gray-700 border border-gray-700"
-            }`}
-          >
-            Contract → Language
-          </button>
-        </div>
       </div>
 
       <div className="flex flex-1 overflow-hidden">
         {/* Main Content */}
         <div className="flex-1 flex flex-col">
           {/* Contract Configuration */}
-          <div className="p-6 bg-gray-900/50 border-b border-gray-800">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <div className="space-y-2">
-                <label className="block text-sm font-semibold text-gray-300">Contract Address</label>
-                <div className="relative">
-                  <input
-                    type="text"
-                    value={contractAddress}
-                    onChange={(e) => setContractAddress(e.target.value)}
-                    placeholder="0x1234...abcd"
-                    className="w-full px-4 py-3 bg-black border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
-                  />
-                  <div className="absolute inset-y-0 right-0 flex items-center pr-3">
-                    <Code className="w-4 h-4 text-gray-500" />
-                  </div>
-                </div>
-              </div>
-              <div className="space-y-2">
-                <label className="block text-sm font-semibold text-gray-300">Contract ABI (Optional)</label>
-                <textarea
-                  value={contractABI}
-                  onChange={(e) => setContractABI(e.target.value)}
-                  placeholder="Paste contract ABI here..."
-                  rows={3}
-                  className="w-full px-4 py-3 bg-black border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all resize-none"
-                />
+         {/* Contract Configuration */}
+<div className="p-6 bg-gray-900/50 border-b border-gray-800">
+  <div className="space-y-6">
+    {/* Contract Address */}
+    <div className="space-y-3">
+      <label className="block text-sm font-semibold text-gray-300 flex items-center space-x-2">
+        <Hash className="w-4 h-4 text-purple-400" />
+        <span>Contract Address</span>
+      </label>
+      <div className="relative">
+        <input
+          type="text"
+          value={contractAddress}
+          onChange={(e) => setContractAddress(e.target.value)}
+          placeholder="0x1234567890123456789012345678901234567890"
+          className="w-full px-4 py-3 bg-black border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all font-mono text-sm"
+        />
+        <div className="absolute inset-y-0 right-0 flex items-center space-x-2 pr-3">
+          {contractAddress && (
+            <button
+              onClick={() => navigator.clipboard.writeText(contractAddress)}
+              className="p-1 text-gray-400 hover:text-purple-400 transition-colors"
+              title="Copy address"
+            >
+              <Copy className="w-4 h-4" />
+            </button>
+          )}
+          <Code className="w-4 h-4 text-gray-500" />
+        </div>
+      </div>
+      {contractAddress && (
+        <div className="p-3 bg-black rounded-lg border border-gray-800">
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-xs text-gray-400">Address Preview</span>
+            <span className="text-xs text-purple-400">
+              {contractAddress.startsWith('0x') ? 'Valid Format' : 'Invalid Format'}
+            </span>
+          </div>
+          <div className="font-mono text-sm text-green-400 break-all">
+            {contractAddress}
+          </div>
+        </div>
+      )}
+    </div>
+
+    {/* Contract ABI */}
+    <div className="space-y-3">
+      <label className="block text-sm font-semibold text-gray-300 flex items-center justify-between">
+        <div className="flex items-center space-x-2">
+          <FileText className="w-4 h-4 text-purple-400" />
+          <span>Contract ABI (Optional)</span>
+        </div>
+        {contractABI && (
+          <button
+            onClick={() => setContractABI("")}
+            className="text-xs text-gray-400 hover:text-red-400 transition-colors"
+          >
+            Clear
+          </button>
+        )}
+      </label>
+      <div className="relative">
+        <textarea
+          value={contractABI}
+          onChange={(e) => setContractABI(e.target.value)}
+          placeholder='[{"inputs":[],"name":"function_name","outputs":[],"type":"function"}]'
+          rows={4}
+          className="w-full px-4 py-3 bg-black border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all resize-none font-mono text-sm"
+        />
+        <div className="absolute top-3 right-3 flex items-center space-x-2">
+          {contractABI && (
+            <button
+              onClick={() => navigator.clipboard.writeText(contractABI)}
+              className="p-1 text-gray-400 hover:text-purple-400 transition-colors"
+              title="Copy ABI"
+            >
+              <Copy className="w-4 h-4" />
+            </button>
+          )}
+        </div>
+      </div>
+      
+      {contractABI && (
+        <div className="space-y-3">
+          <div className="p-4 bg-black rounded-lg border border-gray-800">
+            <div className="flex items-center justify-between mb-3">
+              <span className="text-xs font-medium text-gray-400">ABI Preview</span>
+              <div className="flex items-center space-x-2">
+                {(() => {
+                  try {
+                    const parsed = JSON.parse(contractABI);
+                    return (
+                      <span className="flex items-center space-x-1 text-xs text-green-400">
+                        <CheckCircle className="w-3 h-3" />
+                        <span>Valid JSON</span>
+                      </span>
+                    );
+                  } catch {
+                    return (
+                      <span className="flex items-center space-x-1 text-xs text-red-400">
+                        <AlertCircle className="w-3 h-3" />
+                        <span>Invalid JSON</span>
+                      </span>
+                    );
+                  }
+                })()}
               </div>
             </div>
+            <div className="max-h-40 overflow-y-auto">
+              <pre className="text-xs text-gray-300 whitespace-pre-wrap break-words">
+                {(() => {
+                  try {
+                    return JSON.stringify(JSON.parse(contractABI), null, 2);
+                  } catch {
+                    return contractABI;
+                  }
+                })()}
+              </pre>
+            </div>
           </div>
+          
+          {(() => {
+            try {
+              const parsed = JSON.parse(contractABI);
+              const functions = Array.isArray(parsed) 
+                ? parsed.filter(item => item.type === 'function')
+                : parsed.type === 'function' ? [parsed] : [];
+              
+              if (functions.length > 0) {
+                return (
+                  <div className="p-4 bg-gradient-to-br from-gray-900 to-black rounded-lg border border-gray-800">
+                    <h4 className="text-xs font-medium text-purple-400 mb-3">Available Functions</h4>
+                    <div className="space-y-2">
+                      {functions.map((func, idx) => (
+                        <div key={idx} className="flex items-center justify-between p-2 bg-black rounded border border-gray-700">
+                          <span className="text-sm font-mono text-white">{func.name}</span>
+                          <span className="text-xs text-gray-400">
+                            {func.inputs?.length || 0} params
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                );
+              }
+            } catch {
+              return null;
+            }
+          })()}
+        </div>
+      )}
+    </div>
+  </div>
+</div>
 
           {/* Input Section */}
           <div className="p-6 border-b border-gray-800">
             <div className="space-y-4">
               <div>
                 <label className="block text-sm font-semibold text-gray-300 mb-3">
-                  {activeTab === "nl-to-contract" ? "Natural Language Command" : "Smart Contract Function Call"}
+                  Natural Language Command
                 </label>
                 <div className="flex gap-4">
                   <div className="flex-1">
                     <textarea
                       value={input}
                       onChange={(e) => setInput(e.target.value)}
-                      placeholder={
-                        activeTab === "nl-to-contract"
-                          ? 'e.g., "Send 100 tokens to Alice\'s wallet"'
-                          : 'e.g., "transfer(0x1234...abcd, 100000000000000000000)"'
-                      }
+                      placeholder='e.g., "Send 100 tokens to Alice wallet"'
                       rows={4}
                       className="w-full px-4 py-3 bg-black border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
                     />
@@ -335,22 +399,20 @@ const NaturalLanguageContractInteraction = () => {
               </div>
 
               {/* Sample Commands */}
-              {activeTab === "nl-to-contract" && (
-                <div>
-                  <p className="text-sm text-gray-400 mb-3">Quick examples:</p>
-                  <div className="flex flex-wrap gap-2">
-                    {sampleCommands.slice(0, 3).map((cmd, idx) => (
-                      <button
-                        key={idx}
-                        onClick={() => setInput(cmd)}
-                        className="px-3 py-2 text-xs bg-gray-800 text-gray-300 rounded-md hover:bg-gray-700 border border-gray-700 transition-all duration-200"
-                      >
-                        {cmd.slice(0, 35)}...
-                      </button>
-                    ))}
-                  </div>
+              <div>
+                <p className="text-sm text-gray-400 mb-3">Quick examples:</p>
+                <div className="flex flex-wrap gap-2">
+                  {sampleCommands.slice(0, 3).map((cmd, idx) => (
+                    <button
+                      key={idx}
+                      onClick={() => setInput(cmd)}
+                      className="px-3 py-2 text-xs bg-gray-800 text-gray-300 rounded-md hover:bg-gray-700 border border-gray-700 transition-all duration-200"
+                    >
+                      {cmd.slice(0, 35)}...
+                    </button>
+                  ))}
                 </div>
-              )}
+              </div>
             </div>
           </div>
 
@@ -377,24 +439,18 @@ const NaturalLanguageContractInteraction = () => {
                           <div className="p-1 bg-purple-500/10 rounded">
                             <CheckCircle className="w-4 h-4" />
                           </div>
-                          <span>{activeTab === "nl-to-contract" ? "Smart Contract Call" : "Natural Language"}</span>
+                          <span>Smart Contract Call</span>
                         </h3>
                         <div className="flex space-x-2">
                           <button
-                            onClick={() =>
-                              copyToClipboard(
-                                activeTab === "nl-to-contract" ? result.functionCall : result.naturalLanguage,
-                              )
-                            }
+                            onClick={() => copyToClipboard(result.functionCall)}
                             className="p-2 text-gray-400 hover:text-purple-400 hover:bg-purple-500/10 rounded-lg transition-all"
                             title="Copy to clipboard"
                           >
                             <Copy className="w-4 h-4" />
                           </button>
                           <button
-                            onClick={() =>
-                              saveCommand(activeTab === "nl-to-contract" ? result.functionCall : result.naturalLanguage)
-                            }
+                            onClick={() => saveCommand(result.functionCall)}
                             className="p-2 text-gray-400 hover:text-purple-400 hover:bg-purple-500/10 rounded-lg transition-all"
                             title="Save command"
                           >
@@ -404,7 +460,7 @@ const NaturalLanguageContractInteraction = () => {
                       </div>
                       <div className="p-4 bg-black rounded-lg border border-gray-800">
                         <code className="text-purple-300 font-mono text-sm break-all">
-                          {activeTab === "nl-to-contract" ? result.functionCall : result.naturalLanguage}
+                          {result.functionCall}
                         </code>
                       </div>
                     </div>
@@ -419,7 +475,7 @@ const NaturalLanguageContractInteraction = () => {
                     </div>
 
                     {/* Parameters */}
-                    {activeTab === "nl-to-contract" && result.parameters && (
+                    {result.parameters && (
                       <div className="p-6 bg-gradient-to-br from-gray-900 to-black rounded-xl border border-gray-800">
                         <h4 className="font-semibold text-purple-400 mb-4 flex items-center space-x-2">
                           <Settings className="w-4 h-4" />
@@ -477,17 +533,15 @@ const NaturalLanguageContractInteraction = () => {
                     </div>
 
                     {/* Execute Button */}
-                    {activeTab === "nl-to-contract" && (
-                      <div className="flex justify-center pt-4">
-                        <button
-                          onClick={executeContract}
-                          className="px-8 py-4 bg-gradient-to-r from-purple-600 to-purple-700 text-white rounded-xl hover:from-purple-700 hover:to-purple-800 flex items-center space-x-3 font-semibold shadow-lg shadow-purple-600/25 transition-all duration-200"
-                        >
-                          <Play className="w-5 h-5" />
-                          <span>Execute Contract Function</span>
-                        </button>
-                      </div>
-                    )}
+                    <div className="flex justify-center pt-4">
+                      <button
+                        onClick={executeContract}
+                        className="px-8 py-4 bg-gradient-to-r from-purple-600 to-purple-700 text-white rounded-xl hover:from-purple-700 hover:to-purple-800 flex items-center space-x-3 font-semibold shadow-lg shadow-purple-600/25 transition-all duration-200"
+                      >
+                        <Play className="w-5 h-5" />
+                        <span>Execute Contract Function</span>
+                      </button>
+                    </div>
                   </div>
                 )}
               </div>
@@ -514,9 +568,6 @@ const NaturalLanguageContractInteraction = () => {
                 >
                   <div className="text-xs text-gray-500 mb-2">{item.timestamp}</div>
                   <div className="text-sm text-white truncate mb-2">{item.input}</div>
-                  <div className="text-xs text-purple-400 font-medium">
-                    {item.type === "nl-to-contract" ? "Language → Contract" : "Contract → Language"}
-                  </div>
                 </div>
               ))}
             </div>
