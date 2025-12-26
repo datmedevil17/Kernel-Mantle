@@ -304,7 +304,7 @@ contract PriceConsumer {
   ];
 
   return (
-    <div className="min-h-screen bg-black p-8 relative pt-30">
+    <div className=" bg-black p-8 relative pt-30">
       {/* Grid background */}
       <div className="text-center mb-12 sm:mb-16 lg:mb-20 z-10">
         <h4 className="text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-black text-white mb-4 sm:mb-6 tracking-tight">

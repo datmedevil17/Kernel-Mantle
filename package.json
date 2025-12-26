@@ -45,6 +45,8 @@
     "react-icons": "^5.5.0",
     "react-syntax-highlighter": "^15.6.1",
     "simplex-noise": "^4.0.3",
+    "socket.io": "^4.8.1",
+    "socket.io-client": "^4.8.1",
     "solc": "^0.8.30",
     "sonner": "^2.0.5",
     "styled-components": "^6.1.18",
