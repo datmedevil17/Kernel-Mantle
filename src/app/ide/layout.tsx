@@ -1,25 +1,11 @@
 "use client"
 import type React from "react"
-import { useState, useContext, createContext, useCallback } from "react"
+import { useState, useCallback } from "react"
 import { IconBrandTabler, IconUserBolt, IconSettings } from "@tabler/icons-react"
-import { Sidebar,SidebarBody,SidebarLink } from "@/components/ui/sidebar"
+import { Sidebar, SidebarBody, SidebarLink } from "@/components/ui/sidebar"
 import LogoIcon from "@/components/logo"
 import Image from "next/image"
-
-// Create a wallet context
-export const WalletContext = createContext<{
-  address: string | null
-  isConnected: boolean
-  connectWallet: () => Promise<void>
-  disconnectWallet: () => void
-}>({
-  address: null,
-  isConnected: false,
-  connectWallet: async () => {},
-  disconnectWallet: () => {},
-})
-
-export const useWallet = () => useContext(WalletContext)
+import { WalletContext } from "@/components/WalletContext"
 
 interface IDELayoutProps {
   children: React.ReactNode

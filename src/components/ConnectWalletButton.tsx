@@ -1,4 +1,4 @@
-import { useWallet } from "@/app/ide/layout"
+import { useWallet } from "./WalletContext"
 
 interface ConnectWalletButtonProps {
   variant?: "default" | "small"

@@ -1,5 +1,4 @@
 import React, { useRef, useEffect, useState, useCallback } from "react";
-import { makeGeminiRequest } from "@/utils/api";
 import { Code2,X } from "lucide-react";
 
 interface SolidityEditorProps {

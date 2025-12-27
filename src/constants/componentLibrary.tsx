@@ -199,6 +199,24 @@ const componentLibrary: ComponentItem[] = [
       parameters: '',
       initCode: '// Initialize your contract here'
     }},
+
+    {
+  id: 'simple-mapping',
+  type: 'mapping',
+  category: 'storage',
+  name: 'Simple Mapping',
+  icon: <Database className="w-5 h-5" />,
+  color: 'bg-blue-100 border-blue-300 hover:bg-blue-200',
+  description: 'Key-value mapping storage',
+  gasEstimate: 20000,
+  properties: {
+    name: 'balances',
+    keyType: 'address',
+    valueType: 'uint256',
+    visibility: 'public',
+    description: 'Maps addresses to balances'
+  }
+},
   {
   
   id: 'array-return-function',

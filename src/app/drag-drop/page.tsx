@@ -53,6 +53,16 @@ const [showAiInput, setShowAiInput] = useState(false)
     e.dataTransfer.effectAllowed = "copy"
   }
 
+const getAvailableDataTypes = (): string[] => {
+  const baseTypes = ["uint256", "int256", "address", "bool", "string", "bytes32", "uint8", "uint128"];
+  const structTypes = canvasComponents
+    .filter(comp => comp.type === "struct")
+    .map(struct => String(struct.properties.name)) // Convert to string
+    .filter(name => name && name.trim() !== "" && name !== "undefined"); // Filter out invalid values
+  
+  return [...baseTypes, ...structTypes];
+};
+
   // Handle drop on canvas
   const handleCanvasDrop = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault()
@@ -857,21 +867,26 @@ const [showAiInput, setShowAiInput] = useState(false)
                 <option value="external">External</option>
               </select>
             ) : key === "dataType" ? (
-              <select
-                value={String(value || '')} 
-                onChange={(e) => updateComponentProperty(selectedComponent.id, key, e.target.value)}
-                className="w-full p-3 bg-gray-900/50 backdrop-blur-sm border border-gray-700/50 rounded-lg focus:ring-2 focus:ring-purple-400/50 focus:border-purple-400/50 transition-all text-white"
-              >
-                <option value="uint256">uint256</option>
-                <option value="int256">int256</option>
-                <option value="address">address</option>
-                <option value="bool">bool</option>
-                <option value="string">string</option>
-                <option value="bytes32">bytes32</option>
-                <option value="uint8">uint8</option>
-                <option value="uint128">uint128</option>
-              </select>
-            ) : key === "keyType" || key === "valueType" ? (
+  <select
+    value={String(value || '')} 
+    onChange={(e) => updateComponentProperty(selectedComponent.id, key, e.target.value)}
+    className="w-full p-3 bg-gray-900/50 backdrop-blur-sm border border-gray-700/50 rounded-lg focus:ring-2 focus:ring-purple-400/50 focus:border-purple-400/50 transition-all text-white"
+  >
+    {getAvailableDataTypes().map(type => (
+      <option key={type} value={type}>{type}</option>
+    ))}
+  </select>
+) : key === "keyType" || key === "valueType" ? (
+  <select
+    value={String(value || '')} 
+    onChange={(e) => updateComponentProperty(selectedComponent.id, key, e.target.value)}
+    className="w-full p-3 bg-gray-900/50 backdrop-blur-sm border border-gray-700/50 rounded-lg focus:ring-2 focus:ring-purple-400/50 focus:border-purple-400/50 transition-all text-white"
+  >
+    {getAvailableDataTypes().map(type => (
+      <option key={type} value={type}>{type}</option>
+    ))}
+  </select>
+): key === "keyType" || key === "valueType" ? (
               <select
                 value={String(value || '')} 
                 onChange={(e) => updateComponentProperty(selectedComponent.id, key, e.target.value)}
