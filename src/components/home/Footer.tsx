@@ -25,7 +25,7 @@ export default function Footer() {
         </div>
         <div className="mt-8 md:order-1 md:mt-0">
           <div className="flex items-center justify-center md:justify-start">
-            <span className="bg-gradient-to-r from-purple-500 to-indigo-500 bg-clip-text text-xl font-bold text-transparent">
+            <span className="bg-gradient-to-r from-green-500 to-emerald-500 bg-clip-text text-xl font-bold text-transparent">
               Web3 IDE
             </span>
           </div>

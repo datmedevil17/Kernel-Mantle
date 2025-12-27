@@ -38,12 +38,12 @@ export const WobbleCard = ({
         transition: "transform 0.15s cubic-bezier(0.4, 0, 0.2, 1)",
       }}
       className={cn(
-        "mx-auto w-full bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 relative rounded-xl overflow-hidden border border-slate-800/50",
+        "mx-auto w-full bg-gradient-to-br from-slate-900 via-emerald-900 to-slate-900 relative rounded-xl overflow-hidden border border-slate-800/50",
         containerClassName
       )}
     >
       <div
-        className="relative h-full [background-image:radial-gradient(circle_at_top_right,rgba(139,92,246,0.15),rgba(59,130,246,0.1),transparent_50%)] sm:mx-0 sm:rounded-xl overflow-hidden"
+        className="relative h-full [background-image:radial-gradient(circle_at_top_right,rgba(16,185,129,0.15),rgba(34,197,94,0.1),transparent_50%)] sm:mx-0 sm:rounded-xl overflow-hidden"
         style={{
           boxShadow:
             "0 25px 50px -12px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(148, 163, 184, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.05)",
@@ -59,7 +59,7 @@ export const WobbleCard = ({
           className={cn("h-full px-6 py-8 sm:px-12 sm:py-12", className)}
         >
           <Noise />
-          <ProfessionalOverlay />
+          <GreenOverlay />
           <div className="relative z-10">{children}</div>
         </motion.div>
       </div>
@@ -79,29 +79,29 @@ const Noise = () => {
   );
 };
 
-const ProfessionalOverlay = () => {
+const GreenOverlay = () => {
   return (
     <>
-      {/* Subtle grid pattern */}
+      {/* Subtle green grid pattern */}
       <div 
         className="absolute inset-0 opacity-[0.02]"
         style={{
           backgroundImage: `
-            linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px)
+            linear-gradient(rgba(0,255,0,0.08) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(0,255,0,0.08) 1px, transparent 1px)
           `,
           backgroundSize: '32px 32px'
         }}
       />
       
-      {/* Professional gradient overlay */}
+      {/* Greenish gradient overlay */}
       <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-white/5" />
       
-      {/* Corner accent */}
-      <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-violet-500/10 to-transparent rounded-bl-full" />
+      {/* Corner accent with green hue */}
+      <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-green-500/10 to-transparent rounded-bl-full" />
       
-      {/* Bottom left accent */}
-      <div className="absolute bottom-0 left-0 w-24 h-24 bg-gradient-to-tr from-blue-600/8 to-transparent rounded-tr-full" />
+      {/* Bottom left green accent */}
+      <div className="absolute bottom-0 left-0 w-24 h-24 bg-gradient-to-tr from-emerald-600/8 to-transparent rounded-tr-full" />
     </>
   );
 };

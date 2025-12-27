@@ -5,16 +5,14 @@ import { cn } from "@/lib/utils"
 import { MarqueeCards } from "@/components/ui/MarqueeCards"
 import Footer from "@/components/home/Footer"
 import { motion } from "framer-motion"
-import { ArrowRight,Play } from "lucide-react"
+import { ArrowRight, Play } from "lucide-react"
 import { WobbleCardDemo } from "@/components/WobbleCard"
 import { FeaturesSectionDemo } from "@/components/Featuresection"
 import { HeroScrollDemo } from "@/components/HeroScrollDemo"
 import { Cover } from "@/components/ui/cover"
 import Link from "next/link"
 
-
 export default function Home() {
-  // Add smooth scroll behavior
   useEffect(() => {
     document.documentElement.style.scrollBehavior = "smooth"
     return () => {
@@ -24,24 +22,19 @@ export default function Home() {
 
   return (
     <div className="bg-[#0a0a0a] min-h-screen">
-      
-      {/* Hero Section - Enhanced with uniform background */}
+
+      {/* Hero Section */}
       <section className="relative flex h-[70vh] w-full overflow-hidden antialiased md:items-center md:justify-center bg-[#0a0a0a]">
-        {/* Subtle grid pattern */}
         <div
           className={cn(
             "pointer-events-none absolute inset-0 [background-size:60px_60px] select-none opacity-[0.15]",
             "[background-image:linear-gradient(to_right,#1a1a1a_1px,transparent_1px),linear-gradient(to_bottom,#1a1a1a_1px,transparent_1px)]",
           )}
         />
-
-        {/* Enhanced spotlight with better positioning */}
         <div className="absolute inset-0">
           <Spotlight />
         </div>
-
-        {/* Subtle radial gradient for depth */}
-        <div className="absolute inset-0 bg-gradient-radial from-purple-900/5 via-transparent to-transparent opacity-50" />
+        <div className="absolute inset-0 bg-gradient-radial from-green-900/5 via-transparent to-transparent opacity-50" />
 
         <motion.div
           className="relative z-10 mx-auto w-full max-w-7xl p-4 pt-20 md:pt-0"
@@ -63,8 +56,7 @@ export default function Home() {
             animate={{ opacity: 1 }}
             transition={{ delay: 0.6, duration: 1 }}
           >
-            Build, deploy, and collaborate on decentralized projects with ease. The future of blockchain development is
-            here.
+            Build, deploy, and collaborate on decentralized projects with ease. The future of blockchain development is here.
           </motion.p>
 
           <motion.div
@@ -73,19 +65,17 @@ export default function Home() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.9, duration: 0.8 }}
           >
-            {/* Primary CTA Button */}
             <Link
               href="/drag-drop"
-              className="group relative inline-flex items-center justify-center px-8 py-4 text-base font-medium text-white transition-all duration-300 ease-out bg-gradient-to-r from-gray-800 to-gray-900 hover:from-gray-700 hover:to-gray-800 rounded-xl border border-purple-500/20 hover:border-purple-400/40 shadow-lg hover:shadow-purple-500/10 hover:shadow-xl"
+              className="group relative inline-flex items-center justify-center px-8 py-4 text-base font-medium text-white transition-all duration-300 ease-out bg-gradient-to-r from-gray-800 to-gray-900 hover:from-gray-700 hover:to-gray-800 rounded-xl border border-green-500/20 hover:border-green-400/40 shadow-lg hover:shadow-green-500/10 hover:shadow-xl"
             >
               <span className="relative z-10 flex items-center gap-2">
                 Get Started
                 <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
               </span>
-              <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-purple-600/10 to-indigo-600/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+              <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-green-600/10 to-emerald-600/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
             </Link>
 
-            {/* Secondary Button */}
             <a
               href="#features"
               className="group relative inline-flex items-center justify-center px-8 py-4 text-base font-medium text-neutral-300 transition-all duration-300 ease-out bg-gray-900/50 hover:bg-gray-800/60 rounded-xl border border-gray-700/50 hover:border-gray-600/60 backdrop-blur-sm"
@@ -98,18 +88,16 @@ export default function Home() {
           </motion.div>
         </motion.div>
 
-        {/* Smooth transition to next section */}
         <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-[#0a0a0a] to-transparent" />
       </section>
-<FeaturesSectionDemo/>      
 
-<HeroScrollDemo/>
+      <FeaturesSectionDemo />
+      <HeroScrollDemo />
 
-      {/* Contracts Section - Enhanced with better spacing */}
+      {/* Contracts Section */}
       <section className="relative py-32 px-6 sm:px-12 overflow-hidden bg-[#0a0a0a]">
-        {/* Subtle background pattern */}
         <div className="absolute inset-0 opacity-[0.02]">
-          <div className="absolute inset-0 bg-gradient-to-br from-purple-500 via-transparent to-indigo-500" />
+          <div className="absolute inset-0 bg-gradient-to-br from-green-500 via-transparent to-emerald-500" />
         </div>
 
         <motion.div
@@ -126,15 +114,12 @@ export default function Home() {
         </motion.div>
       </section>
 
-      {/* CTA Section - Enhanced with modern styling */}
+      {/* CTA Section */}
       <section className="relative py-32 px-6 sm:px-12 bg-[#0a0a0a]">
-      <WobbleCardDemo/>
-      
+        <WobbleCardDemo />
       </section>
 
-      {/* Footer */}
       <Footer />
     </div>
   )
 }
-

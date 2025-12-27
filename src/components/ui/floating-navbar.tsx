@@ -132,12 +132,12 @@ export const FloatingNav: React.FC<FloatingNavProps> = ({ navItems, className })
               />
             </motion.div>
             <motion.span 
-              className="text-lg font-semibold text-white"
+              className="text-lg font-semibold text-green-500"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.3, delay: 0.2 }}
             >
-              Polkadot
+              Morph
             </motion.span>
           </motion.div>
         </motion.div>

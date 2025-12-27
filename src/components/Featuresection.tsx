@@ -23,13 +23,13 @@ export function FeaturesSectionDemo() {
     {
       title: "Learn Blockchain Development",
       description:
-        "Master Polkadot development with our comprehensive tutorials and community-driven learning resources.",
+        "Master MorphI2 development with our comprehensive tutorials and community-driven learning resources.",
       skeleton: <SkeletonThree />,
       className:
         "col-span-1 lg:col-span-3 lg:border-r border-neutral-800",
     },
     {
-      title: "Deploy to Polkadot Network",
+      title: "Deploy to MorphI2 Network",
       description:
         "Deploy your smart contracts to mainnet, testnet, or local networks with one-click deployment infrastructure.",
       skeleton: <SkeletonFour />,
