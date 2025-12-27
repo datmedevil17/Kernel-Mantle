@@ -305,7 +305,6 @@ const NaturalLanguageContractInteraction = () => {
               <div className="flex items-center space-x-2">
                 {(() => {
                   try {
-                    const parsed = JSON.parse(contractABI);
                     return (
                       <span className="flex items-center space-x-1 text-xs text-green-400">
                         <CheckCircle className="w-3 h-3" />

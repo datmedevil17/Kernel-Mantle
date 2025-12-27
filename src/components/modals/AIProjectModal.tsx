@@ -143,7 +143,7 @@ export function AIProjectModal({ isOpen, onClose, onGenerate }: AIProjectModalPr
                     className="text-left p-3 rounded-lg bg-zinc-800/30 border border-zinc-700/30 text-gray-300 text-sm hover:bg-zinc-800/50 hover:border-zinc-600/50 transition-all duration-200 group"
                   >
                     <span className="group-hover:text-white transition-colors">
-                      "{example}"
+                      &quot;{example}&quot;
                     </span>
                   </button>
                 ))}

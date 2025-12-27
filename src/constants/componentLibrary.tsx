@@ -14,6 +14,7 @@ import {
   Users, 
   Calendar, 
   TrendingUp 
+  
 } from 'lucide-react';
 
 interface Category {
@@ -197,8 +198,40 @@ const componentLibrary: ComponentItem[] = [
       payable: false, 
       parameters: '',
       initCode: '// Initialize your contract here'
-    }
-  },
+    }},
+  {
+  
+  id: 'array-return-function',
+  type: 'function',
+  category: 'core', 
+  name: 'Array Return Function',
+  icon: <Database className="w-5 h-5" />,
+  color: 'bg-blue-100 border-blue-300 hover:bg-blue-200',
+  description: 'Function returning dynamic arrays',
+  gasEstimate: 45000,
+  properties: {
+    name: 'getItems',
+    visibility: 'public',
+    view: true,
+    returns: 'Item[] memory',
+    arrayType: 'struct',
+    filterLogic: 'Custom filtering logic'
+  }},
+  {
+  id: 'enum-definition',
+  type: 'enum',
+  category: 'core',
+  name: 'Enum Definition',
+  icon: <Database className="w-5 h-5" />,
+  color: 'bg-slate-100 border-slate-300 hover:bg-slate-200',
+  description: 'Define enumerated types',
+  gasEstimate: 0,
+  properties: {
+    name: 'Status',
+    values: 'PENDING, ACTIVE, INACTIVE',
+    visibility: 'public'
+  }
+},
   {
     id: 'state-variable',
     type: 'variable',

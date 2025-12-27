@@ -2,7 +2,8 @@
 import type React from "react"
 import { useState } from "react"
 import { componentLibrary, categories } from "@/constants/componentLibrary"
-import { Database, Radio, Zap, Map, Cpu, X, Copy, Check, ChevronDown } from "lucide-react"
+import { Database, Radio, Zap, Map, Cpu, X, Copy, Check, ChevronDown,Sparkles,Loader2 } from "lucide-react"
+import { makeGeminiRequest } from "@/utils/api"
 
 const VisualSmartContractBuilder = () => {
   const [canvasComponents, setCanvasComponents] = useState<ComponentType[]>([])
@@ -14,6 +15,10 @@ const VisualSmartContractBuilder = () => {
   const [isCodeModalOpen, setIsCodeModalOpen] = useState(false)
   const [copied, setCopied] = useState(false)
   const [isCategoryDropdownOpen, setIsCategoryDropdownOpen] = useState(false)
+  const [aiRequirements, setAiRequirements] = useState("")
+const [isGeneratingFunction, setIsGeneratingFunction] = useState(false)
+const [showAiInput, setShowAiInput] = useState(false)
+
 
 
   interface ComponentType {
@@ -125,6 +130,50 @@ const VisualSmartContractBuilder = () => {
       console.error("Failed to copy text: ", err)
     }
   }
+
+  const generateFunctionBody = async () => {
+  if (!selectedComponent || !aiRequirements.trim()) return
+  
+  setIsGeneratingFunction(true)
+  
+  try {
+    // Prepare context from existing components
+    const contractContext = {
+      stateVariables: canvasComponents.filter(c => c.type === "variable"),
+      functions: canvasComponents.filter(c => c.type === "function"),
+      events: canvasComponents.filter(c => c.type === "event"),
+      modifiers: canvasComponents.filter(c => c.type === "modifier")
+    }
+    
+    const prompt = `
+    Generate a Solidity function body based on these requirements: "${aiRequirements}"
+    
+    Context of existing contract components:
+    - State Variables: ${JSON.stringify(contractContext.stateVariables.map(v => ({ name: v.properties.name, type: v.properties.dataType })))}
+    - Existing Functions: ${JSON.stringify(contractContext.functions.map(f => ({ name: f.properties.name, params: f.properties.parameters })))}
+    
+    Function details:
+    - Name: ${selectedComponent.properties.name}
+    - Parameters: ${selectedComponent.properties.parameters}
+    - Visibility: ${selectedComponent.properties.visibility}
+    
+    Please provide only the function body code (without function declaration), following Solidity best practices.
+    `
+    
+    const response = await makeGeminiRequest(prompt)
+    
+    if (response) {
+      updateComponentProperty(selectedComponent.id, "functionBody", response.trim())
+      setAiRequirements("")
+      setShowAiInput(false)
+    }
+    
+  } catch (error) {
+    console.error("Error generating function body:", error)
+  } finally {
+    setIsGeneratingFunction(false)
+  }
+}
 
   // Generate Solidity code (keeping the existing comprehensive function)
   const generateSolidityCode = () => {
@@ -502,6 +551,7 @@ const VisualSmartContractBuilder = () => {
               visibility: match[3] || "public",
               modifiers: match[4] || "",
               returns: match[5] || "",
+              functionBody:""
             },
           }
         } else if ((match = line.match(patterns.event))) {
@@ -770,103 +820,160 @@ const VisualSmartContractBuilder = () => {
           </div>
 
           {/* Properties Panel */}
-          {selectedComponent && (
-            <div className="w-80 bg-black/90 backdrop-blur-xl border-l border-gray-800/50 flex flex-col">
-              <div className="p-6 border-b border-gray-800/50">
-                <div className="flex items-center justify-between">
-                  <h3 className="font-bold text-lg flex items-center space-x-3 text-white">
-                    <span className="text-purple-400">{selectedComponent.icon}</span>
-                    <span>{selectedComponent.name}</span>
-                  </h3>
+       {selectedComponent && (
+  <div className="w-80 h-[75vh] bg-black/90 backdrop-blur-xl border-l border-gray-800/50 flex flex-col">
+    <div className="p-6 border-b border-gray-800/50">
+      <div className="flex items-center justify-between">
+        <h3 className="font-bold text-lg flex items-center space-x-3 text-white">
+          <span className="text-purple-400">{selectedComponent.icon}</span>
+          <span>{selectedComponent.name}</span>
+        </h3>
+        <button
+          onClick={() => setSelectedComponent(null)}
+          className="text-gray-400 hover:text-white transition-colors"
+        >
+          <X className="w-5 h-5" />
+        </button>
+      </div>
+      <div className="text-sm text-gray-400 mt-1 capitalize">{selectedComponent.type}</div>
+    </div>
+    
+    <div className="flex-1 overflow-y-auto min-h-0">
+      <div className="p-6 space-y-4">
+        {Object.entries(selectedComponent.properties).map(([key, value]) => (
+          <div key={key}>
+            <label className="block text-sm font-medium text-gray-300 mb-2 capitalize">
+              {key.replace(/([A-Z])/g, " $1").trim()}
+            </label>
+            {key === "visibility" ? (
+              <select
+                value={String(value || '')} 
+                onChange={(e) => updateComponentProperty(selectedComponent.id, key, e.target.value)}
+                className="w-full p-3 bg-gray-900/50 backdrop-blur-sm border border-gray-700/50 rounded-lg focus:ring-2 focus:ring-purple-400/50 focus:border-purple-400/50 transition-all text-white"
+              >
+                <option value="public">Public</option>
+                <option value="private">Private</option>
+                <option value="internal">Internal</option>
+                <option value="external">External</option>
+              </select>
+            ) : key === "dataType" ? (
+              <select
+                value={String(value || '')} 
+                onChange={(e) => updateComponentProperty(selectedComponent.id, key, e.target.value)}
+                className="w-full p-3 bg-gray-900/50 backdrop-blur-sm border border-gray-700/50 rounded-lg focus:ring-2 focus:ring-purple-400/50 focus:border-purple-400/50 transition-all text-white"
+              >
+                <option value="uint256">uint256</option>
+                <option value="int256">int256</option>
+                <option value="address">address</option>
+                <option value="bool">bool</option>
+                <option value="string">string</option>
+                <option value="bytes32">bytes32</option>
+                <option value="uint8">uint8</option>
+                <option value="uint128">uint128</option>
+              </select>
+            ) : key === "keyType" || key === "valueType" ? (
+              <select
+                value={String(value || '')} 
+                onChange={(e) => updateComponentProperty(selectedComponent.id, key, e.target.value)}
+                className="w-full p-3 bg-gray-900/50 backdrop-blur-sm border border-gray-700/50 rounded-lg focus:ring-2 focus:ring-purple-400/50 focus:border-purple-400/50 transition-all text-white"
+              >
+                <option value="address">address</option>
+                <option value="uint256">uint256</option>
+                <option value="string">string</option>
+                <option value="bytes32">bytes32</option>
+                <option value="bool">bool</option>
+              </select>
+            ) : key === "payable" ? (
+              <label className="flex items-center space-x-3 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={Boolean(value)}
+                  onChange={(e) => updateComponentProperty(selectedComponent.id, key, e.target.checked)}
+                  className="w-4 h-4 text-purple-400 bg-gray-900 border-gray-600 rounded focus:ring-purple-400 focus:ring-2"
+                />
+                <span className="text-sm text-gray-300">Function can receive Ether</span>
+              </label>
+            ) : key === "functionBody" ? (
+              <div className="space-y-3">
+                <textarea
+                  value={String(value || '')}
+                  onChange={(e) => updateComponentProperty(selectedComponent.id, key, e.target.value)}
+                  className="w-full p-3 bg-gray-900/50 backdrop-blur-sm border border-gray-700/50 rounded-lg focus:ring-2 focus:ring-purple-400/50 focus:border-purple-400/50 transition-all text-white placeholder-gray-500 font-mono text-sm"
+                  placeholder="Enter function implementation or use AI generation below"
+                  rows={6}
+                />
+                
+                {/* AI Generation Section */}
+                <div className="border-t border-gray-700/50 pt-3">
                   <button
-                    onClick={() => setSelectedComponent(null)}
-                    className="text-gray-400 hover:text-white transition-colors"
+                    onClick={() => setShowAiInput(!showAiInput)}
+                    className="flex items-center gap-2 text-sm text-purple-400 hover:text-purple-300 transition-colors mb-3"
                   >
-                    <X className="w-5 h-5" />
+                    <Sparkles className="w-4 h-4" />
+                    AI Function Generation
+                    <ChevronDown className={`w-4 h-4 transition-transform ${showAiInput ? "rotate-180" : ""}`} />
                   </button>
-                </div>
-                <div className="text-sm text-gray-400 mt-1 capitalize">{selectedComponent.type}</div>
-              </div>
-              <div className="flex-1 overflow-y-auto p-6 space-y-4 scrollbar-thin scrollbar-thumb-gray-600 scrollbar-track-transparent">
-                {Object.entries(selectedComponent.properties).map(([key, value]) => (
-                  <div key={key}>
-                    <label className="block text-sm font-medium text-gray-300 mb-2 capitalize">
-                      {key.replace(/([A-Z])/g, " $1").trim()}
-                    </label>
-                    {key === "visibility" ? (
-                      <select
-                        value={String(value || '')} onChange={(e) => updateComponentProperty(selectedComponent.id, key, e.target.value)}
-                        className="w-full p-3 bg-gray-900/50 backdrop-blur-sm border border-gray-700/50 rounded-lg focus:ring-2 focus:ring-purple-400/50 focus:border-purple-400/50 transition-all text-white"
-                      >
-                        <option value="public">Public</option>
-                        <option value="private">Private</option>
-                        <option value="internal">Internal</option>
-                        <option value="external">External</option>
-                      </select>
-                    ) : key === "dataType" ? (
-                      <select
-                        value={String(value || '')} onChange={(e) => updateComponentProperty(selectedComponent.id, key, e.target.value)}
-                        className="w-full p-3 bg-gray-900/50 backdrop-blur-sm border border-gray-700/50 rounded-lg focus:ring-2 focus:ring-purple-400/50 focus:border-purple-400/50 transition-all text-white"
-                      >
-                        <option value="uint256">uint256</option>
-                        <option value="int256">int256</option>
-                        <option value="address">address</option>
-                        <option value="bool">bool</option>
-                        <option value="string">string</option>
-                        <option value="bytes32">bytes32</option>
-                        <option value="uint8">uint8</option>
-                        <option value="uint128">uint128</option>
-                      </select>
-                    ) : key === "keyType" || key === "valueType" ? (
-                      <select
-                        value={String(value || '')} onChange={(e) => updateComponentProperty(selectedComponent.id, key, e.target.value)}
-                        className="w-full p-3 bg-gray-900/50 backdrop-blur-sm border border-gray-700/50 rounded-lg focus:ring-2 focus:ring-purple-400/50 focus:border-purple-400/50 transition-all text-white"
-                      >
-                        <option value="address">address</option>
-                        <option value="uint256">uint256</option>
-                        <option value="string">string</option>
-                        <option value="bytes32">bytes32</option>
-                        <option value="bool">bool</option>
-                      </select>
-                    ) : key === "payable" ? (
-                      <label className="flex items-center space-x-3 cursor-pointer">
-                        <input
-                          type="checkbox"
-                          checked={Boolean(value)}
-                          onChange={(e) => updateComponentProperty(selectedComponent.id, key, e.target.checked)}
-                          className="w-4 h-4 text-purple-400 bg-gray-900 border-gray-600 rounded focus:ring-purple-400 focus:ring-2"
-                        />
-                        <span className="text-sm text-gray-300">Function can receive Ether</span>
-                      </label>
-                    ) : (
-                      <input
-                        type="text"
-                        value={String(value || '')} onChange={(e) => updateComponentProperty(selectedComponent.id, key, e.target.value)}
-                        className="w-full p-3 bg-gray-900/50 backdrop-blur-sm border border-gray-700/50 rounded-lg focus:ring-2 focus:ring-purple-400/50 focus:border-purple-400/50 transition-all text-white placeholder-gray-500"
-                        placeholder={`Enter ${key}`}
+                  {showAiInput && (
+                    <div className="space-y-3">
+                      <textarea
+                        value={aiRequirements}
+                        onChange={(e) => setAiRequirements(e.target.value)}
+                        className="w-full p-3 bg-gray-800/50 backdrop-blur-sm border border-gray-600/50 rounded-lg focus:ring-2 focus:ring-purple-400/50 focus:border-purple-400/50 transition-all text-white placeholder-gray-400 text-sm"
+                        placeholder="Describe what this function should do... e.g., 'Transfer tokens between addresses with validation' or 'Calculate compound interest based on time period'"
+                        rows={3}
                       />
-                    )}
-                  </div>
-                ))}
-
-                {/* Component-specific help text */}
-                <div className="mt-6 p-4 bg-purple-400/10 backdrop-blur-sm rounded-lg border border-purple-400/20">
-                  <div className="text-sm text-purple-300">
-                    <strong>💡 Tip:</strong>
-                    {selectedComponent.type === "function" &&
-                      " Functions define the behavior of your contract. Make them external if called by users."}
-                    {selectedComponent.type === "variable" &&
-                      " State variables store data permanently on the blockchain."}
-                    {selectedComponent.type === "event" &&
-                      " Events let external applications listen to contract activities."}
-                    {selectedComponent.type === "modifier" &&
-                      " Modifiers add access control and validation to functions."}
-                    {selectedComponent.type === "template" && " Templates provide pre-built contract functionality."}
-                  </div>
+                      <button
+                        onClick={generateFunctionBody}
+                        disabled={isGeneratingFunction || !aiRequirements.trim()}
+                        className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-purple-500 to-violet-500 text-white rounded-lg hover:from-purple-600 hover:to-violet-600 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed text-sm font-medium"
+                      >
+                        {isGeneratingFunction ? (
+                          <>
+                            <Loader2 className="w-4 h-4 animate-spin" />
+                            Generating...
+                          </>
+                        ) : (
+                          <>
+                            <Sparkles className="w-4 h-4" />
+                            Generate Function Body
+                          </>
+                        )}
+                      </button>
+                    </div>
+                  )}
                 </div>
               </div>
-            </div>
-          )}
+            ) : (
+              <input
+                type="text"
+                value={String(value || '')} 
+                onChange={(e) => updateComponentProperty(selectedComponent.id, key, e.target.value)}
+                className="w-full p-3 bg-gray-900/50 backdrop-blur-sm border border-gray-700/50 rounded-lg focus:ring-2 focus:ring-purple-400/50 focus:border-purple-400/50 transition-all text-white placeholder-gray-500"
+                placeholder={`Enter ${key}`}
+              />
+            )}
+          </div>
+        ))}
+
+        {/* Component-specific help text */}
+        <div className="mt-6 p-4 bg-purple-400/10 backdrop-blur-sm rounded-lg border border-purple-400/20">
+          <div className="text-sm text-purple-300">
+            <strong>💡 Tip:</strong>
+            {selectedComponent.type === "function" &&
+              " Functions define the behavior of your contract. Make them external if called by users."}
+            {selectedComponent.type === "variable" &&
+              " State variables store data permanently on the blockchain."}
+            {selectedComponent.type === "event" &&
+              " Events let external applications listen to contract activities."}
+            {selectedComponent.type === "modifier" &&
+              " Modifiers add access control and validation to functions."}
+            {selectedComponent.type === "template" && " Templates provide pre-built contract functionality."}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+)}
         </div>
 
         {/* Code Generation Modal */}

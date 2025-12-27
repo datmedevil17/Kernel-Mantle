@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Send, MessageCircle, X, Sparkles, Bot, User } from 'lucide-react';
+import { makeGeminiRequest } from '@/utils/api';
 
 export const NeuronAssistant = () => {
   const [input, setInput] = useState('');
@@ -28,26 +29,29 @@ export const NeuronAssistant = () => {
   const handleSubmit = async () => {
     if (!input.trim()) return;
 
-    const userMessage = input.trim();
+    const userMessage = input.trim() + " Keep the response within 2-3 lines.";
     setInput('');
     setMessages(prev => [...prev, { type: 'user', content: userMessage }]);
     setIsTyping(true);
 
-    try {
-      // Simulate AI response with delay
-      setTimeout(() => {
-        const responses = [
-          "I understand your question. Let me help you with that!",
-          "That's an interesting point. Here's what I think...",
-          "Great question! Based on the information available...",
-          "I'd be happy to assist you with that. Here's my response..."
-        ];
-        const randomResponse = responses[Math.floor(Math.random() * responses.length)];
-        
-        setMessages(prev => [...prev, { type: 'bot', content: randomResponse }]);
-        setIsTyping(false);
-      }, 1500);
-    } catch {
+   try {
+      const response = await makeGeminiRequest(userMessage);
+      
+      // Handle different response formats
+      let botMessage = '';
+      if (typeof response === 'string') {
+        botMessage = response;
+      } else if (response && typeof response === 'object') {
+        // If response is an object with content property
+        botMessage = response.content || response.message || JSON.stringify(response);
+      } else {
+        botMessage = 'Sorry, I received an unexpected response format.';
+      }
+      
+      setMessages(prev => [...prev, { type: 'bot', content: botMessage }]);
+      setIsTyping(false);
+    } catch (error) {
+      console.error('Error calling Gemini API:', error);
       setMessages(prev => [...prev, { type: 'bot', content: 'Sorry, I encountered an error. Please try again.' }]);
       setIsTyping(false);
     }

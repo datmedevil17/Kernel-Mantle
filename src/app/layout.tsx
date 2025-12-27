@@ -1,6 +1,5 @@
 'use client';
 import "./globals.css";
-import Providers from "@/providers/provider";
 import { WagmiProvider } from "wagmi";
 import {config} from "@/config/config"
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -35,9 +34,11 @@ export default function RootLayout({
         <ThemeProvider theme={theme}>
         <WagmiProvider config={config}>
           <QueryClientProvider client={queryClient}>
+            <div>
           <FloatingNavDemo/>
         {children}
         <NeuronAssistant/>
+        </div>
         </QueryClientProvider>
         </WagmiProvider>
         </ThemeProvider>

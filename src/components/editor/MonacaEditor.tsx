@@ -215,6 +215,7 @@ const [snipButtonPosition, setSnipButtonPosition] = useState({ x: 0, y: 0 });
 const [showCodeSnippet, setShowCodeSnippet] = useState(false);
 const [selectedLibrary, setSelectedLibrary] = useState<'ethers' | 'web3' | 'wagmi' | null>(null);
 
+
 const generateCodeSnippet = useCallback((functionSignature: string, library: 'ethers' | 'web3' | 'wagmi') => {
   // Parse function name and parameters
   const functionMatch = functionSignature.match(/function\s+(\w+)\s*\(([^)]*)\)/);
