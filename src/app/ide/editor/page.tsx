@@ -98,7 +98,7 @@ export default function EditorPage() {
         <EditorSidebar
           selectedFile={selectedFile}
           onCompile={() => handleCompile(selectedFile)}
-          onDeploy={handleDeploy}
+  onDeploy={(constructorArgs) => handleDeploy(constructorArgs || [])}
           compilationResult={compilationResult || undefined}
           isCompiling={isCompiling}
           deployedAddress={deployedAddress}

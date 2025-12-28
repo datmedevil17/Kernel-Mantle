@@ -18,7 +18,7 @@ const FAUCET_URL = "https://faucet.polkadot.io/?parachain=1111"
 interface EditorSidebarProps {
   selectedFile: FileItem | null
   onCompile: () => void
-  onDeploy: () => void
+  onDeploy: (constructorArgs?: string[]) => void;
  
   compilationResult?: {
     abi: string;
@@ -253,7 +253,8 @@ const getConstructorParams = (abi: string) => {
             toast.error("Please provide all constructor arguments");
             return;
           }
-          onDeploy();
+          // Pass the args to onDeploy
+          onDeploy(args); // This is the key change
         }}
         disabled={!isCompiled}
         className={`w-full px-4 py-3 text-sm rounded-xl transition-all duration-200 flex items-center justify-center space-x-2 font-medium shadow-md hover:shadow-lg ${

@@ -1,9 +1,9 @@
 import { http, createConfig } from 'wagmi'
-import { myCustomChain } from '@/chains/chain'
+import { morphHolesky } from 'viem/chains'
 
 export const config = createConfig({
-  chains: [myCustomChain],
+  chains: [morphHolesky, ],
   transports: {
-    [myCustomChain.id]: http(),
+    [morphHolesky.id]: http(),
   },
 })

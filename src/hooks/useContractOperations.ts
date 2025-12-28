@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react';
 import axios from 'axios';
-import { useDeployContract, useSwitchChain, usePublicClient } from 'wagmi';
+import { useDeployContract, useSwitchChain, usePublicClient, useAccount } from 'wagmi';
 import { File } from '@/types/file';
 
 interface CompilationResult {
@@ -14,6 +14,7 @@ interface DeploymentResult {
   contractAddress: string;
   transactionHash: string;
   gasUsed: string;
+  error?: string;
 }
 
 export function useContractOperations() {
@@ -24,6 +25,7 @@ export function useContractOperations() {
   const { deployContract } = useDeployContract();
   const { switchChain } = useSwitchChain();
   const publicClient = usePublicClient();
+  const { isConnected } = useAccount();
 
   const handleCompile = useCallback(async (selectedFile: File | null): Promise<CompilationResult | null> => {
     if (!selectedFile) {
@@ -193,87 +195,175 @@ export function useContractOperations() {
     }
   }, []);
 
-  const handleDeploy = useCallback(async (): Promise<DeploymentResult> => {
-    return new Promise(async (resolve, reject) => {
-      try {
-        if (!compilationResult || compilationResult.error) {
-          throw new Error("No valid compilation result available for deployment");
-        }
-
-        if (!compilationResult.bytecode) {
-          throw new Error("No bytecode available for deployment");
-        }
-
-        console.log("Switching to chain 420420421");
-        await switchChain({ chainId: 420420421 });
-
-        // Ensure bytecode has 0x prefix for deployment
-        const deployBytecode = compilationResult.bytecode.startsWith('0x') 
-          ? compilationResult.bytecode 
-          : `0x${compilationResult.bytecode}`;
-
-        const deployAbi = compilationResult.abi ? JSON.parse(compilationResult.abi) : [];
-
-        console.log("Deploying contract with:", { 
-          abiLength: deployAbi.length, 
-          bytecodeLength: deployBytecode.length 
-        });
-
-        await deployContract(
-          {
-            abi: deployAbi,
-            bytecode: deployBytecode as `0x${string}`,
-            args: [], 
-          },
-          {
-            onError: (error) => {
-              console.error("Deployment error:", error);
-              reject(new Error(`Deployment failed: ${error.message}`));
-            },
-            onSuccess: async (transactionHash) => {
-              console.log("Contract deployed successfully, tx hash:", transactionHash);
-              
-              if (!publicClient) {
-                reject(new Error("Public client not available"));
-                return;
-              }
-
-              try {
-                console.log("Waiting for transaction receipt...");
-                const receipt = await publicClient.waitForTransactionReceipt({ 
-                  hash: transactionHash,
-                  timeout: 60000 // 60 second timeout
-                });
-                
-                console.log("Transaction receipt:", receipt);
-
-                if (receipt.contractAddress) {
-                  setDeployedAddress(receipt.contractAddress);
-                  
-                  const result: DeploymentResult = {
-                    success: true,
-                    contractAddress: receipt.contractAddress,
-                    transactionHash: transactionHash,
-                    gasUsed: receipt.gasUsed?.toString() || "0"
-                  };
-                  
-                  resolve(result);
-                } else {
-                  reject(new Error("Contract address not found in transaction receipt"));
-                }
-              } catch (receiptError) {
-                console.error("Error waiting for receipt:", receiptError);
-                reject(new Error(`Failed to get transaction receipt: ${receiptError}`));
-              }
-            },
-          }
-        );
-      } catch (error) {
-        console.error("Deploy error:", error);
-        reject(error instanceof Error ? error : new Error("Unknown deployment error"));
+const handleDeploy = useCallback(async (constructorArgs: string[] = []): Promise<DeploymentResult> => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      // Check wallet connection first
+      if (!isConnected) {
+        throw new Error("Wallet not connected. Please connect your wallet first.");
       }
-    });
-  }, [compilationResult, switchChain, deployContract, publicClient]);
+
+      if (!compilationResult || compilationResult.error) {
+        throw new Error("No valid compilation result available for deployment");
+      }
+
+      if (!compilationResult.bytecode) {
+        throw new Error("No bytecode available for deployment");
+      }
+
+      console.log("Attempting deployment...");
+
+      // Switch to the correct chain for Asset Hub Testnet
+      // Asset Hub Westend Testnet chain ID is 1000 (adjust if needed)
+      try {
+        await switchChain({ chainId: 1000 }); // Asset Hub chain ID
+        console.log("Switched to Asset Hub chain");
+      } catch (chainError) {
+        console.warn("Chain switch failed, continuing with current chain:", chainError);
+        // Continue with deployment even if chain switch fails
+      }
+
+      // Ensure bytecode has 0x prefix for deployment
+      let deployBytecode = compilationResult.bytecode;
+      if (!deployBytecode.startsWith('0x')) {
+        deployBytecode = `0x${deployBytecode}`;
+      }
+
+      // Validate bytecode
+      if (deployBytecode.length < 4) {
+        throw new Error("Invalid bytecode: too short");
+      }
+
+      const deployAbi = compilationResult.abi ? JSON.parse(compilationResult.abi) : [];
+      
+      // Find constructor in ABI to get parameter types
+      const constructorAbi = deployAbi.find((item: any) => item.type === 'constructor');
+      
+      // Convert string arguments to proper types
+      let processedArgs: any[] = [];
+      if (constructorAbi && constructorAbi.inputs && constructorArgs.length > 0) {
+        processedArgs = constructorAbi.inputs.map((input: any, index: number) => {
+          const argValue = constructorArgs[index];
+          
+          // Convert based on parameter type
+          switch (input.type) {
+            case 'uint256':
+            case 'uint':
+              return BigInt(argValue);
+            case 'address':
+              return argValue as `0x${string}`;
+            case 'bool':
+              return argValue.toLowerCase() === 'true';
+            case 'string':
+              return argValue;
+            default:
+              // For arrays, bytes, etc., you might need more complex parsing
+              if (input.type.includes('[]')) {
+                // Handle array types
+                try {
+                  return JSON.parse(argValue);
+                } catch {
+                  return argValue.split(',').map((item: string) => item.trim());
+                }
+              }
+              return argValue;
+          }
+        });
+      }
+
+      console.log("Deploying contract with processed args:", processedArgs);
+
+      await deployContract(
+        {
+          abi: deployAbi,
+          bytecode: deployBytecode as `0x${string}`,
+          args: processedArgs, // Use processed args instead of raw constructorArgs
+        },
+        {
+          onError: (error) => {
+            console.error("Deployment error:", error);
+            const errorResult: DeploymentResult = {
+              success: false,
+              contractAddress: "",
+              transactionHash: "",
+              gasUsed: "0",
+              error: `Deployment failed: ${error.message || error}`
+            };
+            resolve(errorResult); // Resolve with error instead of reject
+          },
+          onSuccess: async (transactionHash) => {
+            console.log("Contract deployed successfully, tx hash:", transactionHash);
+            
+            if (!publicClient) {
+              const errorResult: DeploymentResult = {
+                success: false,
+                contractAddress: "",
+                transactionHash: transactionHash,
+                gasUsed: "0",
+                error: "Public client not available"
+              };
+              resolve(errorResult);
+              return;
+            }
+
+            try {
+              console.log("Waiting for transaction receipt...");
+              const receipt = await publicClient.waitForTransactionReceipt({ 
+                hash: transactionHash,
+                timeout: 120000, // Increased timeout to 2 minutes
+                confirmations: 1
+              });
+              
+              console.log("Transaction receipt:", receipt);
+
+              if (receipt.status === 'success' && receipt.contractAddress) {
+                setDeployedAddress(receipt.contractAddress);
+                
+                const result: DeploymentResult = {
+                  success: true,
+                  contractAddress: receipt.contractAddress,
+                  transactionHash: transactionHash,
+                  gasUsed: receipt.gasUsed?.toString() || "0"
+                };
+                
+                resolve(result);
+              } else {
+                const errorResult: DeploymentResult = {
+                  success: false,
+                  contractAddress: "",
+                  transactionHash: transactionHash,
+                  gasUsed: receipt.gasUsed?.toString() || "0",
+                  error: "Transaction failed or contract address not found"
+                };
+                resolve(errorResult);
+              }
+            } catch (receiptError) {
+              console.error("Error waiting for receipt:", receiptError);
+              const errorResult: DeploymentResult = {
+                success: false,
+                contractAddress: "",
+                transactionHash: transactionHash,
+                gasUsed: "0",
+                error: `Failed to get transaction receipt: ${receiptError}`
+              };
+              resolve(errorResult);
+            }
+          },
+        }
+      );
+    } catch (error) {
+      console.error("Deploy error:", error);
+      const errorResult: DeploymentResult = {
+        success: false,
+        contractAddress: "",
+        transactionHash: "",
+        gasUsed: "0",
+        error: error instanceof Error ? error.message : "Unknown deployment error"
+      };
+      resolve(errorResult); // Resolve with error instead of reject
+    }
+  });
+}, [compilationResult, switchChain, deployContract, publicClient, isConnected]);
 
   return {
     compilationResult,

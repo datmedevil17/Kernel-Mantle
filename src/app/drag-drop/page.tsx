@@ -187,6 +187,12 @@ const getAvailableDataTypes = (): string[] => {
 
   // Generate Solidity code (keeping the existing comprehensive function)
   const generateSolidityCode = () => {
+    // Validate that we have components to generate code from
+    if (canvasComponents.length === 0) {
+      alert("Please add some components to the canvas before generating code.")
+      return
+    }
+
     let code = ""
     const imports = new Set<string>()
     const inheritance = new Set<string>()
@@ -295,17 +301,28 @@ const getAvailableDataTypes = (): string[] => {
     code += `    error Unauthorized();\n`
     code += `    error InsufficientBalance();\n`
     code += `    error InvalidInput();\n`
-    code += `    error TransferFailed();\n\n`
+    code += `    error TransferFailed();\n`
+    
+    // Add ReentrancyGuard error if needed
+    if (hasReentrancyGuard) {
+      code += `    error ReentrancyGuard__ReentrantCall();\n`
+    }
+    
+    code += `\n`
 
     // Add structs
     const structs = canvasComponents.filter((comp) => comp.type === "struct")
     if (structs.length > 0) {
       code += `    // Structs\n`
       structs.forEach((struct) => {
-        code += `    struct ${struct.properties.name} {\n`
-        const fields = String(struct.properties.fields || "").split(";").filter((field: string) => field.trim())
+        const structName = struct.properties.name || "CustomStruct"
+        code += `    struct ${structName} {\n`
+        const fields = String(struct.properties.fields || "uint256 value").split(";").filter((field: string) => field.trim())
         fields.forEach((field: string) => {
-          code += `        ${field.trim()};\n`
+          const trimmedField = field.trim()
+          if (trimmedField && !trimmedField.endsWith(';')) {
+            code += `        ${trimmedField};\n`
+          }
         })
         code += `    }\n\n`
       })
@@ -313,21 +330,38 @@ const getAvailableDataTypes = (): string[] => {
 
     // Add state variables
     const variables = canvasComponents.filter((comp) => comp.type === "variable")
-    if (variables.length > 0) {
+    if (variables.length > 0 || hasReentrancyGuard) {
       code += `    // State Variables\n`
+      
+      // Add ReentrancyGuard state variables if needed
+      if (hasReentrancyGuard) {
+        code += `    uint256 private constant _NOT_ENTERED = 1;\n`
+        code += `    uint256 private constant _ENTERED = 2;\n`
+        code += `    uint256 private _status;\n\n`
+      }
+      
       variables.forEach((variable) => {
         if (variable.originalId === "mapping") {
-          code += `    mapping(${variable.properties.keyType} => ${variable.properties.valueType}) ${variable.properties.visibility} ${variable.properties.name};\n`
+          const keyType = variable.properties.keyType || "address"
+          const valueType = variable.properties.valueType || "uint256"
+          const visibility = variable.properties.visibility || "public"
+          const name = variable.properties.name || "mapping1"
+          code += `    mapping(${keyType} => ${valueType}) ${visibility} ${name};\n`
         } else if (variable.originalId === "nested-mapping") {
-          code += `    mapping(${variable.properties.keyType1} => mapping(${variable.properties.keyType2} => ${variable.properties.valueType})) ${variable.properties.visibility} ${variable.properties.name};\n`
+          const keyType1 = variable.properties.keyType1 || "address"
+          const keyType2 = variable.properties.keyType2 || "address"
+          const valueType = variable.properties.valueType || "uint256"
+          const visibility = variable.properties.visibility || "public"
+          const name = variable.properties.name || "nestedMapping1"
+          code += `    mapping(${keyType1} => mapping(${keyType2} => ${valueType})) ${visibility} ${name};\n`
         } else if (variable.originalId === "diamond-storage") {
           code += `    // Diamond Storage Pattern\n`
           const namespace = String(variable.properties.namespace || 'DEFAULT')
-          code += `    bytes32 constant ${namespace.toUpperCase()}_STORAGE_POSITION = ${variable.properties.storageSlot};\n`
-
-          // And replace other namespace usages:          code += `    \n`
-          code += `    struct ${variable.properties.namespace}Storage {\n`
-          const storageVars = String(variable.properties.variables || "").split(";").filter((v: string) => v.trim())
+          const storageSlot = variable.properties.storageSlot || "keccak256('storage.namespace')"
+          code += `    bytes32 constant ${namespace.toUpperCase()}_STORAGE_POSITION = ${storageSlot};\n`
+          code += `    \n`
+          code += `    struct ${namespace}Storage {\n`
+          const storageVars = String(variable.properties.variables || "uint256 value").split(";").filter((v: string) => v.trim())
           storageVars.forEach((v: string) => {
             code += `        ${v.trim()};\n`
           })
@@ -339,10 +373,13 @@ const getAvailableDataTypes = (): string[] => {
           code += `        }\n`
           code += `    }\n\n`
         } else {
+          const dataType = variable.properties.dataType || "uint256"
+          const visibility = variable.properties.visibility || "public"
+          const name = variable.properties.name || "variable1"
           const constant = variable.properties.constant ? " constant" : ""
           const immutable = variable.properties.immutable ? " immutable" : ""
           const defaultValue = variable.properties.defaultValue ? ` = ${variable.properties.defaultValue}` : ""
-          code += `    ${variable.properties.dataType} ${variable.properties.visibility}${constant}${immutable} ${variable.properties.name}${defaultValue};\n`
+          code += `    ${dataType} ${visibility}${constant}${immutable} ${name}${defaultValue};\n`
         }
       })
       code += "\n"
@@ -350,11 +387,21 @@ const getAvailableDataTypes = (): string[] => {
 
     // Add events
     const events = canvasComponents.filter((comp) => comp.type === "event")
-    if (events.length > 0) {
+    const needsPaymentReceivedEvent = canvasComponents.some((comp) => comp.originalId === "payable-function")
+    
+    if (events.length > 0 || needsPaymentReceivedEvent) {
       code += `    // Events\n`
+      
+      // Add PaymentReceived event if needed
+      if (needsPaymentReceivedEvent) {
+        code += `    event PaymentReceived(address indexed from, uint256 amount);\n`
+      }
+      
       events.forEach((event) => {
+        const eventName = event.properties.name || "UnnamedEvent"
+        const parameters = event.properties.parameters || ""
         const anonymous = event.properties.anonymous ? " anonymous" : ""
-        code += `    event ${event.properties.name}(${event.properties.parameters})${anonymous};\n`
+        code += `    event ${eventName}(${parameters})${anonymous};\n`
       })
       code += "\n"
     }
@@ -364,21 +411,32 @@ const getAvailableDataTypes = (): string[] => {
     if (modifiers.length > 0) {
       code += `    // Modifiers\n`
       modifiers.forEach((modifier) => {
-        code += `    modifier ${modifier.properties.name}(${modifier.properties.parameters || ""}) {\n`
+        const modifierName = modifier.properties.name || "customModifier"
+        const parameters = modifier.properties.parameters || ""
+        
+        code += `    modifier ${modifierName}(${parameters}) {\n`
 
         if (modifier.originalId === "access-control") {
-          code += `        if (${modifier.properties.condition}) revert Unauthorized();\n`
+          const condition = modifier.properties.condition || "msg.sender != owner()"
+          code += `        if (${condition}) revert Unauthorized();\n`
         } else if (modifier.originalId === "reentrancy-guard") {
-          code += `        if (${modifier.properties.status} == ${modifier.properties.entered}) revert ReentrancyGuard__ReentrantCall();\n`
-          code += `        ${modifier.properties.status} = ${modifier.properties.entered};\n`
+          const status = modifier.properties.status || "_status"
+          const entered = modifier.properties.entered || "_ENTERED"
+          const notEntered = modifier.properties.notEntered || "_NOT_ENTERED"
+          code += `        if (${status} == ${entered}) revert ReentrancyGuard__ReentrantCall();\n`
+          code += `        ${status} = ${entered};\n`
           code += `        _;\n`
-          code += `        ${modifier.properties.status} = ${modifier.properties.notEntered};\n`
+          code += `        ${status} = ${notEntered};\n`
         } else if (modifier.originalId === "time-lock") {
-          code += `        if (!(${modifier.properties.timeCondition})) revert InvalidInput();\n`
+          const timeCondition = modifier.properties.timeCondition || "block.timestamp > unlockTime"
+          code += `        if (!(${timeCondition})) revert InvalidInput();\n`
         } else if (modifier.originalId === "multi-sig") {
-          code += `        if (!_verifyMultipleSignatures(${modifier.properties.proposalId}, ${modifier.properties.signers})) revert Unauthorized();\n`
+          const proposalId = modifier.properties.proposalId || "_proposalId"
+          const signers = modifier.properties.signers || "_signers"
+          code += `        if (!_verifyMultipleSignatures(${proposalId}, ${signers})) revert Unauthorized();\n`
         } else {
-          code += `        if (!(${modifier.properties.condition})) revert Unauthorized();\n`
+          const condition = modifier.properties.condition || "true"
+          code += `        if (!(${condition})) revert Unauthorized();\n`
         }
 
         if (modifier.originalId !== "reentrancy-guard") {
@@ -439,6 +497,10 @@ const getAvailableDataTypes = (): string[] => {
       code += ` {\n`
 
       // Add initialization code
+      if (hasReentrancyGuard) {
+        code += `        _status = _NOT_ENTERED;\n`
+      }
+      
       if (hasERC20) {
         const token = templates.find((t) => t.originalId === "erc20-advanced")
         if (token?.properties.mintable) {
@@ -461,25 +523,35 @@ const getAvailableDataTypes = (): string[] => {
     if (functions.length > 0) {
       code += `    // Functions\n`
       functions.forEach((func) => {
+        // Validate function properties
+        const funcName = func.properties.name || "unnamedFunction"
+        const visibility = func.properties.visibility || "public"
+        const parameters = func.properties.parameters || ""
+        
         const payableKeyword = func.properties.payable ? " payable" : ""
         const viewKeyword = func.properties.view ? " view" : ""
         const pureKeyword = func.properties.pure ? " pure" : ""
         const returnsKeyword = func.properties.returns ? ` returns (${func.properties.returns})` : ""
         const modifiersList = func.properties.modifiers ? ` ${func.properties.modifiers}` : ""
 
-        code += `    function ${func.properties.name}(${func.properties.parameters || ""}) ${func.properties.visibility
-          }${viewKeyword}${pureKeyword}${payableKeyword}${returnsKeyword}${modifiersList} {\n`
+        code += `    function ${funcName}(${parameters}) ${visibility}${viewKeyword}${pureKeyword}${payableKeyword}${returnsKeyword}${modifiersList} {\n`
 
         if (func.originalId === "payable-function") {
-          code += `        if (msg.value < ${func.properties.minAmount}) revert InsufficientBalance();\n`
+          const minAmount = func.properties.minAmount || "0"
+          code += `        if (msg.value < ${minAmount}) revert InsufficientBalance();\n`
           code += `        emit PaymentReceived(msg.sender, msg.value);\n`
         } else if (func.originalId === "batch-transfer") {
-          code += `        if (${func.properties.arrayType}.length != ${func.properties.valueType}.length) revert InvalidInput();\n`
-          code += `        if (${func.properties.arrayType}.length > ${func.properties.maxBatchSize}) revert InvalidInput();\n`
+          const arrayType = func.properties.arrayType || "recipients"
+          const valueType = func.properties.valueType || "amounts"
+          const maxBatchSize = func.properties.maxBatchSize || "100"
+          const checkSuccess = func.properties.checkSuccess || "true"
+          
+          code += `        if (${arrayType}.length != ${valueType}.length) revert InvalidInput();\n`
+          code += `        if (${arrayType}.length > ${maxBatchSize}) revert InvalidInput();\n`
           code += `        \n`
-          code += `        for (uint256 i = 0; i < ${func.properties.arrayType}.length; i++) {\n`
+          code += `        for (uint256 i = 0; i < ${arrayType}.length; i++) {\n`
           code += `            // Batch transfer logic\n`
-          code += `            if (${func.properties.checkSuccess}) {\n`
+          code += `            if (${checkSuccess}) {\n`
           code += `                // Add success verification\n`
           code += `            }\n`
           code += `        }\n`
