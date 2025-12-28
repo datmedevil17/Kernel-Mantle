@@ -19,9 +19,19 @@ interface Transaction {
     value: string;
     gas: string;
     gasPrice: string;
+    type: string;
+    chainId: string;
+    nonce: string;
+    maxPriorityFeePerGas: string | null;
+    maxFeePerGas: string | null;
+    v: string;
+    r: string;
+    s: string;
   };
   sender: string;
+  success: boolean;
   timestamp: number;
+  BlockNumber: number;
 }
 
 interface DecodedTransaction {
@@ -43,10 +53,14 @@ export function TransactionList() {
     setDecodingLoading(tx.transaction.hash)
 
     try {
-      const prompt = `Analyze and decode this blockchain transaction:
+      const valueInEth = parseInt(tx.transaction.value, 16) / 1e18
+      const prompt = `Analyze and decode this blockchain transaction on Morph Holesky testnet:
         Input Data: ${tx.transaction.input}
         To Address: ${tx.transaction.to}
-        Value: ${parseInt(tx.transaction.value, 16) / 1e18} ETH
+        From Address: ${tx.sender}
+        Value: ${valueInEth} ETH
+        Transaction Hash: ${tx.transaction.hash}
+        Success: ${tx.success}
         Please explain what this transaction does in simple terms.
         Return the response as a JSON object with 'explanation' and 'type' fields.`;
 
@@ -78,6 +92,69 @@ export function TransactionList() {
       setDecodingLoading(null)
     }
   };
+
+  const formatValue = (value: string) => {
+    try {
+      if (!value || value === '0x' || value === '0x0') return '0.000000'
+      
+      const cleanValue = value.startsWith('0x') ? value : `0x${value}`
+      const valueInWei = parseInt(cleanValue, 16)
+      
+      if (isNaN(valueInWei)) return '0.000000'
+      
+      return (valueInWei / 1e18).toFixed(6)
+    } catch (error) {
+      console.error('Error formatting value:', error)
+      return '0.000000'
+    }
+  }
+
+  const formatGasPrice = (gasPrice: string) => {
+    try {
+      if (!gasPrice || gasPrice === '0x' || gasPrice === '0x0') return '0.00'
+      
+      const cleanGasPrice = gasPrice.startsWith('0x') ? gasPrice : `0x${gasPrice}`
+      const gasPriceInWei = parseInt(cleanGasPrice, 16)
+      
+      if (isNaN(gasPriceInWei)) return '0.00'
+      
+      return (gasPriceInWei / 1e9).toFixed(2)
+    } catch (error) {
+      console.error('Error formatting gas price:', error)
+      return '0.00'
+    }
+  }
+
+  const formatGas = (gas: string) => {
+    try {
+      if (!gas || gas === '0x' || gas === '0x0') return '0'
+      
+      const cleanGas = gas.startsWith('0x') ? gas : `0x${gas}`
+      const gasValue = parseInt(cleanGas, 16)
+      
+      if (isNaN(gasValue)) return '0'
+      
+      return gasValue.toLocaleString()
+    } catch (error) {
+      console.error('Error formatting gas:', error)
+      return '0'
+    }
+  }
+
+  const getTransactionType = (tx: Transaction) => {
+    try {
+      const value = parseInt(tx.transaction.value, 16)
+      const hasInput = tx.transaction.input && tx.transaction.input !== '0x' && tx.transaction.input.length > 2
+      
+      if (value > 0 && !hasInput) return 'Transfer'
+      if (hasInput && tx.transaction.to) return 'Contract Call'
+      if (hasInput && !tx.transaction.to) return 'Contract Deploy'
+      return 'Transaction'
+    } catch (error) {
+      console.error('Error determining transaction type:', error)
+      return 'Transaction'
+    }
+  }
 
   if (isLoading) {
     return (
@@ -143,18 +220,37 @@ export function TransactionList() {
               <div className="relative z-10">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-4">
-                    <div className="w-10 h-10 bg-gray-800/50 backdrop-blur-sm rounded-lg border border-emerald-500/30 flex items-center justify-center">
-                      <Activity className="w-5 h-5 text-emerald-400" />
+                    <div className={`w-10 h-10 backdrop-blur-sm rounded-lg border flex items-center justify-center ${
+                      tx.success 
+                        ? 'bg-emerald-500/20 border-emerald-500/30' 
+                        : 'bg-red-500/20 border-red-500/30'
+                    }`}>
+                      <Activity className={`w-5 h-5 ${tx.success ? 'text-emerald-400' : 'text-red-400'}`} />
                     </div>
                     <div className="space-y-1">
                       <div className="flex items-center space-x-2">
                         <p className="font-mono text-sm text-white">
                           {tx.transaction.hash.slice(0, 10)}...{tx.transaction.hash.slice(-8)}
                         </p>
-                        <div className="px-2 py-1 bg-emerald-500/20 rounded-full">
-                          <span className="text-xs text-emerald-300 font-medium">
-                            {parseInt(tx.transaction.value, 16) / 1e18 > 0 ? 'Transfer' : 'Contract'}
+                        <div className={`px-2 py-1 rounded-full ${
+                          tx.success 
+                            ? 'bg-emerald-500/20' 
+                            : 'bg-red-500/20'
+                        }`}>
+                          <span className={`text-xs font-medium ${
+                            tx.success 
+                              ? 'text-emerald-300' 
+                              : 'text-red-300'
+                          }`}>
+                            {getTransactionType(tx)}
                           </span>
+                        </div>
+                        <div className={`px-2 py-1 rounded-full text-xs font-medium ${
+                          tx.success 
+                            ? 'bg-green-500/20 text-green-300' 
+                            : 'bg-red-500/20 text-red-300'
+                        }`}>
+                          {tx.success ? 'Success' : 'Failed'}
                         </div>
                       </div>
                       <p className="text-sm text-gray-400">
@@ -165,10 +261,10 @@ export function TransactionList() {
                   <div className="flex items-center space-x-3">
                     <div className="text-right">
                       <p className="text-sm font-medium text-white">
-                        {(parseInt(tx.transaction.value, 16) / 1e18).toFixed(4)} ETH
+                        {formatValue(tx.transaction.value)} ETH
                       </p>
                       <p className="text-xs text-gray-400">
-                        {(parseInt(tx.transaction.gasPrice, 16) / 1e9).toFixed(2)} Gwei
+                        {formatGasPrice(tx.transaction.gasPrice)} Gwei
                       </p>
                     </div>
                     <motion.div
@@ -207,22 +303,35 @@ export function TransactionList() {
                               <span className="text-gray-400 block mb-1">To:</span>
                               <div className="flex items-center space-x-2">
                                 <code className="text-white font-mono text-xs bg-gray-800/50 px-2 py-1 rounded">
-                                  {tx.transaction.to.slice(0, 8)}...{tx.transaction.to.slice(-6)}
+                                  {tx.transaction.to ? 
+                                    `${tx.transaction.to.slice(0, 8)}...${tx.transaction.to.slice(-6)}` : 
+                                    'Contract Creation'
+                                  }
                                 </code>
-                                <Button variant="ghost" size="sm" className="h-6 w-6 p-0 hover:bg-gray-800/50" onClick={(e) => { e.stopPropagation(); navigator.clipboard.writeText(tx.transaction.to); toast.success('Address copied') }}>
-                                  <Copy className="h-3 w-3" />
-                                </Button>
+                                {tx.transaction.to && (
+                                  <Button variant="ghost" size="sm" className="h-6 w-6 p-0 hover:bg-gray-800/50" onClick={(e) => { e.stopPropagation(); navigator.clipboard.writeText(tx.transaction.to); toast.success('Address copied') }}>
+                                    <Copy className="h-3 w-3" />
+                                  </Button>
+                                )}
                               </div>
+                            </div>
+                            <div>
+                              <span className="text-gray-400 block mb-1">Block:</span>
+                              <span className="text-white">{tx.BlockNumber.toLocaleString()}</span>
                             </div>
                           </div>
                           <div className="space-y-3">
                             <div>
                               <span className="text-gray-400 block mb-1">Gas Used:</span>
-                              <span className="text-white">{parseInt(tx.transaction.gas, 16).toLocaleString()}</span>
+                              <span className="text-white">{formatGas(tx.transaction.gas)}</span>
                             </div>
                             <div>
                               <span className="text-gray-400 block mb-1">Gas Price:</span>
-                              <span className="text-white">{(parseInt(tx.transaction.gasPrice, 16) / 1e9).toFixed(2)} Gwei</span>
+                              <span className="text-white">{formatGasPrice(tx.transaction.gasPrice)} Gwei</span>
+                            </div>
+                            <div>
+                              <span className="text-gray-400 block mb-1">Nonce:</span>
+                              <span className="text-white">{tx.transaction.nonce}</span>
                             </div>
                           </div>
                         </div>
@@ -253,9 +362,9 @@ export function TransactionList() {
                             <Copy className="mr-2 h-4 w-4" />
                             Copy Hash
                           </Button>
-                          <Button variant="outline" size="sm" className="bg-gray-800/30 border-gray-700/50 hover:bg-gray-700/30 text-gray-300 hover:text-white" onClick={(e) => { e.stopPropagation(); window.open(`https://etherscan.io/tx/${tx.transaction.hash}`, '_blank') }}>
+                          <Button variant="outline" size="sm" className="bg-gray-800/30 border-gray-700/50 hover:bg-gray-700/30 text-gray-300 hover:text-white" onClick={(e) => { e.stopPropagation(); window.open(`https://explorer-holesky.morphl2.io/tx/${tx.transaction.hash}`, '_blank') }}>
                             <ExternalLink className="mr-2 h-4 w-4" />
-                            Explorer
+                            Morph Explorer
                           </Button>
                         </div>
                       </div>

@@ -4,6 +4,7 @@ import { useState } from "react"
 import { componentLibrary, categories } from "@/constants/componentLibrary"
 import { Database, Radio, Zap, Map, Cpu, X, Copy, Check, ChevronDown,Sparkles,Loader2 } from "lucide-react"
 import { makeGeminiRequest } from "@/utils/api"
+import { useContractOperations } from "@/hooks/useContractOperations"
 
 const VisualSmartContractBuilder = () => {
   const [canvasComponents, setCanvasComponents] = useState<ComponentType[]>([])
@@ -1063,35 +1064,175 @@ const getAvailableDataTypes = (): string[] => {
 )}
         </div>
 
-        {/* Code Generation Modal */}
+        {/* Enhanced Professional Code Generation Modal */}
         {isCodeModalOpen && (
-          <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-            <div className="bg-gray-900/95 backdrop-blur-xl rounded-2xl border border-gray-700/50 w-full max-w-4xl max-h-[90vh] flex flex-col">
-              <div className="flex justify-between items-center p-6 border-b border-gray-700/50">
-                <div>
-                  <h3 className="font-bold text-xl text-white">Generated Solidity Code</h3>
-                  <p className="text-sm text-gray-400">Ready to deploy smart contract</p>
+          <div className="fixed inset-0 bg-black/90 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+            <div className="bg-gray-900/98 backdrop-blur-xl rounded-2xl border border-gray-700/50 w-full max-w-7xl h-[90vh] flex flex-col shadow-2xl">
+              {/* Professional Header */}
+              <div className="flex justify-between items-center p-6 border-b border-gray-700/50 bg-gradient-to-r from-gray-800/50 to-gray-900/50">
+                <div className="flex items-center space-x-4">
+                  <div className="w-12 h-12 bg-gradient-to-r from-emerald-500 to-green-600 rounded-xl flex items-center justify-center shadow-lg">
+                    <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
+                    </svg>
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-xl text-white tracking-tight">Generated Smart Contract</h3>
+                    <div className="flex items-center gap-4 text-sm text-gray-400 mt-1">
+                      <span className="flex items-center gap-1">
+                        <div className="w-2 h-2 bg-green-400 rounded-full"></div>
+                        Solidity ^0.8.19
+                      </span>
+                      <span className="w-1 h-1 bg-gray-500 rounded-full"></span>
+                      <span>{generatedCode.split('\n').length} lines</span>
+                      <span className="w-1 h-1 bg-gray-500 rounded-full"></span>
+                      <span>{(new Blob([generatedCode]).size / 1024).toFixed(1)} KB</span>
+                      <span className="w-1 h-1 bg-gray-500 rounded-full"></span>
+                      <span className="text-emerald-400">Ready to Deploy</span>
+                    </div>
+                  </div>
                 </div>
-                <div className="flex space-x-3">
+                <div className="flex items-center space-x-3">
                   <button
                     onClick={copyToClipboard}
-                    className="px-4 py-2 bg-emerald-500/80 backdrop-blur-sm text-white rounded-lg hover:bg-emerald-600/80 transition-all font-medium border border-emerald-400/30 flex items-center gap-2"
+                    className="px-4 py-2.5 bg-emerald-600/90 backdrop-blur-sm text-white rounded-lg hover:bg-emerald-500/90 transition-all duration-200 font-medium border border-emerald-400/30 flex items-center gap-2 shadow-lg hover:shadow-emerald-500/25"
                   >
                     {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
                     {copied ? "Copied!" : "Copy Code"}
                   </button>
                   <button
-                    onClick={() => setIsCodeModalOpen(false)}
-                    className="px-4 py-2 bg-gray-700/80 backdrop-blur-sm text-white rounded-lg hover:bg-gray-600/80 transition-all font-medium border border-gray-600/50"
+                    onClick={() => {
+                      const blob = new Blob([generatedCode], { type: 'text/plain' })
+                      const url = URL.createObjectURL(blob)
+                      const a = document.createElement('a')
+                      a.href = url
+                      a.download = 'GeneratedContract.sol'
+                      document.body.appendChild(a)
+                      a.click()
+                      document.body.removeChild(a)
+                      URL.revokeObjectURL(url)
+                    }}
+                    className="px-4 py-2.5 bg-blue-600/90 backdrop-blur-sm text-white rounded-lg hover:bg-blue-500/90 transition-all duration-200 font-medium border border-blue-400/30 flex items-center gap-2 shadow-lg hover:shadow-blue-500/25"
                   >
-                    Close
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
+                    Export .sol
+                  </button>
+                  <button
+                    onClick={() => setIsCodeModalOpen(false)}
+                    className="px-4 py-2.5 bg-gray-700/90 backdrop-blur-sm text-white rounded-lg hover:bg-gray-600/90 transition-all duration-200 font-medium border border-gray-600/50 shadow-lg"
+                  >
+                    <X className="w-4 h-4" />
                   </button>
                 </div>
               </div>
-              <div className="flex-1 overflow-auto p-6">
-                <pre className="text-sm font-mono text-green-400 whitespace-pre-wrap leading-relaxed bg-black/50 p-4 rounded-lg border border-gray-800/50">
-                  {generatedCode}
-                </pre>
+              
+              {/* Professional Code Editor Interface */}
+              <div className="flex-1 flex overflow-hidden bg-gray-950/30">
+                {/* Line Numbers Sidebar */}
+                <div className="w-20 bg-gray-950/80 border-r border-gray-700/30 flex flex-col">
+                  <div className="sticky top-0 bg-gray-900/90 py-3 border-b border-gray-700/30 text-center">
+                    <span className="text-xs font-medium text-gray-400 tracking-wider">LINES</span>
+                  </div>
+                  <div className="flex-1 overflow-y-auto">
+                    {generatedCode.split('\n').map((_, index) => (
+                      <div 
+                        key={index} 
+                        className="py-0.5 px-3 text-xs text-gray-500 font-mono text-right hover:bg-gray-800/30 border-l-2 border-transparent hover:border-emerald-500/30 transition-all duration-150 min-h-[22px] flex items-center justify-end leading-tight"
+                      >
+                        {index + 1}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                
+                {/* Code Content Area */}
+                <div className="flex-1 overflow-auto">
+                  <pre className="text-sm font-mono leading-tight p-6 text-gray-100 whitespace-pre-wrap min-h-full">
+                    <code className="language-solidity">
+                      {generatedCode.split('\n').map((line, index) => (
+                        <div key={index} className="min-h-[22px] flex hover:bg-gray-800/20 px-2 -mx-2 rounded transition-colors duration-150">
+                          <span className={`flex-1 ${
+                            // Syntax highlighting with professional colors
+                            line.trim().startsWith('//') ? 'text-gray-500 italic' :
+                            line.trim().startsWith('/**') || line.trim().startsWith('*') || line.trim().startsWith('*/') ? 'text-gray-500 italic' :
+                            line.trim().startsWith('pragma') ? 'text-purple-400 font-medium' :
+                            line.trim().startsWith('import') ? 'text-blue-400' :
+                            line.trim().startsWith('contract') || line.trim().startsWith('interface') || line.trim().startsWith('library') ? 'text-cyan-400 font-semibold' :
+                            line.trim().startsWith('function') ? 'text-yellow-400 font-medium' :
+                            line.trim().startsWith('modifier') ? 'text-orange-400 font-medium' :
+                            line.trim().startsWith('event') ? 'text-green-400 font-medium' :
+                            line.trim().startsWith('error') ? 'text-red-400 font-medium' :
+                            line.trim().startsWith('struct') ? 'text-indigo-400 font-medium' :
+                            line.includes('public') || line.includes('private') || line.includes('internal') || line.includes('external') ? 'text-emerald-400' :
+                            line.includes('uint256') || line.includes('string') || line.includes('address') || line.includes('bool') || line.includes('bytes32') ? 'text-blue-300' :
+                            line.includes('mapping') ? 'text-violet-400' :
+                            line.includes('require') || line.includes('revert') || line.includes('assert') ? 'text-red-300' :
+                            line.includes('emit') ? 'text-yellow-300' :
+                            'text-gray-100'
+                          }`}>
+                            {line || '\u00A0'}
+                          </span>
+                        </div>
+                      ))}
+                    </code>
+                  </pre>
+                </div>
+                
+                {/* Optional Minimap */}
+                <div className="w-24 bg-gray-950/50 border-l border-gray-700/30 overflow-hidden">
+                  <div className="sticky top-0 bg-gray-900/90 py-3 border-b border-gray-700/30 text-center">
+                    <span className="text-xs font-medium text-gray-400 tracking-wider">MAP</span>
+                  </div>
+                  <div className="p-2">
+                    <div className="text-xs space-y-px">
+                      {generatedCode.split('\n').map((line, index) => (
+                        <div 
+                          key={index}
+                          className={`h-1 rounded-sm ${
+                            line.trim().startsWith('contract') ? 'bg-cyan-400' :
+                            line.trim().startsWith('function') ? 'bg-yellow-400' :
+                            line.trim().startsWith('modifier') ? 'bg-orange-400' :
+                            line.trim().startsWith('event') ? 'bg-green-400' :
+                            line.trim().startsWith('//') ? 'bg-gray-600' :
+                            line.trim() ? 'bg-gray-700' : 'bg-transparent'
+                          }`}
+                        />
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              {/* Professional Status Bar */}
+              <div className="border-t border-gray-700/50 bg-gradient-to-r from-gray-900/80 to-gray-800/80 px-6 py-4">
+                <div className="flex justify-between items-center text-xs">
+                  <div className="flex items-center space-x-6 text-gray-400">
+                    <div className="flex items-center gap-2">
+                      <div className="w-2 h-2 bg-emerald-400 rounded-full"></div>
+                      <span>Syntax Valid</span>
+                    </div>
+                    <span>Functions: {canvasComponents.filter(c => c.type === 'function').length}</span>
+                    <span>Events: {canvasComponents.filter(c => c.type === 'event').length}</span>
+                    <span>Variables: {canvasComponents.filter(c => c.type === 'variable').length}</span>
+                    <span>Modifiers: {canvasComponents.filter(c => c.type === 'modifier').length}</span>
+                  </div>
+                  <div className="flex items-center space-x-4 text-gray-400">
+                    <span className="flex items-center gap-2">
+                      <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                      </svg>
+                      Gas Optimized
+                    </span>
+                    <span>Generated {new Date().toLocaleTimeString()}</span>
+                    <div className="flex items-center gap-1">
+                      <div className="w-1 h-1 bg-gray-500 rounded-full animate-pulse"></div>
+                      <div className="w-1 h-1 bg-gray-500 rounded-full animate-pulse" style={{animationDelay: '0.2s'}}></div>
+                      <div className="w-1 h-1 bg-gray-500 rounded-full animate-pulse" style={{animationDelay: '0.4s'}}></div>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>

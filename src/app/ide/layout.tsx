@@ -136,7 +136,7 @@ export default function IDELayout({ children }: IDELayoutProps) {
                   className="group relative w-full py-4 px-6 bg-gradient-to-r from-emerald-600 to-emerald-700 hover:from-emerald-500 hover:to-emerald-600 rounded-xl text-white font-semibold transition-all duration-200 flex items-center justify-center space-x-3 shadow-xl hover:shadow-emerald-500/25 hover:scale-105"
                 >
                   <div className="absolute inset-0 bg-gradient-to-r from-emerald-600 to-emerald-700 rounded-xl blur opacity-30 group-hover:opacity-50 transition-opacity"></div>
-                  <Image src="/metamask-fox.svg" alt="MetaMask" className="relative" width={6} height={6} />
+                  <Image src="/metamask.png" alt="MetaMask" className="relative" width={6} height={6} />
                   <span className="relative">Connect with MetaMask</span>
                 </button>
 
