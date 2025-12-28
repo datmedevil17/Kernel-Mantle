@@ -99,7 +99,7 @@ const ExplorePage = () => {
     <div className="min-h-screen bg-black relative overflow-hidden pt-30">
       {/* Animated background */}
       <div className="absolute inset-0">
-        <div className="absolute inset-0 bg-gradient-to-br from-purple-900/20 via-black to-purple-900/10" />
+        <div className="absolute inset-0 bg-gradient-to-br from-emerald-900/20 via-black to-emerald-900/10" />
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(120,119,198,0.1),transparent_50%)]" />
         <motion.div
           className="absolute inset-0 opacity-30"
@@ -114,14 +114,14 @@ const ExplorePage = () => {
           transition={{ duration: 0.8 }}
           className="text-center mb-16"
         >
-          <h1 className="text-5xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-white via-purple-200 to-purple-400 bg-clip-text text-transparent">
+          <h1 className="text-5xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-white via-emerald-200 to-emerald-400 bg-clip-text text-transparent">
             Smart Contract Templates
           </h1>
           <p className="text-gray-400 text-lg max-w-2xl mx-auto">
             Discover and customize battle-tested smart contract templates for your next blockchain project
           </p>
           <motion.div
-            className="w-24 h-1 bg-gradient-to-r from-purple-500 to-purple-700 mx-auto mt-6 rounded-full"
+            className="w-24 h-1 bg-gradient-to-r from-emerald-500 to-emerald-700 mx-auto mt-6 rounded-full"
             initial={{ width: 0 }}
             animate={{ width: 96 }}
             transition={{ duration: 1, delay: 0.5 }}
@@ -141,8 +141,8 @@ const ExplorePage = () => {
               {/* Category Header */}
               <div className="flex items-center justify-between mb-8">
                 <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 bg-gradient-to-br from-purple-500/20 to-purple-700/20 backdrop-blur-sm rounded-xl border border-purple-500/30 flex items-center justify-center">
-                    <Code className="w-6 h-6 text-purple-400" />
+                  <div className="w-12 h-12 bg-gradient-to-br from-emerald-500/20 to-emerald-700/20 backdrop-blur-sm rounded-xl border border-emerald-500/30 flex items-center justify-center">
+                    <Code className="w-6 h-6 text-emerald-400" />
                   </div>
                   <div>
                     <h2 className="text-3xl font-bold text-white">{store.name}</h2>
@@ -152,18 +152,18 @@ const ExplorePage = () => {
                 {store.contracts.length > 6 && (
                   <motion.button
                     onClick={() => toggleCategory(store.identifier)}
-                    className="group flex items-center gap-2 px-4 py-2 bg-gray-900/50 backdrop-blur-sm border border-gray-800/50 rounded-xl hover:border-purple-500/30 transition-all duration-300"
+                    className="group flex items-center gap-2 px-4 py-2 bg-gray-900/50 backdrop-blur-sm border border-gray-800/50 rounded-xl hover:border-emerald-500/30 transition-all duration-300"
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                   >
-                    <span className="text-purple-400 text-sm font-medium">
+                    <span className="text-emerald-400 text-sm font-medium">
                       {expandedCategories[store.identifier] ? "Show Less" : "View More"}
                     </span>
                     <motion.div
                       animate={{ rotate: expandedCategories[store.identifier] ? 180 : 0 }}
                       transition={{ duration: 0.3 }}
                     >
-                      <ChevronDown className="w-4 h-4 text-purple-400" />
+                      <ChevronDown className="w-4 h-4 text-emerald-400" />
                     </motion.div>
                   </motion.button>
                 )}
@@ -185,19 +185,19 @@ const ExplorePage = () => {
                       >
                         <Link href={`/${contract.identifier}`}>
                           <motion.div
-                            className="group relative bg-gray-900/30 backdrop-blur-xl rounded-2xl p-6 border border-gray-800/50 hover:border-purple-500/30 transition-all duration-500 h-[240px] flex flex-col overflow-hidden"
+                            className="group relative bg-gray-900/30 backdrop-blur-xl rounded-2xl p-6 border border-gray-800/50 hover:border-emerald-500/30 transition-all duration-500 h-[240px] flex flex-col overflow-hidden"
                             whileHover={{ y: -5, scale: 1.02 }}
                             whileTap={{ scale: 0.98 }}
                           >
                             {/* Animated background gradient */}
                             <motion.div
-                              className="absolute inset-0 bg-gradient-to-br from-purple-500/5 via-transparent to-purple-700/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+                              className="absolute inset-0 bg-gradient-to-br from-emerald-500/5 via-transparent to-emerald-700/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
                               initial={false}
                             />
 
                             {/* Glowing border effect */}
                             <motion.div
-                              className="absolute inset-0 rounded-2xl bg-gradient-to-r from-purple-500/20 to-purple-700/20 opacity-0 group-hover:opacity-100 blur-xl transition-opacity duration-500"
+                              className="absolute inset-0 rounded-2xl bg-gradient-to-r from-emerald-500/20 to-emerald-700/20 opacity-0 group-hover:opacity-100 blur-xl transition-opacity duration-500"
                               initial={false}
                             />
 
@@ -206,20 +206,20 @@ const ExplorePage = () => {
                               <div className="flex items-start justify-between mb-4">
                                 <div className="flex items-center gap-3">
                                   <motion.div
-                                    className="w-10 h-10 bg-gradient-to-br from-purple-500/20 to-purple-700/20 backdrop-blur-sm rounded-lg border border-purple-500/30 flex items-center justify-center text-purple-400"
+                                    className="w-10 h-10 bg-gradient-to-br from-emerald-500/20 to-emerald-700/20 backdrop-blur-sm rounded-lg border border-emerald-500/30 flex items-center justify-center text-emerald-400"
                                     whileHover={{ rotate: 360 }}
                                     transition={{ duration: 0.6 }}
                                   >
                                     {getContractIcon(contract.name)}
                                   </motion.div>
                                   <div>
-                                    <h3 className="text-lg font-semibold text-white group-hover:text-purple-200 transition-colors duration-300 line-clamp-1">
+                                    <h3 className="text-lg font-semibold text-white group-hover:text-emerald-200 transition-colors duration-300 line-clamp-1">
                                       {contract.name}
                                     </h3>
                                   </div>
                                 </div>
                                 <motion.div
-                                  className="px-2 py-1 rounded-lg text-xs font-medium bg-purple-500/10 text-purple-300 border border-purple-500/20"
+                                  className="px-2 py-1 rounded-lg text-xs font-medium bg-emerald-500/10 text-emerald-300 border border-emerald-500/20"
                                   whileHover={{ scale: 1.1 }}
                                 >
                                   v{contract.version}
@@ -242,7 +242,7 @@ const ExplorePage = () => {
                                       path: contract.path || "",
                                     })
                                   }
-                                  className="flex items-center gap-2 text-purple-400 text-sm font-medium hover:text-purple-300 transition-colors duration-200"
+                                  className="flex items-center gap-2 text-emerald-400 text-sm font-medium hover:text-emerald-300 transition-colors duration-200"
                                   whileHover={{ x: -2 }}
                                   whileTap={{ scale: 0.95 }}
                                 >
@@ -291,7 +291,7 @@ const ExplorePage = () => {
               {/* Modal Header */}
               <div className="flex justify-between items-center p-6 border-b border-gray-800/50">
                 <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 bg-gradient-to-br from-purple-500/20 to-purple-700/20 backdrop-blur-sm rounded-xl border border-purple-500/30 flex items-center justify-center">
+                  <div className="w-12 h-12 bg-gradient-to-br from-emerald-500/20 to-emerald-700/20 backdrop-blur-sm rounded-xl border border-emerald-500/30 flex items-center justify-center">
                     {selectedContract && getContractIcon(selectedContract.name)}
                   </div>
                   <div>
@@ -302,7 +302,7 @@ const ExplorePage = () => {
                 <div className="flex items-center gap-3">
                   <motion.button
                     onClick={copyToClipboard}
-                    className="flex items-center gap-2 px-4 py-2 bg-purple-500/20 backdrop-blur-sm text-purple-300 rounded-lg hover:bg-purple-500/30 transition-all border border-purple-500/30"
+                    className="flex items-center gap-2 px-4 py-2 bg-emerald-500/20 backdrop-blur-sm text-emerald-300 rounded-lg hover:bg-emerald-500/30 transition-all border border-emerald-500/30"
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                     disabled={!sourceCode || loading}
@@ -326,7 +326,7 @@ const ExplorePage = () => {
                 {loading ? (
                   <div className="flex items-center justify-center h-full">
                     <motion.div
-                      className="w-8 h-8 border-2 border-purple-500/30 border-t-purple-500 rounded-full"
+                      className="w-8 h-8 border-2 border-emerald-500/30 border-t-emerald-500 rounded-full"
                       animate={{ rotate: 360 }}
                       transition={{ duration: 1, repeat: Number.POSITIVE_INFINITY, ease: "linear" }}
                     />

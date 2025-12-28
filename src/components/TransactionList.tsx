@@ -88,8 +88,8 @@ export function TransactionList() {
       >
         <div className="flex flex-col items-center space-y-4">
           <div className="relative">
-            <div className="h-12 w-12 animate-spin rounded-full border-2 border-purple-500/20 border-t-purple-500" />
-            <div className="absolute inset-0 rounded-full bg-purple-500/10 blur-lg" />
+            <div className="h-12 w-12 animate-spin rounded-full border-2 border-emerald-500/20 border-t-emerald-500" />
+            <div className="absolute inset-0 rounded-full bg-emerald-500/10 blur-lg" />
           </div>
           <p className="text-gray-400 text-sm">Loading transactions...</p>
         </div>
@@ -104,12 +104,10 @@ export function TransactionList() {
         animate={{ opacity: 1, y: 0 }}
       >
         <Card className="relative overflow-hidden p-12 text-center bg-gray-900/30 backdrop-blur-xl border-gray-800/50">
-          {/* Subtle glow effect */}
-          <div className="absolute inset-0 bg-gradient-to-br from-purple-500/5 to-blue-500/5 rounded-lg" />
-          
+          <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/5 to-lime-500/5 rounded-lg" />
           <div className="relative z-10 space-y-4">
             <div className="mx-auto w-16 h-16 bg-gray-800/50 rounded-full flex items-center justify-center">
-              <Activity className="w-8 h-8 text-purple-400" />
+              <Activity className="w-8 h-8 text-emerald-400" />
             </div>
             <div>
               <h3 className="text-lg font-medium text-white mb-2">No Transactions Yet</h3>
@@ -133,31 +131,28 @@ export function TransactionList() {
             transition={{ delay: index * 0.05 }}
           >
             <Card
-              className="group relative overflow-hidden p-6 transition-all duration-300 hover:-translate-y-1 bg-gray-900/30 backdrop-blur-xl border-gray-800/50 hover:border-purple-500/30 cursor-pointer"
+              className="group relative overflow-hidden p-6 transition-all duration-300 hover:-translate-y-1 bg-gray-900/30 backdrop-blur-xl border-gray-800/50 hover:border-emerald-500/30 cursor-pointer"
               onClick={() => setExpandedId(
                 expandedId === tx.transaction.hash ? null : tx.transaction.hash
               )}
             >
-              {/* Glowing border effect on hover */}
               <motion.div
-                className="absolute inset-0 rounded-lg bg-gradient-to-r from-purple-500/10 to-blue-500/10 opacity-0 group-hover:opacity-100 blur-lg transition-opacity duration-300"
+                className="absolute inset-0 rounded-lg bg-gradient-to-r from-emerald-500/10 to-lime-500/10 opacity-0 group-hover:opacity-100 blur-lg transition-opacity duration-300"
                 initial={false}
               />
-
               <div className="relative z-10">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-4">
-                    <div className="w-10 h-10 bg-gray-800/50 backdrop-blur-sm rounded-lg border border-purple-500/30 flex items-center justify-center">
-                      <Activity className="w-5 h-5 text-purple-400" />
+                    <div className="w-10 h-10 bg-gray-800/50 backdrop-blur-sm rounded-lg border border-emerald-500/30 flex items-center justify-center">
+                      <Activity className="w-5 h-5 text-emerald-400" />
                     </div>
-                    
                     <div className="space-y-1">
                       <div className="flex items-center space-x-2">
                         <p className="font-mono text-sm text-white">
                           {tx.transaction.hash.slice(0, 10)}...{tx.transaction.hash.slice(-8)}
                         </p>
-                        <div className="px-2 py-1 bg-purple-500/20 rounded-full">
-                          <span className="text-xs text-purple-300 font-medium">
+                        <div className="px-2 py-1 bg-emerald-500/20 rounded-full">
+                          <span className="text-xs text-emerald-300 font-medium">
                             {parseInt(tx.transaction.value, 16) / 1e18 > 0 ? 'Transfer' : 'Contract'}
                           </span>
                         </div>
@@ -167,7 +162,6 @@ export function TransactionList() {
                       </p>
                     </div>
                   </div>
-
                   <div className="flex items-center space-x-3">
                     <div className="text-right">
                       <p className="text-sm font-medium text-white">
@@ -177,7 +171,6 @@ export function TransactionList() {
                         {(parseInt(tx.transaction.gasPrice, 16) / 1e9).toFixed(2)} Gwei
                       </p>
                     </div>
-                    
                     <motion.div
                       animate={{ rotate: expandedId === tx.transaction.hash ? 180 : 0 }}
                       transition={{ duration: 0.2 }}
@@ -187,7 +180,6 @@ export function TransactionList() {
                     </motion.div>
                   </div>
                 </div>
-
                 <AnimatePresence>
                   {expandedId === tx.transaction.hash && (
                     <motion.div
@@ -206,67 +198,41 @@ export function TransactionList() {
                                 <code className="text-white font-mono text-xs bg-gray-800/50 px-2 py-1 rounded">
                                   {tx.sender.slice(0, 8)}...{tx.sender.slice(-6)}
                                 </code>
-                                <Button
-                                  variant="ghost"
-                                  size="sm"
-                                  className="h-6 w-6 p-0 hover:bg-gray-800/50"
-                                  onClick={(e) => {
-                                    e.stopPropagation()
-                                    navigator.clipboard.writeText(tx.sender)
-                                    toast.success('Address copied')
-                                  }}
-                                >
+                                <Button variant="ghost" size="sm" className="h-6 w-6 p-0 hover:bg-gray-800/50" onClick={(e) => { e.stopPropagation(); navigator.clipboard.writeText(tx.sender); toast.success('Address copied') }}>
                                   <Copy className="h-3 w-3" />
                                 </Button>
                               </div>
                             </div>
-                            
                             <div>
                               <span className="text-gray-400 block mb-1">To:</span>
                               <div className="flex items-center space-x-2">
                                 <code className="text-white font-mono text-xs bg-gray-800/50 px-2 py-1 rounded">
                                   {tx.transaction.to.slice(0, 8)}...{tx.transaction.to.slice(-6)}
                                 </code>
-                                <Button
-                                  variant="ghost"
-                                  size="sm"
-                                  className="h-6 w-6 p-0 hover:bg-gray-800/50"
-                                  onClick={(e) => {
-                                    e.stopPropagation()
-                                    navigator.clipboard.writeText(tx.transaction.to)
-                                    toast.success('Address copied')
-                                  }}
-                                >
+                                <Button variant="ghost" size="sm" className="h-6 w-6 p-0 hover:bg-gray-800/50" onClick={(e) => { e.stopPropagation(); navigator.clipboard.writeText(tx.transaction.to); toast.success('Address copied') }}>
                                   <Copy className="h-3 w-3" />
                                 </Button>
                               </div>
                             </div>
                           </div>
-
                           <div className="space-y-3">
                             <div>
                               <span className="text-gray-400 block mb-1">Gas Used:</span>
                               <span className="text-white">{parseInt(tx.transaction.gas, 16).toLocaleString()}</span>
                             </div>
-                            
                             <div>
                               <span className="text-gray-400 block mb-1">Gas Price:</span>
                               <span className="text-white">{(parseInt(tx.transaction.gasPrice, 16) / 1e9).toFixed(2)} Gwei</span>
                             </div>
                           </div>
                         </div>
-                        
                         {decodingMap[tx.transaction.hash] && (
-                          <motion.div
-                            initial={{ opacity: 0, y: 10 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            className="mt-4 p-4 rounded-lg bg-gradient-to-r from-purple-500/10 to-blue-500/10 border border-purple-500/20"
-                          >
+                          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="mt-4 p-4 rounded-lg bg-gradient-to-r from-emerald-500/10 to-lime-500/10 border border-emerald-500/20">
                             <div className="flex items-center space-x-2 mb-3">
-                              <Zap className="h-4 w-4 text-purple-400" />
+                              <Zap className="h-4 w-4 text-emerald-400" />
                               <h4 className="font-medium text-white">AI Analysis</h4>
-                              <div className="px-2 py-1 bg-purple-500/20 rounded-full">
-                                <span className="text-xs text-purple-300">{decodingMap[tx.transaction.hash].type}</span>
+                              <div className="px-2 py-1 bg-emerald-500/20 rounded-full">
+                                <span className="text-xs text-emerald-300">{decodingMap[tx.transaction.hash].type}</span>
                               </div>
                             </div>
                             <p className="text-sm text-gray-300 leading-relaxed">
@@ -274,49 +240,20 @@ export function TransactionList() {
                             </p>
                           </motion.div>
                         )}
-                        
                         <div className="flex gap-3 pt-2">
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            disabled={decodingLoading === tx.transaction.hash}
-                            className="bg-purple-500/10 border-purple-500/30 hover:bg-purple-500/20 text-purple-300 hover:text-white"
-                            onClick={(e) => {
-                              e.stopPropagation()
-                              decodeTransaction(tx)
-                            }}
-                          >
+                          <Button variant="outline" size="sm" disabled={decodingLoading === tx.transaction.hash} className="bg-emerald-500/10 border-emerald-500/30 hover:bg-emerald-500/20 text-emerald-300 hover:text-white" onClick={(e) => { e.stopPropagation(); decodeTransaction(tx) }}>
                             {decodingLoading === tx.transaction.hash ? (
-                              <div className="w-4 h-4 animate-spin rounded-full border-2 border-purple-500/30 border-t-purple-500" />
+                              <div className="w-4 h-4 animate-spin rounded-full border-2 border-emerald-500/30 border-t-emerald-500" />
                             ) : (
                               <Zap className="mr-2 h-4 w-4" />
                             )}
                             {decodingMap[tx.transaction.hash] ? 'Re-analyze' : 'Analyze'}
                           </Button>
-                          
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            className="bg-gray-800/30 border-gray-700/50 hover:bg-gray-700/30 text-gray-300 hover:text-white"
-                            onClick={(e) => {
-                              e.stopPropagation()
-                              navigator.clipboard.writeText(tx.transaction.hash)
-                              toast.success('Transaction hash copied')
-                            }}
-                          >
+                          <Button variant="outline" size="sm" className="bg-gray-800/30 border-gray-700/50 hover:bg-gray-700/30 text-gray-300 hover:text-white" onClick={(e) => { e.stopPropagation(); navigator.clipboard.writeText(tx.transaction.hash); toast.success('Transaction hash copied') }}>
                             <Copy className="mr-2 h-4 w-4" />
                             Copy Hash
                           </Button>
-                          
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            className="bg-gray-800/30 border-gray-700/50 hover:bg-gray-700/30 text-gray-300 hover:text-white"
-                            onClick={(e) => {
-                              e.stopPropagation()
-                              window.open(`https://etherscan.io/tx/${tx.transaction.hash}`, '_blank')
-                            }}
-                          >
+                          <Button variant="outline" size="sm" className="bg-gray-800/30 border-gray-700/50 hover:bg-gray-700/30 text-gray-300 hover:text-white" onClick={(e) => { e.stopPropagation(); window.open(`https://etherscan.io/tx/${tx.transaction.hash}`, '_blank') }}>
                             <ExternalLink className="mr-2 h-4 w-4" />
                             Explorer
                           </Button>

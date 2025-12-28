@@ -552,7 +552,7 @@ const getAvailableDataTypes = (): string[] => {
             type: "function",
             name: "Function",
             icon: <Zap className="w-5 h-5" />,
-            color: "bg-purple-100 border-purple-300",
+            color: "bg-emerald-100 border-emerald-300",
             x: 50,
             y: currentY,
             properties: {
@@ -634,7 +634,7 @@ const getAvailableDataTypes = (): string[] => {
       <div className="w-80 bg-black/90 backdrop-blur-xl border-r border-gray-800/50 flex flex-col h-screen pt-25">
         {/* Header section - fixed height */}
         <div className="p-6 border-b border-gray-800/50 flex-shrink-0">
-          <div className="bg-gradient-to-r from-purple-400/20 to-violet-400/20 backdrop-blur-sm rounded-xl p-4 border border-purple-400/30">
+          <div className="bg-gradient-to-r from-emerald-400/20 to-violet-400/20 backdrop-blur-sm rounded-xl p-4 border border-emerald-400/30">
             <h2 className="text-xl font-bold text-white mb-1">Smart Contract Components</h2>
             <p className="text-sm text-gray-300">Drag components to canvas</p>
           </div>
@@ -662,7 +662,7 @@ const getAvailableDataTypes = (): string[] => {
                     setIsCategoryDropdownOpen(false)
                   }}
                   className={`w-full text-left px-4 py-2 text-sm flex items-center gap-2 transition-colors ${selectedCategory === category.id
-                      ? "bg-purple-500/20 text-purple-300"
+                      ? "bg-emerald-500/20 text-emerald-300"
                       : "text-gray-300 hover:bg-gray-700"
                     }`}
                 >
@@ -690,10 +690,10 @@ const getAvailableDataTypes = (): string[] => {
                     properties: component.properties || {} // Ensure properties exists
                   } as ComponentType) // Type assertion to ensure compatibility
                 }
-                className="group p-4 rounded-xl bg-gray-900/50 backdrop-blur-sm border border-gray-700/50 cursor-move hover:bg-gray-800/50 hover:border-purple-400/30 transition-all duration-300 transform hover:scale-105"
+                className="group p-4 rounded-xl bg-gray-900/50 backdrop-blur-sm border border-gray-700/50 cursor-move hover:bg-gray-800/50 hover:border-emerald-400/30 transition-all duration-300 transform hover:scale-105"
               >
                 <div className="flex items-center space-x-3">
-                  <div className="text-purple-400 group-hover:text-purple-300 transition-colors">{component.icon}</div>
+                  <div className="text-emerald-400 group-hover:text-emerald-300 transition-colors">{component.icon}</div>
                   <div>
                     <div className="font-semibold text-sm text-white">{component.name}</div>
                     <div className="text-xs text-gray-400">{component.description}</div>
@@ -713,7 +713,7 @@ const getAvailableDataTypes = (): string[] => {
         <div className="bg-black/90 backdrop-blur-xl p-6 border-b border-gray-800/50">
           <div className="flex justify-between items-center">
             <div>
-              <h1 className="text-3xl font-bold bg-gradient-to-r from-purple-400 to-violet-400 bg-clip-text text-transparent">
+              <h1 className="text-3xl font-bold bg-gradient-to-r from-emerald-400 to-green-600 bg-clip-text text-transparent">
                 Visual Smart Contract Builder
               </h1>
               <p className="text-sm text-gray-400 mt-1">Build smart contracts visually without code</p>
@@ -721,7 +721,7 @@ const getAvailableDataTypes = (): string[] => {
             <div className="flex space-x-3">
               <button
                 onClick={generateSolidityCode}
-                className="px-6 py-3 bg-gradient-to-r from-purple-500 to-violet-500 text-white rounded-xl hover:from-purple-600 hover:to-violet-600 transition-all duration-300 shadow-lg hover:shadow-purple-500/25 font-medium backdrop-blur-sm border border-purple-400/30"
+                className="px-6 py-3 bg-gradient-to-r from-emerald-500 to-green-700 text-white rounded-xl hover:from-emerald-600 hover:to-green-600 transition-all duration-300 shadow-lg hover:shadow-emerald-500/25 font-medium backdrop-blur-sm border border-emerald-400/30"
               >
                 Generate Code
               </button>
@@ -768,7 +768,7 @@ const getAvailableDataTypes = (): string[] => {
                 key={component.id}
                 onClick={() => handleComponentClick(component)}
                 className={`absolute p-4 rounded-xl backdrop-blur-sm border cursor-pointer transition-all duration-300 hover:scale-105 ${selectedComponent?.id === component.id
-                    ? "ring-2 ring-purple-400/50 bg-gray-800/80 border-purple-400/50 shadow-lg shadow-purple-400/25"
+                    ? "ring-2 ring-emerald-400/50 bg-gray-800/80 border-emerald-400/50 shadow-lg shadow-emerald-400/25"
                     : "bg-gray-900/70 border-gray-700/50 hover:bg-gray-800/70 hover:border-gray-600/50"
                   }`}
                 style={{
@@ -780,7 +780,7 @@ const getAvailableDataTypes = (): string[] => {
               >
                 <div className="flex items-center justify-between mb-2">
                   <div className="flex items-center space-x-3">
-                    <span className="text-purple-400 text-xl">{component.icon}</span>
+                    <span className="text-emerald-400 text-xl">{component.icon}</span>
                     <div>
                       <div className="font-semibold text-sm text-white">{component.name}</div>
                       <div className="text-xs text-gray-400 capitalize">{component.type}</div>
@@ -816,7 +816,7 @@ const getAvailableDataTypes = (): string[] => {
                     Drag components from the sidebar to create your smart contract
                   </div>
                   <div className="text-sm mt-6 bg-gray-900/80 backdrop-blur-sm p-6 rounded-xl border border-gray-700/50 max-w-md">
-                    <div className="font-medium mb-3 text-purple-400">Quick Start:</div>
+                    <div className="font-medium mb-3 text-emerald-400">Quick Start:</div>
                     <div className="text-left space-y-2 text-gray-300">
                       <div>1. Drag a <strong className="text-white">Constructor</strong> to initialize your contract</div>
                       <div>2. Add <strong className="text-white">State Variables</strong> to store data</div>
@@ -835,7 +835,7 @@ const getAvailableDataTypes = (): string[] => {
     <div className="p-6 border-b border-gray-800/50">
       <div className="flex items-center justify-between">
         <h3 className="font-bold text-lg flex items-center space-x-3 text-white">
-          <span className="text-purple-400">{selectedComponent.icon}</span>
+          <span className="text-emerald-400">{selectedComponent.icon}</span>
           <span>{selectedComponent.name}</span>
         </h3>
         <button
@@ -859,7 +859,7 @@ const getAvailableDataTypes = (): string[] => {
               <select
                 value={String(value || '')} 
                 onChange={(e) => updateComponentProperty(selectedComponent.id, key, e.target.value)}
-                className="w-full p-3 bg-gray-900/50 backdrop-blur-sm border border-gray-700/50 rounded-lg focus:ring-2 focus:ring-purple-400/50 focus:border-purple-400/50 transition-all text-white"
+                className="w-full p-3 bg-gray-900/50 backdrop-blur-sm border border-gray-700/50 rounded-lg focus:ring-2 focus:ring-emerald-400/50 focus:border-emerald-400/50 transition-all text-white"
               >
                 <option value="public">Public</option>
                 <option value="private">Private</option>
@@ -870,7 +870,7 @@ const getAvailableDataTypes = (): string[] => {
   <select
     value={String(value || '')} 
     onChange={(e) => updateComponentProperty(selectedComponent.id, key, e.target.value)}
-    className="w-full p-3 bg-gray-900/50 backdrop-blur-sm border border-gray-700/50 rounded-lg focus:ring-2 focus:ring-purple-400/50 focus:border-purple-400/50 transition-all text-white"
+    className="w-full p-3 bg-gray-900/50 backdrop-blur-sm border border-gray-700/50 rounded-lg focus:ring-2 focus:ring-emerald-400/50 focus:border-emerald-400/50 transition-all text-white"
   >
     {getAvailableDataTypes().map(type => (
       <option key={type} value={type}>{type}</option>
@@ -880,7 +880,7 @@ const getAvailableDataTypes = (): string[] => {
   <select
     value={String(value || '')} 
     onChange={(e) => updateComponentProperty(selectedComponent.id, key, e.target.value)}
-    className="w-full p-3 bg-gray-900/50 backdrop-blur-sm border border-gray-700/50 rounded-lg focus:ring-2 focus:ring-purple-400/50 focus:border-purple-400/50 transition-all text-white"
+    className="w-full p-3 bg-gray-900/50 backdrop-blur-sm border border-gray-700/50 rounded-lg focus:ring-2 focus:ring-emerald-400/50 focus:border-emerald-400/50 transition-all text-white"
   >
     {getAvailableDataTypes().map(type => (
       <option key={type} value={type}>{type}</option>
@@ -890,7 +890,7 @@ const getAvailableDataTypes = (): string[] => {
               <select
                 value={String(value || '')} 
                 onChange={(e) => updateComponentProperty(selectedComponent.id, key, e.target.value)}
-                className="w-full p-3 bg-gray-900/50 backdrop-blur-sm border border-gray-700/50 rounded-lg focus:ring-2 focus:ring-purple-400/50 focus:border-purple-400/50 transition-all text-white"
+                className="w-full p-3 bg-gray-900/50 backdrop-blur-sm border border-gray-700/50 rounded-lg focus:ring-2 focus:ring-emerald-400/50 focus:border-emerald-400/50 transition-all text-white"
               >
                 <option value="address">address</option>
                 <option value="uint256">uint256</option>
@@ -904,7 +904,7 @@ const getAvailableDataTypes = (): string[] => {
                   type="checkbox"
                   checked={Boolean(value)}
                   onChange={(e) => updateComponentProperty(selectedComponent.id, key, e.target.checked)}
-                  className="w-4 h-4 text-purple-400 bg-gray-900 border-gray-600 rounded focus:ring-purple-400 focus:ring-2"
+                  className="w-4 h-4 text-emerald-400 bg-gray-900 border-gray-600 rounded focus:ring-emerald-400 focus:ring-2"
                 />
                 <span className="text-sm text-gray-300">Function can receive Ether</span>
               </label>
@@ -913,7 +913,7 @@ const getAvailableDataTypes = (): string[] => {
                 <textarea
                   value={String(value || '')}
                   onChange={(e) => updateComponentProperty(selectedComponent.id, key, e.target.value)}
-                  className="w-full p-3 bg-gray-900/50 backdrop-blur-sm border border-gray-700/50 rounded-lg focus:ring-2 focus:ring-purple-400/50 focus:border-purple-400/50 transition-all text-white placeholder-gray-500 font-mono text-sm"
+                  className="w-full p-3 bg-gray-900/50 backdrop-blur-sm border border-gray-700/50 rounded-lg focus:ring-2 focus:ring-emerald-400/50 focus:border-emerald-400/50 transition-all text-white placeholder-gray-500 font-mono text-sm"
                   placeholder="Enter function implementation or use AI generation below"
                   rows={6}
                 />
@@ -922,7 +922,7 @@ const getAvailableDataTypes = (): string[] => {
                 <div className="border-t border-gray-700/50 pt-3">
                   <button
                     onClick={() => setShowAiInput(!showAiInput)}
-                    className="flex items-center gap-2 text-sm text-purple-400 hover:text-purple-300 transition-colors mb-3"
+                    className="flex items-center gap-2 text-sm text-emerald-400 hover:text-emerald-300 transition-colors mb-3"
                   >
                     <Sparkles className="w-4 h-4" />
                     AI Function Generation
@@ -933,14 +933,14 @@ const getAvailableDataTypes = (): string[] => {
                       <textarea
                         value={aiRequirements}
                         onChange={(e) => setAiRequirements(e.target.value)}
-                        className="w-full p-3 bg-gray-800/50 backdrop-blur-sm border border-gray-600/50 rounded-lg focus:ring-2 focus:ring-purple-400/50 focus:border-purple-400/50 transition-all text-white placeholder-gray-400 text-sm"
+                        className="w-full p-3 bg-gray-800/50 backdrop-blur-sm border border-gray-600/50 rounded-lg focus:ring-2 focus:ring-emerald-400/50 focus:border-emerald-400/50 transition-all text-white placeholder-gray-400 text-sm"
                         placeholder="Describe what this function should do... e.g., 'Transfer tokens between addresses with validation' or 'Calculate compound interest based on time period'"
                         rows={3}
                       />
                       <button
                         onClick={generateFunctionBody}
                         disabled={isGeneratingFunction || !aiRequirements.trim()}
-                        className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-purple-500 to-violet-500 text-white rounded-lg hover:from-purple-600 hover:to-violet-600 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed text-sm font-medium"
+                        className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-emerald-500 to-violet-500 text-white rounded-lg hover:from-emerald-600 hover:to-violet-600 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed text-sm font-medium"
                       >
                         {isGeneratingFunction ? (
                           <>
@@ -963,7 +963,7 @@ const getAvailableDataTypes = (): string[] => {
                 type="text"
                 value={String(value || '')} 
                 onChange={(e) => updateComponentProperty(selectedComponent.id, key, e.target.value)}
-                className="w-full p-3 bg-gray-900/50 backdrop-blur-sm border border-gray-700/50 rounded-lg focus:ring-2 focus:ring-purple-400/50 focus:border-purple-400/50 transition-all text-white placeholder-gray-500"
+                className="w-full p-3 bg-gray-900/50 backdrop-blur-sm border border-gray-700/50 rounded-lg focus:ring-2 focus:ring-emerald-400/50 focus:border-emerald-400/50 transition-all text-white placeholder-gray-500"
                 placeholder={`Enter ${key}`}
               />
             )}
@@ -971,8 +971,8 @@ const getAvailableDataTypes = (): string[] => {
         ))}
 
         {/* Component-specific help text */}
-        <div className="mt-6 p-4 bg-purple-400/10 backdrop-blur-sm rounded-lg border border-purple-400/20">
-          <div className="text-sm text-purple-300">
+        <div className="mt-6 p-4 bg-emerald-400/10 backdrop-blur-sm rounded-lg border border-emerald-400/20">
+          <div className="text-sm text-emerald-300">
             <strong>💡 Tip:</strong>
             {selectedComponent.type === "function" &&
               " Functions define the behavior of your contract. Make them external if called by users."}
@@ -1003,7 +1003,7 @@ const getAvailableDataTypes = (): string[] => {
                 <div className="flex space-x-3">
                   <button
                     onClick={copyToClipboard}
-                    className="px-4 py-2 bg-purple-500/80 backdrop-blur-sm text-white rounded-lg hover:bg-purple-600/80 transition-all font-medium border border-purple-400/30 flex items-center gap-2"
+                    className="px-4 py-2 bg-emerald-500/80 backdrop-blur-sm text-white rounded-lg hover:bg-emerald-600/80 transition-all font-medium border border-emerald-400/30 flex items-center gap-2"
                   >
                     {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
                     {copied ? "Copied!" : "Copy Code"}
@@ -1047,7 +1047,7 @@ const getAvailableDataTypes = (): string[] => {
                   </button>
                   <button
                     onClick={() => setIsImportModalOpen(false)}
-                    className="px-4 py-2 bg-purple-500/80 backdrop-blur-sm text-white rounded-lg hover:bg-purple-600/80 transition-all border border-purple-400/30"
+                    className="px-4 py-2 bg-emerald-500/80 backdrop-blur-sm text-white rounded-lg hover:bg-emerald-600/80 transition-all border border-emerald-400/30"
                   >
                     Import
                   </button>

@@ -18,9 +18,9 @@ export function ConnectWalletButton({ variant = "default", className = "" }: Con
         onClick={connectWallet}
         className={`group relative ${
           variant === "default" ? "px-6 py-2.5" : "px-4 py-2"
-        } bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-500 hover:to-purple-600 text-white text-sm font-medium rounded-xl transition-all duration-200 flex items-center space-x-2 shadow-lg hover:shadow-purple-500/25 hover:scale-105 ${className}`}
+        } bg-gradient-to-r from-emerald-600 to-emerald-700 hover:from-emerald-500 hover:to-emerald-600 text-white text-sm font-medium rounded-xl transition-all duration-200 flex items-center space-x-2 shadow-lg hover:shadow-emerald-500/25 hover:scale-105 ${className}`}
       >
-        <div className="absolute inset-0 bg-gradient-to-r from-purple-600 to-purple-700 rounded-xl blur opacity-30 group-hover:opacity-50 transition-opacity"></div>
+        <div className="absolute inset-0 bg-gradient-to-r from-emerald-600 to-emerald-700 rounded-xl blur opacity-30 group-hover:opacity-50 transition-opacity"></div>
         <svg className="relative w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
         </svg>

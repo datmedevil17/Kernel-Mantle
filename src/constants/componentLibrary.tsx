@@ -327,7 +327,7 @@ const componentLibrary: ComponentItem[] = [
     category: 'security',
     name: 'Multi-Signature',
     icon: <Users className="w-5 h-5" />,
-    color: 'bg-purple-100 border-purple-300 hover:bg-purple-200',
+    color: 'bg-emerald-100 border-emerald-300 hover:bg-emerald-200',
     description: 'Require multiple approvals',
     gasEstimate: 5000,
     properties: { 

@@ -77,11 +77,11 @@ export default function PluginsPage() {
         onFileDelete={deleteFile}
       />
       
-     <div className="flex-1 bg-gradient-to-br from-gray-900 via-slate-900 to-purple-900/20 pt-20">
+     <div className="flex-1 bg-gradient-to-br from-gray-900 via-slate-900 to-emerald-900/20 pt-20">
       {selectedFile ? (
         <div className="p-8 h-full">
           <div className="mb-8">
-            <h2 className="text-3xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent mb-3">
+            <h2 className="text-3xl font-bold bg-gradient-to-r from-blue-400 to-emerald-400 bg-clip-text text-transparent mb-3">
               {selectedFile.name}
             </h2>
             <div className="flex items-center gap-6 text-sm text-slate-400">
@@ -90,7 +90,7 @@ export default function PluginsPage() {
                 <span>Language: {selectedFile.language || 'Unknown'}</span>
               </div>
               <div className="flex items-center gap-2">
-                <div className="w-2 h-2 bg-purple-400 rounded-full"></div>
+                <div className="w-2 h-2 bg-emerald-400 rounded-full"></div>
                 <span>Size: {selectedFile.size || 0} bytes</span>
               </div>
             </div>

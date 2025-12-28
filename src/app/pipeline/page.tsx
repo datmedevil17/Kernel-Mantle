@@ -24,16 +24,16 @@ import { injected } from 'wagmi/connectors'
 import { Button } from "@/components/ui/button"
 
 const nodeTypes: Record<string, NodeType> = {
-  import: { icon: Upload, color: "bg-purple-600", label: "Import Contract" },
-  compile: { icon: Zap, color: "bg-purple-700", label: "Solidity Compile" },
-  test: { icon: CheckCircle, color: "bg-purple-600", label: "Run Tests" },
-  deploy: { icon: GitBranch, color: "bg-purple-800", label: "Deploy Testnet" },
+  import: { icon: Upload, color: "bg-emerald-600", label: "Import Contract" },
+  compile: { icon: Zap, color: "bg-emerald-700", label: "Solidity Compile" },
+  test: { icon: CheckCircle, color: "bg-emerald-600", label: "Run Tests" },
+  deploy: { icon: GitBranch, color: "bg-emerald-800", label: "Deploy Testnet" },
     deployMainnet: { icon: GitBranch, color: "bg-red-600", label: "Deploy Mainnet" }, // New mainnet deploy node
 
-  verify: { icon: Shield, color: "bg-purple-700", label: "Verify Contract" },
-  condition: { icon: AlertTriangle, color: "bg-purple-600", label: "Condition" },
+  verify: { icon: Shield, color: "bg-emerald-700", label: "Verify Contract" },
+  condition: { icon: AlertTriangle, color: "bg-emerald-600", label: "Condition" },
   wait: { icon: Clock, color: "bg-gray-700", label: "Wait/Approval" },
-  gasOptimize: { icon: Zap, color: "bg-purple-800", label: "Gas Optimize" },
+  gasOptimize: { icon: Zap, color: "bg-emerald-800", label: "Gas Optimize" },
 }
 
 const PipelineBuilder: React.FC = () => {
@@ -433,7 +433,7 @@ const deployToMainnet = async (
         <div className="space-y-2">
           <button
             onClick={() => fileInputRef.current?.click()}
-            className="flex items-center gap-2 px-3 py-2 bg-purple-600 text-white rounded text-sm hover:bg-purple-700 transition-all duration-200"
+            className="flex items-center gap-2 px-3 py-2 bg-emerald-600 text-white rounded text-sm hover:bg-emerald-700 transition-all duration-200"
           >
             <Upload className="w-4 h-4" />
             Upload .sol File
@@ -448,7 +448,7 @@ const deployToMainnet = async (
                 {Object.keys(uploadedFiles).map((filename) => (
                   <div
                     key={filename}
-                    className="text-xs bg-purple-600/20 text-purple-300 px-2 py-1 rounded flex items-center gap-1 border border-purple-600/30"
+                    className="text-xs bg-emerald-600/20 text-emerald-300 px-2 py-1 rounded flex items-center gap-1 border border-emerald-600/30"
                   >
                     <FileText className="w-3 h-3" />
                     {filename}
@@ -817,8 +817,8 @@ case "deployMainnet":
 
   const getStatusIcon = (nodeId: string) => {
     const status = executionStatus[nodeId]
-    if (status === "running") return <Clock className="w-4 h-4 text-purple-400 animate-spin" />
-    if (status === "success") return <CheckCircle className="w-4 h-4 text-purple-400" />
+    if (status === "running") return <Clock className="w-4 h-4 text-emerald-400 animate-spin" />
+    if (status === "success") return <CheckCircle className="w-4 h-4 text-emerald-400" />
     if (status === "failed") return <XCircle className="w-4 h-4 text-red-400" />
     return null
   }
@@ -872,7 +872,7 @@ const handleInputChange = (key: string, value: string | number | boolean) => {
                 </select>
                 <button
                   onClick={() => fileInputRef.current?.click()}
-                  className="px-3 py-2 bg-purple-600 text-white rounded text-sm hover:bg-purple-700 transition-all duration-200"
+                  className="px-3 py-2 bg-emerald-600 text-white rounded text-sm hover:bg-emerald-700 transition-all duration-200"
                   title="Upload new file"
                 >
                   <Upload className="w-4 h-4" />
@@ -945,7 +945,7 @@ const handleInputChange = (key: string, value: string | number | boolean) => {
                 type="checkbox"
                 checked={node.config.optimizer || false}
                 onChange={(e) => handleInputChange("optimizer", e.target.checked)}
-                className="rounded accent-purple-600"
+                className="rounded accent-emerald-600"
               />
               <label className="text-sm text-gray-300">Enable Optimizer</label>
             </div>
@@ -1049,7 +1049,7 @@ const handleInputChange = (key: string, value: string | number | boolean) => {
                     type="checkbox"
                     checked={node.config.coverage || false}
                     onChange={(e) => handleInputChange("coverage", e.target.checked)}
-                    className="rounded accent-purple-600"
+                    className="rounded accent-emerald-600"
                   />
                   <label className="text-sm text-gray-300">Generate Coverage Report</label>
                 </div>
@@ -1058,7 +1058,7 @@ const handleInputChange = (key: string, value: string | number | boolean) => {
                     type="checkbox"
                     checked={node.config.gasReport || false}
                     onChange={(e) => handleInputChange("gasReport", e.target.checked)}
-                    className="rounded accent-purple-600"
+                    className="rounded accent-emerald-600"
                   />
                   <label className="text-sm text-gray-300">Generate Gas Report</label>
                 </div>
@@ -1088,8 +1088,8 @@ const handleInputChange = (key: string, value: string | number | boolean) => {
     // Modify the wallet button render logic:
  const renderWalletButton = () => {
   if (!mounted) return (
-    <Button className="bg-gray-800 hover:bg-gray-700 border border-purple-500/30 hover:border-purple-400/40 text-purple-100 hover:text-white shadow-sm hover:shadow-purple-500/10 transition-all">
-      <Wallet className="w-4 h-4 mr-2 text-purple-300" />
+    <Button className="bg-gray-800 hover:bg-gray-700 border border-emerald-500/30 hover:border-emerald-400/40 text-emerald-100 hover:text-white shadow-sm hover:shadow-emerald-500/10 transition-all">
+      <Wallet className="w-4 h-4 mr-2 text-emerald-300" />
       Connect Wallet
     </Button>
   )
@@ -1111,16 +1111,16 @@ const handleInputChange = (key: string, value: string | number | boolean) => {
   }
 }}
 
-      className="bg-gray-800 hover:bg-gray-700 border border-purple-500/30 hover:border-purple-400/40 text-purple-100 hover:text-white shadow-sm hover:shadow-purple-500/10 transition-all"
+      className="bg-gray-800 hover:bg-gray-700 border border-emerald-500/30 hover:border-emerald-400/40 text-emerald-100 hover:text-white shadow-sm hover:shadow-emerald-500/10 transition-all"
     >
       {isConnected ? (
         <div className="flex items-center">
-          <Wallet className="w-4 h-4 mr-2 text-purple-300" />
+          <Wallet className="w-4 h-4 mr-2 text-emerald-300" />
           <span>{address?.slice(0, 6)}...{address?.slice(-4)}</span>
         </div>
       ) : (
         <>
-          <Wallet className="w-4 h-4 mr-2 text-purple-300" />
+          <Wallet className="w-4 h-4 mr-2 text-emerald-300" />
           Connect Wallet
         </>
       )}
@@ -1170,7 +1170,7 @@ const handleInputChange = (key: string, value: string | number | boolean) => {
             <button
               key={key}
               onClick={() => loadTemplate(key)}
-              className="w-full text-left p-3 text-sm bg-purple-600/20 hover:bg-purple-600/30 rounded border border-purple-500/30 text-purple-200 transition-all duration-200 hover:shadow-md"
+              className="w-full text-left p-3 text-sm bg-emerald-600/20 hover:bg-emerald-600/30 rounded border border-emerald-500/30 text-emerald-200 transition-all duration-200 hover:shadow-md"
             >
               {template.name}
             </button>
@@ -1191,7 +1191,7 @@ const handleInputChange = (key: string, value: string | number | boolean) => {
                 onDragStart={(e) => handleDragStart(e, type)}
                 onDrop={(e) => handleDrop(e)}
                 onDragOver={(e) => handleDragOver(e)}
-                className="flex items-center gap-3 p-3 bg-gray-800 border border-gray-700 rounded cursor-move hover:bg-gray-700 hover:border-purple-500/50 transition-all duration-200 hover:shadow-lg hover:shadow-purple-500/20 group"
+                className="flex items-center gap-3 p-3 bg-gray-800 border border-gray-700 rounded cursor-move hover:bg-gray-700 hover:border-emerald-500/50 transition-all duration-200 hover:shadow-lg hover:shadow-emerald-500/20 group"
               >
                 <div className={`p-2 rounded ${config.color} shadow-lg group-hover:scale-105 transition-transform duration-200`}>
                   <IconComponent className="w-4 h-4 text-white" />
@@ -1215,7 +1215,7 @@ const handleInputChange = (key: string, value: string | number | boolean) => {
           <button
             onClick={executePipeline}
             disabled={isExecuting || nodes.length === 0}
-            className="flex items-center gap-2 px-4 py-2 bg-purple-600 text-white rounded hover:bg-purple-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
+            className="flex items-center gap-2 px-4 py-2 bg-emerald-600 text-white rounded hover:bg-emerald-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
           >
             <Play className="w-4 h-4" />
             {isExecuting ? "Executing..." : "Run Pipeline"}
@@ -1223,15 +1223,15 @@ const handleInputChange = (key: string, value: string | number | boolean) => {
 
           <div className="flex items-center gap-4 text-sm text-gray-400">
             <span className="flex items-center gap-1">
-              <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
+              <div className="w-2 h-2 bg-emerald-500 rounded-full"></div>
               EVM Compatible
             </span>
             <span className="flex items-center gap-1">
-              <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
+              <div className="w-2 h-2 bg-emerald-500 rounded-full"></div>
               Asset Hub Polkadot
             </span>
             <span className="flex items-center gap-1">
-              <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
+              <div className="w-2 h-2 bg-emerald-500 rounded-full"></div>
               Solidity Ready
             </span>
           </div>
@@ -1294,8 +1294,8 @@ const handleInputChange = (key: string, value: string | number | boolean) => {
               return (
                 <div
                   key={node.id}
-                  className={`absolute bg-gray-800 border-2 rounded-lg shadow-xl p-3 cursor-pointer hover:shadow-2xl hover:shadow-purple-500/20 transition-all duration-200 ${
-                    selectedNode === node.id ? "border-purple-500 shadow-purple-500/30" : "border-gray-700"
+                  className={`absolute bg-gray-800 border-2 rounded-lg shadow-xl p-3 cursor-pointer hover:shadow-2xl hover:shadow-emerald-500/20 transition-all duration-200 ${
+                    selectedNode === node.id ? "border-emerald-500 shadow-emerald-500/30" : "border-gray-700"
                   }`}
                   style={{ left: node.x, top: node.y, width: "220px" }}
                   onClick={() => setSelectedNode(node.id)}
@@ -1324,7 +1324,7 @@ const handleInputChange = (key: string, value: string | number | boolean) => {
             {nodes.length === 0 && (
               <div className="absolute inset-0 flex items-center justify-center">
                 <div className="text-center">
-                  <Plus className="w-12 h-12 text-purple-500 mx-auto mb-4" />
+                  <Plus className="w-12 h-12 text-emerald-500 mx-auto mb-4" />
                   <p className="text-gray-300 mb-2">Build your Solidity deployment pipeline</p>
                   <p className="text-sm text-gray-500">Drag components or choose a template</p>
                 </div>
@@ -1336,7 +1336,7 @@ const handleInputChange = (key: string, value: string | number | boolean) => {
 {executionLogs.length > 0 && (
   <div className="w-80 bg-black border-l border-gray-800 flex flex-col h-full max-h-screen">
     <div className="p-4 border-b border-gray-800 flex-shrink-0">
-      <h3 className="text-purple-400 font-semibold">Execution Logs</h3>
+      <h3 className="text-emerald-400 font-semibold">Execution Logs</h3>
     </div>
     <div className="flex-1 p-4 overflow-y-auto font-mono text-sm min-h-0">
       {executionLogs.map((log, index) => (
@@ -1350,7 +1350,7 @@ const handleInputChange = (key: string, value: string | number | boolean) => {
                 : "text-gray-300"
           }`}
         >
-          <span className="text-purple-500">[{log.timestamp}]</span> {log.message}
+          <span className="text-emerald-500">[{log.timestamp}]</span> {log.message}
         </div>
       ))}
     </div>

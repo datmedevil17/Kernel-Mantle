@@ -299,7 +299,7 @@ contract PriceConsumer {
       description: 'Machine learning integrated blockchain solutions',
       icon: Brain,
       color: '#DDA0DD',
-      bgGradient: 'from-purple-500/10 via-violet-500/5 to-transparent',
+      bgGradient: 'from-emerald-500/10 via-violet-500/5 to-transparent',
     }
   ];
 
@@ -398,7 +398,7 @@ contract PriceConsumer {
       {/* Template Cards */}
       <div className="relative z-10">
         <h2 className="text-2xl font-bold text-white mb-6 flex items-center">
-          <Sparkles className="w-6 h-6 mr-2 text-purple-400" />
+          <Sparkles className="w-6 h-6 mr-2 text-emerald-400" />
           Create New Project
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-7xl mx-auto">

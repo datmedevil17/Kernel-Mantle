@@ -1054,7 +1054,7 @@ Deploy with: \`npm run deploy\`
           onClick={generateTests}
           disabled={isDisabled}
           className={`w-full px-4 py-3 rounded-lg font-semibold transition-all flex items-center justify-center gap-2 ${
-            isDisabled ? 'bg-gray-800 text-gray-500 cursor-not-allowed' : 'bg-purple-900 text-white hover:bg-purple-800'
+            isDisabled ? 'bg-gray-800 text-gray-500 cursor-not-allowed' : 'bg-emerald-900 text-white hover:bg-emerald-800'
           }`}
         >
           {isGenerating && generatingType === 'tests' ? (

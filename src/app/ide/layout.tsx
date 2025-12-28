@@ -81,7 +81,7 @@ export default function IDELayout({ children }: IDELayoutProps) {
                 {!address ? (
                   <button
                     onClick={() => setIsModalOpen(true)}
-                    className="flex items-center gap-2 rounded-lg px-3 py-2 text-neutral-200 bg-purple-600 hover:bg-purple-700 transition-colors"
+                    className="flex items-center gap-2 rounded-lg px-3 py-2 text-neutral-200 bg-emerald-600 hover:bg-emerald-700 transition-colors"
                   >
                     <IconUserBolt className="h-5 w-5 shrink-0" />
                     <span>{isSidebarOpen ? 'Connect Wallet' : ''}</span>
@@ -92,7 +92,7 @@ export default function IDELayout({ children }: IDELayoutProps) {
                       label: formatAddress(address),
                       href: "#",
                       icon: (
-                        <div className="h-7 w-7 rounded-full bg-purple-500 flex items-center justify-center text-white">
+                        <div className="h-7 w-7 rounded-full bg-emerald-500 flex items-center justify-center text-white">
                           {address.substring(2, 4)}
                         </div>
                       ),
@@ -114,7 +114,7 @@ export default function IDELayout({ children }: IDELayoutProps) {
           <div className="fixed inset-0 bg-black/80 backdrop-blur-md flex items-center justify-center z-50 p-4">
             <div className="relative bg-gray-900/95 border border-gray-700/50 rounded-2xl p-8 w-full max-w-md backdrop-blur-xl">
               {/* Modal gradient overlay */}
-              <div className="absolute inset-0 bg-gradient-to-br from-purple-900/10 to-transparent rounded-2xl"></div>
+              <div className="absolute inset-0 bg-gradient-to-br from-emerald-900/10 to-transparent rounded-2xl"></div>
 
               <div className="relative">
                 {/* Modal header */}
@@ -133,9 +133,9 @@ export default function IDELayout({ children }: IDELayoutProps) {
                 {/* Connect button */}
                 <button
                   onClick={connectWallet}
-                  className="group relative w-full py-4 px-6 bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-500 hover:to-purple-600 rounded-xl text-white font-semibold transition-all duration-200 flex items-center justify-center space-x-3 shadow-xl hover:shadow-purple-500/25 hover:scale-105"
+                  className="group relative w-full py-4 px-6 bg-gradient-to-r from-emerald-600 to-emerald-700 hover:from-emerald-500 hover:to-emerald-600 rounded-xl text-white font-semibold transition-all duration-200 flex items-center justify-center space-x-3 shadow-xl hover:shadow-emerald-500/25 hover:scale-105"
                 >
-                  <div className="absolute inset-0 bg-gradient-to-r from-purple-600 to-purple-700 rounded-xl blur opacity-30 group-hover:opacity-50 transition-opacity"></div>
+                  <div className="absolute inset-0 bg-gradient-to-r from-emerald-600 to-emerald-700 rounded-xl blur opacity-30 group-hover:opacity-50 transition-opacity"></div>
                   <Image src="/metamask-fox.svg" alt="MetaMask" className="relative" width={6} height={6} />
                   <span className="relative">Connect with MetaMask</span>
                 </button>

@@ -69,8 +69,8 @@ export function AIProjectModal({ isOpen, onClose, onGenerate }: AIProjectModalPr
         {/* Header with enhanced styling */}
         <DialogHeader className="text-center pb-6 border-b border-zinc-800/50">
           <div className="flex items-center justify-center mb-3">
-            <div className="p-3 rounded-full bg-gradient-to-r from-purple-500/20 to-blue-500/20 border border-purple-500/30">
-              <Sparkles className="w-6 h-6 text-purple-400" />
+            <div className="p-3 rounded-full bg-gradient-to-r from-emerald-500/20 to-blue-500/20 border border-emerald-500/30">
+              <Sparkles className="w-6 h-6 text-emerald-400" />
             </div>
           </div>
           <DialogTitle className="text-2xl font-bold bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">
@@ -92,7 +92,7 @@ export function AIProjectModal({ isOpen, onClose, onGenerate }: AIProjectModalPr
               <CheckCircle className="w-3 h-3 mr-1" />
               Audited Patterns
             </Badge>
-            <Badge variant="secondary" className="bg-purple-500/10 text-purple-400 border-purple-500/20">
+            <Badge variant="secondary" className="bg-emerald-500/10 text-emerald-400 border-emerald-500/20">
               <Zap className="w-3 h-3 mr-1" />
               Gas Optimized
             </Badge>
@@ -113,7 +113,7 @@ export function AIProjectModal({ isOpen, onClose, onGenerate }: AIProjectModalPr
                   value={description}
                   onChange={handleDescriptionChange}
                   maxLength={maxChars}
-                  className="h-32 bg-zinc-800/50 border-zinc-700/50 text-white placeholder:text-gray-500 resize-none focus:border-purple-500/50 focus:ring-purple-500/20 transition-all duration-200"
+                  className="h-32 bg-zinc-800/50 border-zinc-700/50 text-white placeholder:text-gray-500 resize-none focus:border-emerald-500/50 focus:ring-emerald-500/20 transition-all duration-200"
                 />
                 <div className="absolute bottom-3 right-3 flex items-center gap-2">
                   <span className={`text-xs font-medium ${getCharCountColor()}`}>
@@ -164,7 +164,7 @@ export function AIProjectModal({ isOpen, onClose, onGenerate }: AIProjectModalPr
             <Button 
               onClick={handleGenerate}
               disabled={isGenerating || !isValidDescription}
-              className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-semibold px-6 py-2 shadow-lg hover:shadow-purple-500/25 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="bg-gradient-to-r from-emerald-600 to-blue-600 hover:from-emerald-700 hover:to-blue-700 text-white font-semibold px-6 py-2 shadow-lg hover:shadow-emerald-500/25 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isGenerating ? (
                 <>
@@ -186,7 +186,7 @@ export function AIProjectModal({ isOpen, onClose, onGenerate }: AIProjectModalPr
           <div className="absolute inset-0 bg-zinc-900/80 backdrop-blur-sm rounded-lg flex items-center justify-center">
             <div className="text-center space-y-4">
               <div className="animate-pulse">
-                <Sparkles className="w-8 h-8 text-purple-400 mx-auto" />
+                <Sparkles className="w-8 h-8 text-emerald-400 mx-auto" />
               </div>
               <div className="space-y-2">
                 <p className="text-white font-medium">Generating your smart contract...</p>

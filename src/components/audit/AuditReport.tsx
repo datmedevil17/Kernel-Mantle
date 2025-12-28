@@ -19,7 +19,7 @@ const AuditReport: React.FC<AuditReportProps> = ({ file, currentReport, isGenera
       {issues.map((issue) => (
         <div
           key={issue.id}
-          className="bg-gray-900/80 backdrop-blur-sm border border-gray-800 rounded-xl p-5 shadow-lg hover:shadow-purple-900/20 transition-all"
+          className="bg-gray-900/80 backdrop-blur-sm border border-gray-800 rounded-xl p-5 shadow-lg hover:shadow-emerald-900/20 transition-all"
         >
           <div className="flex items-center justify-between mb-3">
             <h3 className="text-lg font-semibold text-white flex items-center">
@@ -32,7 +32,7 @@ const AuditReport: React.FC<AuditReportProps> = ({ file, currentReport, isGenera
           </div>
           <p className="text-gray-300 mb-3">{issue.description}</p>
           {issue.lineNumber && (
-            <div className="flex items-center text-purple-300 text-sm mb-3">
+            <div className="flex items-center text-emerald-300 text-sm mb-3">
               <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path
                   strokeLinecap="round"
@@ -45,7 +45,7 @@ const AuditReport: React.FC<AuditReportProps> = ({ file, currentReport, isGenera
             </div>
           )}
           <div className="bg-gray-800/50 border border-gray-700 rounded-lg p-4">
-            <p className="text-purple-300 font-medium mb-2 flex items-center">
+            <p className="text-emerald-300 font-medium mb-2 flex items-center">
               <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path
                   strokeLinecap="round"
@@ -68,7 +68,7 @@ const AuditReport: React.FC<AuditReportProps> = ({ file, currentReport, isGenera
       {suggestions.map((suggestion) => (
         <div
           key={suggestion.id}
-          className="bg-gray-900/80 backdrop-blur-sm border border-gray-800 rounded-xl p-5 hover:shadow-purple-900/20 transition-all"
+          className="bg-gray-900/80 backdrop-blur-sm border border-gray-800 rounded-xl p-5 hover:shadow-emerald-900/20 transition-all"
         >
           <div className="flex items-start justify-between mb-3">
             <h3 className="text-lg font-semibold text-white">{suggestion.title}</h3>
@@ -78,7 +78,7 @@ const AuditReport: React.FC<AuditReportProps> = ({ file, currentReport, isGenera
               >
                 {(suggestion.impact || "low").toUpperCase()}
               </div>
-              <div className="px-2.5 py-1 bg-purple-900/30 text-purple-300 rounded-full text-xs font-medium">
+              <div className="px-2.5 py-1 bg-emerald-900/30 text-emerald-300 rounded-full text-xs font-medium">
                 {(suggestion.type || "general").toString().replace("-", " ").toUpperCase()}
               </div>
             </div>
@@ -86,7 +86,7 @@ const AuditReport: React.FC<AuditReportProps> = ({ file, currentReport, isGenera
           <p className="text-gray-300 mb-4">{suggestion.description}</p>
           {suggestion.codeExample && (
             <div className="mt-4">
-              <div className="flex items-center text-purple-300 text-xs mb-1">
+              <div className="flex items-center text-emerald-300 text-xs mb-1">
                 <svg className="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path
                     strokeLinecap="round"
@@ -156,7 +156,7 @@ const AuditReport: React.FC<AuditReportProps> = ({ file, currentReport, isGenera
         {/* Complexity Analysis */}
         <div className="bg-gray-900/80 backdrop-blur-sm border border-gray-800 rounded-xl p-6 shadow-lg">
           <h3 className="text-xl font-bold text-white mb-4 flex items-center border-b border-gray-700 pb-3">
-            <svg className="w-5 h-5 mr-2 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-5 h-5 mr-2 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path
                 strokeLinecap="round"
                 strokeLinejoin="round"
@@ -169,7 +169,7 @@ const AuditReport: React.FC<AuditReportProps> = ({ file, currentReport, isGenera
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {Object.entries(safeAnalytics.complexity).map(([key, value], index) => (
               <div key={`complexity-${key}-${index}`} className="bg-gray-800/50 p-4 rounded-lg border border-gray-700">
-                <p className="text-xs uppercase tracking-wider text-purple-300 mb-1">{key}</p>
+                <p className="text-xs uppercase tracking-wider text-emerald-300 mb-1">{key}</p>
                 <p className="text-2xl font-bold text-white">
                   {typeof value === "number" ? value : value.charAt(0).toUpperCase() + value.slice(1)}
                 </p>
@@ -181,7 +181,7 @@ const AuditReport: React.FC<AuditReportProps> = ({ file, currentReport, isGenera
         {/* Code Quality */}
         <div className="bg-gray-900/80 backdrop-blur-sm border border-gray-800 rounded-xl p-6 shadow-lg">
           <h3 className="text-xl font-bold text-white mb-4 flex items-center border-b border-gray-700 pb-3">
-            <svg className="w-5 h-5 mr-2 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-5 h-5 mr-2 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path
                 strokeLinecap="round"
                 strokeLinejoin="round"
@@ -194,7 +194,7 @@ const AuditReport: React.FC<AuditReportProps> = ({ file, currentReport, isGenera
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             {Object.entries(safeAnalytics.codeQuality).map(([key, value], index) => (
               <div key={`quality-${key}-${index}`} className="bg-gray-800/50 p-4 rounded-lg border border-gray-700">
-                <p className="text-xs uppercase tracking-wider text-purple-300 mb-1">{key}</p>
+                <p className="text-xs uppercase tracking-wider text-emerald-300 mb-1">{key}</p>
                 <p className="text-2xl font-bold text-white mb-1">{value}/100</p>
                 {renderScoreBar(value)}
               </div>
@@ -205,7 +205,7 @@ const AuditReport: React.FC<AuditReportProps> = ({ file, currentReport, isGenera
         {/* Code Metrics */}
         <div className="bg-gray-900/80 backdrop-blur-sm border border-gray-800 rounded-xl p-6 shadow-lg">
           <h3 className="text-xl font-bold text-white mb-4 flex items-center border-b border-gray-700 pb-3">
-            <svg className="w-5 h-5 mr-2 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-5 h-5 mr-2 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path
                 strokeLinecap="round"
                 strokeLinejoin="round"
@@ -218,7 +218,7 @@ const AuditReport: React.FC<AuditReportProps> = ({ file, currentReport, isGenera
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
             {Object.entries(safeAnalytics.metrics).map(([key, value], index) => (
               <div key={`metrics-${key}-${index}`} className="bg-gray-800/50 p-4 rounded-lg border border-gray-700">
-                <p className="text-xs uppercase tracking-wider text-purple-300 mb-1">
+                <p className="text-xs uppercase tracking-wider text-emerald-300 mb-1">
                   {key.replace(/([A-Z])/g, " $1").toLowerCase()}
                 </p>
                 <p className="text-2xl font-bold text-white">{value}</p>
@@ -231,23 +231,23 @@ const AuditReport: React.FC<AuditReportProps> = ({ file, currentReport, isGenera
         {analytics?.gasOptimization && (
           <div className="bg-gray-900/80 backdrop-blur-sm border border-gray-800 rounded-xl p-6 shadow-lg">
             <h3 className="text-xl font-bold text-white mb-4 flex items-center border-b border-gray-700 pb-3">
-              <svg className="w-5 h-5 mr-2 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-5 h-5 mr-2 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
               </svg>
               Gas Optimization
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
               <div className="bg-gray-800/50 p-4 rounded-lg border border-gray-700">
-                <p className="text-xs uppercase tracking-wider text-purple-300 mb-1">Estimated Gas</p>
+                <p className="text-xs uppercase tracking-wider text-emerald-300 mb-1">Estimated Gas</p>
                 <p className="text-2xl font-bold text-white">{analytics.gasOptimization.estimatedGas}</p>
               </div>
               <div className="bg-gray-800/50 p-4 rounded-lg border border-gray-700">
-                <p className="text-xs uppercase tracking-wider text-purple-300 mb-1">Optimization Potential</p>
+                <p className="text-xs uppercase tracking-wider text-emerald-300 mb-1">Optimization Potential</p>
                 <p className="text-2xl font-bold text-white">{analytics.gasOptimization.optimizationPotential}%</p>
               </div>
             </div>
             <div className="bg-gray-800/50 p-4 rounded-lg border border-gray-700">
-              <p className="text-sm font-medium text-purple-300 mb-2 flex items-center">
+              <p className="text-sm font-medium text-emerald-300 mb-2 flex items-center">
                 <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                 </svg>
@@ -256,7 +256,7 @@ const AuditReport: React.FC<AuditReportProps> = ({ file, currentReport, isGenera
               <ul className="space-y-2">
                 {analytics.gasOptimization.suggestions.map((suggestion, index) => (
                   <li key={`gas-suggestion-${index}`} className="flex items-start">
-                    <span className="text-purple-400 mr-2 mt-1">•</span>
+                    <span className="text-emerald-400 mr-2 mt-1">•</span>
                     <span className="text-gray-300">{suggestion}</span>
                   </li>
                 ))}
@@ -294,7 +294,7 @@ const AuditReport: React.FC<AuditReportProps> = ({ file, currentReport, isGenera
     const colors = {
       high: "bg-red-900/50 text-red-300 border border-red-800",
       medium: "bg-yellow-900/50 text-yellow-300 border border-yellow-800",
-      low: "bg-purple-900/50 text-purple-300 border border-purple-800",
+      low: "bg-emerald-900/50 text-emerald-300 border border-emerald-800",
     }
     return colors[impact as keyof typeof colors] || colors.low
   }
@@ -304,7 +304,7 @@ const AuditReport: React.FC<AuditReportProps> = ({ file, currentReport, isGenera
       <div className="flex-1 p-6 flex items-center justify-center bg-gray-950 text-gray-500 pt-25">
         <div className="text-center max-w-md">
           <svg
-            className="w-12 h-12 mx-auto text-purple-900/50 mb-4"
+            className="w-12 h-12 mx-auto text-emerald-900/50 mb-4"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -327,12 +327,12 @@ const AuditReport: React.FC<AuditReportProps> = ({ file, currentReport, isGenera
     return (
       <div className="flex-1 p-6 bg-gray-950 flex flex-col items-center justify-center pt-25">
         <div className="relative w-16 h-16 mb-6">
-          <div className="absolute inset-0 rounded-full border-4 border-purple-900/50 animate-ping"></div>
-          <div className="absolute inset-2 rounded-full border-4 border-purple-500 animate-spin"></div>
+          <div className="absolute inset-0 rounded-full border-4 border-emerald-900/50 animate-ping"></div>
+          <div className="absolute inset-2 rounded-full border-4 border-emerald-500 animate-spin"></div>
         </div>
-        <h3 className="text-xl font-medium text-purple-300 mb-1">Generating Report</h3>
+        <h3 className="text-xl font-medium text-emerald-300 mb-1">Generating Report</h3>
         <p className="text-gray-400 text-sm">
-          Analyzing {generatingType} for <span className="text-purple-300">{file.name}</span>
+          Analyzing {generatingType} for <span className="text-emerald-300">{file.name}</span>
         </p>
       </div>
     )
@@ -343,7 +343,7 @@ const AuditReport: React.FC<AuditReportProps> = ({ file, currentReport, isGenera
       <div className="flex-1 p-6 bg-gray-950 flex items-center justify-center pt-25">
         <div className="text-center max-w-md">
           <svg
-            className="w-12 h-12 mx-auto text-purple-900/50 mb-4"
+            className="w-12 h-12 mx-auto text-emerald-900/50 mb-4"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"

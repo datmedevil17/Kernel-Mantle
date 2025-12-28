@@ -16,8 +16,8 @@ const ReportHeader: React.FC<ReportHeaderProps> = ({ file, currentReport }) => {
       <div className="flex flex-col space-y-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-3">
-            <div className="bg-purple-900/50 p-2 rounded-lg">
-              <svg className="w-6 h-6 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="bg-emerald-900/50 p-2 rounded-lg">
+              <svg className="w-6 h-6 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
@@ -31,7 +31,7 @@ const ReportHeader: React.FC<ReportHeaderProps> = ({ file, currentReport }) => {
           <div className="print:hidden">
             <button
               onClick={() => window.print()}
-              className="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition-colors flex items-center"
+              className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg transition-colors flex items-center"
             >
               <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path
@@ -48,15 +48,15 @@ const ReportHeader: React.FC<ReportHeaderProps> = ({ file, currentReport }) => {
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 border-t border-gray-700 pt-4 mt-2">
           <div className="bg-gray-800/50 p-3 rounded-lg border border-gray-700">
-            <p className="text-xs uppercase tracking-wider text-purple-300 mb-1">File Name</p>
+            <p className="text-xs uppercase tracking-wider text-emerald-300 mb-1">File Name</p>
             <p className="font-medium text-white">{file.name}</p>
           </div>
           <div className="bg-gray-800/50 p-3 rounded-lg border border-gray-700">
-            <p className="text-xs uppercase tracking-wider text-purple-300 mb-1">Report Type</p>
+            <p className="text-xs uppercase tracking-wider text-emerald-300 mb-1">Report Type</p>
             <p className="font-medium text-white capitalize">{currentReport.type}</p>
           </div>
           <div className="bg-gray-800/50 p-3 rounded-lg border border-gray-700">
-            <p className="text-xs uppercase tracking-wider text-purple-300 mb-1">Generated On</p>
+            <p className="text-xs uppercase tracking-wider text-emerald-300 mb-1">Generated On</p>
             <p className="font-medium text-white">{currentReport.timestamp.toLocaleString()}</p>
           </div>
         </div>

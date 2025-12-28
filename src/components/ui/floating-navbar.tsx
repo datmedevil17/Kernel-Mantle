@@ -98,7 +98,7 @@ export const FloatingNav: React.FC<FloatingNavProps> = ({ navItems, className })
                     {isActive && (
                       <motion.div
                         layoutId="activeTab"
-                        className="absolute inset-0 rounded-full bg-gradient-to-r from-blue-500/20 to-purple-500/20 -z-10"
+                        className="absolute inset-0 rounded-full bg-gradient-to-r from-blue-500/20 to-emerald-500/20 -z-10"
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}

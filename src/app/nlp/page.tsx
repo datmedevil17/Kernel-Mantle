@@ -201,8 +201,8 @@ const NaturalLanguageContractInteraction = () => {
       {/* Header */}
       <div className="flex items-center justify-between p-6 border-b border-gray-800 bg-gradient-to-r from-black to-gray-900 pt-30">
         <div className="flex items-center space-x-4">
-          <div className="p-2 bg-purple-500/10 rounded-lg border border-purple-500/20">
-            <Terminal className="w-6 h-6 text-purple-400" />
+          <div className="p-2 bg-emerald-500/10 rounded-lg border border-emerald-500/20">
+            <Terminal className="w-6 h-6 text-emerald-400" />
           </div>
           <div>
             <h2 className="text-xl font-bold text-white">Smart Contract Interface</h2>
@@ -221,7 +221,7 @@ const NaturalLanguageContractInteraction = () => {
     {/* Contract Address */}
     <div className="space-y-3">
       <label className="block text-sm font-semibold text-gray-300 flex items-center space-x-2">
-        <Hash className="w-4 h-4 text-purple-400" />
+        <Hash className="w-4 h-4 text-emerald-400" />
         <span>Contract Address</span>
       </label>
       <div className="relative">
@@ -230,13 +230,13 @@ const NaturalLanguageContractInteraction = () => {
           value={contractAddress}
           onChange={(e) => setContractAddress(e.target.value)}
           placeholder="0x1234567890123456789012345678901234567890"
-          className="w-full px-4 py-3 bg-black border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all font-mono text-sm"
+          className="w-full px-4 py-3 bg-black border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all font-mono text-sm"
         />
         <div className="absolute inset-y-0 right-0 flex items-center space-x-2 pr-3">
           {contractAddress && (
             <button
               onClick={() => navigator.clipboard.writeText(contractAddress)}
-              className="p-1 text-gray-400 hover:text-purple-400 transition-colors"
+              className="p-1 text-gray-400 hover:text-emerald-400 transition-colors"
               title="Copy address"
             >
               <Copy className="w-4 h-4" />
@@ -249,7 +249,7 @@ const NaturalLanguageContractInteraction = () => {
         <div className="p-3 bg-black rounded-lg border border-gray-800">
           <div className="flex items-center justify-between mb-2">
             <span className="text-xs text-gray-400">Address Preview</span>
-            <span className="text-xs text-purple-400">
+            <span className="text-xs text-emerald-400">
               {contractAddress.startsWith('0x') ? 'Valid Format' : 'Invalid Format'}
             </span>
           </div>
@@ -264,7 +264,7 @@ const NaturalLanguageContractInteraction = () => {
     <div className="space-y-3">
       <label className="block text-sm font-semibold text-gray-300 flex items-center justify-between">
         <div className="flex items-center space-x-2">
-          <FileText className="w-4 h-4 text-purple-400" />
+          <FileText className="w-4 h-4 text-emerald-400" />
           <span>Contract ABI (Optional)</span>
         </div>
         {contractABI && (
@@ -282,13 +282,13 @@ const NaturalLanguageContractInteraction = () => {
           onChange={(e) => setContractABI(e.target.value)}
           placeholder='[{"inputs":[],"name":"function_name","outputs":[],"type":"function"}]'
           rows={4}
-          className="w-full px-4 py-3 bg-black border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all resize-none font-mono text-sm"
+          className="w-full px-4 py-3 bg-black border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all resize-none font-mono text-sm"
         />
         <div className="absolute top-3 right-3 flex items-center space-x-2">
           {contractABI && (
             <button
               onClick={() => navigator.clipboard.writeText(contractABI)}
-              className="p-1 text-gray-400 hover:text-purple-400 transition-colors"
+              className="p-1 text-gray-400 hover:text-emerald-400 transition-colors"
               title="Copy ABI"
             >
               <Copy className="w-4 h-4" />
@@ -345,7 +345,7 @@ const NaturalLanguageContractInteraction = () => {
               if (functions.length > 0) {
                 return (
                   <div className="p-4 bg-gradient-to-br from-gray-900 to-black rounded-lg border border-gray-800">
-                    <h4 className="text-xs font-medium text-purple-400 mb-3">Available Functions</h4>
+                    <h4 className="text-xs font-medium text-emerald-400 mb-3">Available Functions</h4>
                     <div className="space-y-2">
                       {functions.map((func, idx) => (
                         <div key={idx} className="flex items-center justify-between p-2 bg-black rounded border border-gray-700">
@@ -383,13 +383,13 @@ const NaturalLanguageContractInteraction = () => {
                       onChange={(e) => setInput(e.target.value)}
                       placeholder='e.g., "Send 100 tokens to Alice wallet"'
                       rows={4}
-                      className="w-full px-4 py-3 bg-black border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
+                      className="w-full px-4 py-3 bg-black border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all"
                     />
                   </div>
                   <button
                     onClick={handleProcess}
                     disabled={isProcessing || !input.trim()}
-                    className="px-6 py-3 bg-gradient-to-r from-purple-600 to-purple-700 text-white rounded-lg hover:from-purple-700 hover:to-purple-800 disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2 font-medium shadow-lg shadow-purple-600/25 transition-all duration-200"
+                    className="px-6 py-3 bg-gradient-to-r from-emerald-600 to-emerald-700 text-white rounded-lg hover:from-emerald-700 hover:to-emerald-800 disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2 font-medium shadow-lg shadow-emerald-600/25 transition-all duration-200"
                   >
                     {isProcessing ? <Loader2 className="w-5 h-5 animate-spin" /> : <Zap className="w-5 h-5" />}
                     <span>{isProcessing ? "Processing..." : "Convert"}</span>
@@ -434,8 +434,8 @@ const NaturalLanguageContractInteraction = () => {
                     {/* Main Result */}
                     <div className="p-6 bg-gradient-to-br from-gray-900 to-black rounded-xl border border-gray-800">
                       <div className="flex items-center justify-between mb-4">
-                        <h3 className="font-semibold text-purple-400 flex items-center space-x-3">
-                          <div className="p-1 bg-purple-500/10 rounded">
+                        <h3 className="font-semibold text-emerald-400 flex items-center space-x-3">
+                          <div className="p-1 bg-emerald-500/10 rounded">
                             <CheckCircle className="w-4 h-4" />
                           </div>
                           <span>Smart Contract Call</span>
@@ -443,14 +443,14 @@ const NaturalLanguageContractInteraction = () => {
                         <div className="flex space-x-2">
                           <button
                             onClick={() => copyToClipboard(result.functionCall)}
-                            className="p-2 text-gray-400 hover:text-purple-400 hover:bg-purple-500/10 rounded-lg transition-all"
+                            className="p-2 text-gray-400 hover:text-emerald-400 hover:bg-emerald-500/10 rounded-lg transition-all"
                             title="Copy to clipboard"
                           >
                             <Copy className="w-4 h-4" />
                           </button>
                           <button
                             onClick={() => saveCommand(result.functionCall)}
-                            className="p-2 text-gray-400 hover:text-purple-400 hover:bg-purple-500/10 rounded-lg transition-all"
+                            className="p-2 text-gray-400 hover:text-emerald-400 hover:bg-emerald-500/10 rounded-lg transition-all"
                             title="Save command"
                           >
                             <Settings className="w-4 h-4" />
@@ -458,7 +458,7 @@ const NaturalLanguageContractInteraction = () => {
                         </div>
                       </div>
                       <div className="p-4 bg-black rounded-lg border border-gray-800">
-                        <code className="text-purple-300 font-mono text-sm break-all">
+                        <code className="text-emerald-300 font-mono text-sm break-all">
                           {result.functionCall}
                         </code>
                       </div>
@@ -466,7 +466,7 @@ const NaturalLanguageContractInteraction = () => {
 
                     {/* Explanation */}
                     <div className="p-6 bg-gradient-to-br from-gray-900 to-black rounded-xl border border-gray-800">
-                      <h4 className="font-semibold text-purple-400 mb-3 flex items-center space-x-2">
+                      <h4 className="font-semibold text-emerald-400 mb-3 flex items-center space-x-2">
                         <MessageSquare className="w-4 h-4" />
                         <span>Explanation</span>
                       </h4>
@@ -476,7 +476,7 @@ const NaturalLanguageContractInteraction = () => {
                     {/* Parameters */}
                     {result.parameters && (
                       <div className="p-6 bg-gradient-to-br from-gray-900 to-black rounded-xl border border-gray-800">
-                        <h4 className="font-semibold text-purple-400 mb-4 flex items-center space-x-2">
+                        <h4 className="font-semibold text-emerald-400 mb-4 flex items-center space-x-2">
                           <Settings className="w-4 h-4" />
                           <span>Parameters</span>
                         </h4>
@@ -487,13 +487,13 @@ const NaturalLanguageContractInteraction = () => {
                               className="flex items-center justify-between p-4 bg-black rounded-lg border border-gray-800"
                             >
                               <div className="flex items-center space-x-3">
-                                <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
+                                <div className="w-2 h-2 bg-emerald-500 rounded-full"></div>
                                 <div>
                                   <span className="font-medium text-white">{param.name}</span>
                                   <span className="text-gray-400 ml-2 text-sm">({param.type})</span>
                                 </div>
                               </div>
-                              <code className="text-purple-300 font-mono text-sm bg-gray-900 px-3 py-1 rounded">
+                              <code className="text-emerald-300 font-mono text-sm bg-gray-900 px-3 py-1 rounded">
                                 {param.value}
                               </code>
                             </div>
@@ -506,7 +506,7 @@ const NaturalLanguageContractInteraction = () => {
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                       {result.gasEstimate && (
                         <div className="p-6 bg-gradient-to-br from-gray-900 to-black rounded-xl border border-gray-800">
-                          <h4 className="font-semibold text-purple-400 mb-3 flex items-center space-x-2">
+                          <h4 className="font-semibold text-emerald-400 mb-3 flex items-center space-x-2">
                             <Zap className="w-4 h-4" />
                             <span>Gas Estimate</span>
                           </h4>
@@ -515,14 +515,14 @@ const NaturalLanguageContractInteraction = () => {
                       )}
                       {result.requirements && (
                         <div className="p-6 bg-gradient-to-br from-gray-900 to-black rounded-xl border border-gray-800">
-                          <h4 className="font-semibold text-purple-400 mb-3 flex items-center space-x-2">
+                          <h4 className="font-semibold text-emerald-400 mb-3 flex items-center space-x-2">
                             <CheckCircle className="w-4 h-4" />
                             <span>Requirements</span>
                           </h4>
                           <ul className="text-gray-300 space-y-2">
                             {result.requirements.map((req, idx) => (
                               <li key={idx} className="flex items-center space-x-3">
-                                <div className="w-1.5 h-1.5 bg-purple-500 rounded-full"></div>
+                                <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full"></div>
                                 <span className="text-sm">{req}</span>
                               </li>
                             ))}
@@ -535,7 +535,7 @@ const NaturalLanguageContractInteraction = () => {
                     <div className="flex justify-center pt-4">
                       <button
                         onClick={executeContract}
-                        className="px-8 py-4 bg-gradient-to-r from-purple-600 to-purple-700 text-white rounded-xl hover:from-purple-700 hover:to-purple-800 flex items-center space-x-3 font-semibold shadow-lg shadow-purple-600/25 transition-all duration-200"
+                        className="px-8 py-4 bg-gradient-to-r from-emerald-600 to-emerald-700 text-white rounded-xl hover:from-emerald-700 hover:to-emerald-800 flex items-center space-x-3 font-semibold shadow-lg shadow-emerald-600/25 transition-all duration-200"
                       >
                         <Play className="w-5 h-5" />
                         <span>Execute Contract Function</span>
@@ -553,8 +553,8 @@ const NaturalLanguageContractInteraction = () => {
           {/* History */}
           <div className="p-6 border-b border-gray-800">
             <h3 className="font-semibold text-gray-300 mb-4 flex items-center space-x-3">
-              <div className="p-1 bg-purple-500/10 rounded">
-                <Book className="w-4 h-4 text-purple-400" />
+              <div className="p-1 bg-emerald-500/10 rounded">
+                <Book className="w-4 h-4 text-emerald-400" />
               </div>
               <span>Recent History</span>
             </h3>
@@ -562,7 +562,7 @@ const NaturalLanguageContractInteraction = () => {
               {history.map((item) => (
                 <div
                   key={item.id}
-                  className="p-4 bg-black rounded-lg border border-gray-800 cursor-pointer hover:border-purple-500/30 hover:bg-gray-900/50 transition-all duration-200"
+                  className="p-4 bg-black rounded-lg border border-gray-800 cursor-pointer hover:border-emerald-500/30 hover:bg-gray-900/50 transition-all duration-200"
                   onClick={() => setInput(item.input)}
                 >
                   <div className="text-xs text-gray-500 mb-2">{item.timestamp}</div>
@@ -575,8 +575,8 @@ const NaturalLanguageContractInteraction = () => {
           {/* Saved Commands */}
           <div className="p-6 flex-1">
             <h3 className="font-semibold text-gray-300 mb-4 flex items-center space-x-3">
-              <div className="p-1 bg-purple-500/10 rounded">
-                <Settings className="w-4 h-4 text-purple-400" />
+              <div className="p-1 bg-emerald-500/10 rounded">
+                <Settings className="w-4 h-4 text-emerald-400" />
               </div>
               <span>Saved Commands</span>
             </h3>
@@ -584,7 +584,7 @@ const NaturalLanguageContractInteraction = () => {
               {savedCommands.map((saved) => (
                 <div
                   key={saved.id}
-                  className="p-3 bg-black rounded-lg border border-gray-800 cursor-pointer hover:border-purple-500/30 hover:bg-gray-900/50 transition-all duration-200"
+                  className="p-3 bg-black rounded-lg border border-gray-800 cursor-pointer hover:border-emerald-500/30 hover:bg-gray-900/50 transition-all duration-200"
                   onClick={() => setInput(saved.command || "")}
                 >
                   <div className="text-sm text-white truncate mb-1">{saved.command}</div>

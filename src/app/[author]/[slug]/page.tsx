@@ -574,7 +574,7 @@ Keep the response technical but understandable.`;
                 </svg>
                 Deploy
               </button>
-              <button className="flex items-center px-4 py-2 bg-purple-600/90 hover:bg-purple-700/90 text-white rounded-lg transition-colors shadow-lg shadow-purple-900/20">
+              <button className="flex items-center px-4 py-2 bg-emerald-600/90 hover:bg-emerald-700/90 text-white rounded-lg transition-colors shadow-lg shadow-emerald-900/20">
                 <svg
                   className="w-4 h-4 mr-2"
                   fill="none"

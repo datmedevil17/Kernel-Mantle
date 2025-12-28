@@ -125,7 +125,7 @@ export const AIAssistantModal: React.FC<AIAssistantModalProps> = ({ isOpen, onCl
                   >
                     <div className={`max-w-[80%] px-4 py-3 rounded-2xl text-sm ${
                       message.type === 'user'
-                        ? 'bg-purple-900/30 text-purple-100 border border-purple-800/30 rounded-br-md'
+                        ? 'bg-emerald-900/30 text-emerald-100 border border-emerald-800/30 rounded-br-md'
                         : 'bg-gray-900/50 text-gray-200 border border-gray-800/30 rounded-bl-md'
                     }`}>
                       {message.content}
@@ -139,9 +139,9 @@ export const AIAssistantModal: React.FC<AIAssistantModalProps> = ({ isOpen, onCl
                     <div className="bg-gray-900/50 border border-gray-800/30 rounded-2xl rounded-bl-md px-4 py-3">
                       <div className="flex items-center space-x-2">
                         <div className="flex space-x-1">
-                          <div className="w-2 h-2 bg-purple-400/60 rounded-full animate-bounce"></div>
+                          <div className="w-2 h-2 bg-emerald-400/60 rounded-full animate-bounce"></div>
                           <div className="w-2 h-2 bg-blue-400/60 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
-                          <div className="w-2 h-2 bg-purple-400/60 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+                          <div className="w-2 h-2 bg-emerald-400/60 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
                         </div>
                         <span className="text-xs text-gray-400 ml-2">AI is thinking</span>
                       </div>
@@ -162,14 +162,14 @@ export const AIAssistantModal: React.FC<AIAssistantModalProps> = ({ isOpen, onCl
                       onChange={(e) => setInput(e.target.value)}
                       onKeyPress={handleKeyPress}
                       placeholder="Type your message..."
-                      className="w-full bg-gray-900/50 border border-gray-700/50 rounded-2xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-600/50 focus:border-purple-600/50 transition-all backdrop-blur-sm"
+                      className="w-full bg-gray-900/50 border border-gray-700/50 rounded-2xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-emerald-600/50 focus:border-emerald-600/50 transition-all backdrop-blur-sm"
                       disabled={isTyping}
                     />
                   </div>
                   <button
                     onClick={handleSubmit}
                     disabled={!input.trim() || isTyping}
-                    className="w-12 h-12 bg-gradient-to-r from-purple-700/80 to-blue-700/80 hover:from-purple-600/80 hover:to-blue-600/80 disabled:opacity-50 disabled:cursor-not-allowed rounded-2xl flex items-center justify-center transition-all duration-200 hover:scale-105 border border-purple-600/30"
+                    className="w-12 h-12 bg-gradient-to-r from-emerald-700/80 to-blue-700/80 hover:from-emerald-600/80 hover:to-blue-600/80 disabled:opacity-50 disabled:cursor-not-allowed rounded-2xl flex items-center justify-center transition-all duration-200 hover:scale-105 border border-emerald-600/30"
                   >
                     <Send className="w-5 h-5 text-white" />
                   </button>
@@ -234,20 +234,20 @@ export default function App() {
     <div className="min-h-screen bg-gradient-to-br from-black via-gray-950 to-black flex items-center justify-center p-4 relative overflow-hidden">
       {/* Background Effects */}
       <div className="absolute inset-0">
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-purple-900/5 rounded-full blur-3xl"></div>
+        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-emerald-900/5 rounded-full blur-3xl"></div>
         <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-blue-900/5 rounded-full blur-3xl"></div>
       </div>
       
       <div className="relative text-center z-10">
         <div className="mb-12">
           <div className="mb-6">
-            <div className="w-20 h-20 mx-auto rounded-full bg-gradient-to-br from-purple-800/30 to-blue-800/30 p-1 mb-4">
+            <div className="w-20 h-20 mx-auto rounded-full bg-gradient-to-br from-emerald-800/30 to-blue-800/30 p-1 mb-4">
               <div className="w-full h-full rounded-full bg-black flex items-center justify-center border border-gray-800/50">
-                <div className="w-12 h-12 rounded-full bg-gradient-to-br from-purple-600/50 to-blue-600/50"></div>
+                <div className="w-12 h-12 rounded-full bg-gradient-to-br from-emerald-600/50 to-blue-600/50"></div>
               </div>
             </div>
           </div>
-          <h1 className="text-5xl font-bold bg-gradient-to-r from-purple-400 via-blue-400 to-purple-500 bg-clip-text text-transparent mb-4">
+          <h1 className="text-5xl font-bold bg-gradient-to-r from-emerald-400 via-blue-400 to-emerald-500 bg-clip-text text-transparent mb-4">
             AI Assistant
           </h1>
           <p className="text-xl text-gray-400 mb-8">Advanced conversational AI interface</p>
@@ -255,7 +255,7 @@ export default function App() {
         
         <button
           onClick={() => setIsModalOpen(true)}
-          className="group relative px-8 py-4 bg-gradient-to-r from-purple-800/60 to-blue-800/60 hover:from-purple-700/60 hover:to-blue-700/60 text-white font-semibold rounded-2xl transition-all duration-300 hover:scale-105 shadow-2xl border border-purple-700/30"
+          className="group relative px-8 py-4 bg-gradient-to-r from-emerald-800/60 to-blue-800/60 hover:from-emerald-700/60 hover:to-blue-700/60 text-white font-semibold rounded-2xl transition-all duration-300 hover:scale-105 shadow-2xl border border-emerald-700/30"
         >
           <span className="relative">Launch AI Assistant</span>
         </button>

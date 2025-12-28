@@ -40,7 +40,7 @@ const PrintStyles: React.FC = () => {
           backdrop-filter: none !important;
         }
         
-        .text-gray-800, .text-gray-700, .text-gray-600, .text-white, .text-gray-300, .text-gray-200, .text-purple-300 {
+        .text-gray-800, .text-gray-700, .text-gray-600, .text-white, .text-gray-300, .text-gray-200, .text-emerald-300 {
           color: #000 !important;
         }
         
@@ -48,7 +48,7 @@ const PrintStyles: React.FC = () => {
           color: #444 !important;
         }
         
-        .shadow-sm, .shadow-md, .shadow-lg, .shadow-purple-900\\/20 {
+        .shadow-sm, .shadow-md, .shadow-lg, .shadow-emerald-900\\/20 {
           box-shadow: none !important;
         }
         

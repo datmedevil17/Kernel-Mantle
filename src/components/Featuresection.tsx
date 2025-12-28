@@ -116,7 +116,7 @@ export const SkeletonOne = () => {
           <div className="text-white text-sm font-mono">
             mod flipper {"{"}
           </div>
-          <div className="text-purple-400 text-sm font-mono ml-4">
+          <div className="text-emerald-400 text-sm font-mono ml-4">
             #[ink(storage)]
           </div>
           <div className="text-white text-sm font-mono ml-4">
@@ -150,7 +150,7 @@ export const SkeletonTwo = () => {
   return (
     <div className="relative flex flex-col items-center p-4 gap-4 h-48 overflow-hidden">
       <div className="text-center mb-4">
-        <div className="inline-flex items-center gap-2 px-3 py-1 bg-gradient-to-r from-purple-500/20 to-blue-500/20 rounded-full border border-purple-400/30">
+        <div className="inline-flex items-center gap-2 px-3 py-1 bg-gradient-to-r from-emerald-500/20 to-blue-500/20 rounded-full border border-emerald-400/30">
           <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
           <span className="text-sm text-white font-medium">AI Generating Code...</span>
         </div>
@@ -201,7 +201,7 @@ export const SkeletonThree = () => {
       </div>
       
       <div className="mt-4 text-center">
-        <button className="inline-flex items-center gap-2 px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition-colors duration-200 text-sm">
+        <button className="inline-flex items-center gap-2 px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg transition-colors duration-200 text-sm">
           Start Learning
         </button>
       </div>
@@ -231,15 +231,15 @@ export const SkeletonFour = () => {
           <div className="w-3 h-3 bg-blue-400 rounded-full animate-pulse mb-1"></div>
           <span className="text-xs text-neutral-400">Testnet</span>
         </div>
-        <div className="w-8 h-px bg-gradient-to-r from-blue-400 to-purple-400"></div>
+        <div className="w-8 h-px bg-gradient-to-r from-blue-400 to-emerald-400"></div>
         <div className="flex flex-col items-center">
-          <div className="w-3 h-3 bg-purple-400 rounded-full animate-pulse mb-1"></div>
+          <div className="w-3 h-3 bg-emerald-400 rounded-full animate-pulse mb-1"></div>
           <span className="text-xs text-neutral-400">Local</span>
         </div>
       </div>
       
       <div className="mt-6">
-        <button className="px-6 py-2 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white rounded-lg transition-all duration-200 text-sm font-medium">
+        <button className="px-6 py-2 bg-gradient-to-r from-emerald-600 to-blue-600 hover:from-emerald-700 hover:to-blue-700 text-white rounded-lg transition-all duration-200 text-sm font-medium">
           Deploy Now
         </button>
       </div>
