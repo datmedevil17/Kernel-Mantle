@@ -212,7 +212,7 @@ const PluginManager: React.FC<PluginManagerProps> = ({
         {
           name: 'hardhat.config.js',
           content: `require('@nomicfoundation/hardhat-toolbox');
-require('@parity/hardhat-polkadot');
+require('@parity/hardhat-morph');
 require('dotenv').config();
 
 /** @type import('hardhat/config').HardhatUserConfig */
@@ -240,11 +240,11 @@ module.exports = {
   },
   networks: {
     hardhat: {
-      polkavm: true,
+      morph: true,
     },
     westendHub: {
-      polkavm: true,
-      url: 'https://westend-asset-hub-eth-rpc.polkadot.io',
+      morph: true,
+      url: 'https://explorer-holesky.morphl2.io',
       accounts: process.env.PRIVATE_KEY ? [process.env.PRIVATE_KEY] : [],
     },
     localhost: {
@@ -263,9 +263,9 @@ module.exports = {
         {
           name: 'package.json',
           content: `{
-  "name": "hardhat-polkadot-project",
+  "name": "hardhat-morph-project",
   "version": "1.0.0",
-  "description": "A professional Hardhat project for Polkadot ecosystem",
+  "description": "A professional Hardhat project for Morph ecosystem",
   "main": "index.js",
   "scripts": {
     "compile": "npx hardhat compile",
@@ -277,12 +277,12 @@ module.exports = {
     "node": "npx hardhat node",
     "clean": "npx hardhat clean"
   },
-  "keywords": ["hardhat", "polkadot", "ethereum", "solidity"],
+  "keywords": ["hardhat", "morph", "ethereum", "solidity"],
   "author": "Your Name",
   "license": "MIT",
   "devDependencies": {
     "@nomicfoundation/hardhat-toolbox": "^4.0.0",
-    "@parity/hardhat-polkadot": "^1.0.0",
+    "@parity/hardhat-morph": "^1.0.0",
     "hardhat": "^2.19.0",
     "hardhat-gas-reporter": "^1.0.9",
     "solidity-coverage": "^0.8.5",
@@ -299,9 +299,9 @@ COINMARKETCAP_API_KEY=your_coinmarketcap_api_key_here`
         },
         {
           name: 'README.md',
-          content: `# Hardhat Polkadot Project
+          content: `# Hardhat Morph Project
 
-This project demonstrates a basic Hardhat setup for Polkadot ecosystem development.
+This project demonstrates a basic Hardhat setup for Morph ecosystem development.
 
 ## Setup
 
@@ -345,7 +345,7 @@ Never commit your \`.env\` file or expose your private keys!`
       });
 
       // Download as ZIP
-      await createZipAndDownload(files, 'hardhat-polkadot-template.zip');
+      await createZipAndDownload(files, 'hardhat-morph.zip');
       
     } catch (error) {
       console.error('Hardhat template generation failed:', error);
@@ -378,21 +378,21 @@ export const westendAssetHub = defineChain({
   },
   rpcUrls: {
     default: {
-      http: ['https://westend-asset-hub-eth-rpc.polkadot.io'],
+      http: ['https://explorer-holesky.morphl2.io'],
     },
     public: {
-      http: ['https://westend-asset-hub-eth-rpc.polkadot.io'],
+      http: ['https://explorer-holesky.morphl2.io'],
     },
   },
   blockExplorers: {
-    default: { name: 'Polkadot.js', url: 'https://polkadot.js.org/apps/?rpc=wss://westend-asset-hub-rpc.polkadot.io' },
+    default: { name: 'Morph', url: 'https://explorer-holesky.morphl2.io' },
   },
 });
 
-const transport = http(westendAssetHub.rpcUrls.default.http[0]);
+const transport = http(morphHolesky.rpcUrls.default.http[0]);
 
 export const publicClient = createPublicClient({
-  chain: westendAssetHub,
+  chain: morphHolesky,
   transport,
 });
 
@@ -439,7 +439,7 @@ export const deployContract = async ({
     // Load contract artifacts
     const artifactsPath = join(process.cwd(), 'artifacts', \`\${contractName}.json\`);
     const bytecode = \`0x\${readFileSync(
-      join(process.cwd(), 'artifacts', \`\${contractName}.polkavm\`)
+      join(process.cwd(), 'artifacts', \`\${contractName}.evm\`)
     ).toString('hex')}\` as \`0x\${string}\`;
 
     if (!existsSync(artifactsPath)) {
@@ -511,9 +511,9 @@ export const deployContract = async ({
         {
           name: 'package.json',
           content: `{
-  "name": "viem-polkadot-project",
+  "name": "viem-morph-project",
   "version": "1.0.0",
-  "description": "A professional Viem project for Polkadot ecosystem",
+  "description": "A professional Viem project for Morph ecosystem",
   "main": "index.js",
   "type": "module",
   "scripts": {
@@ -523,7 +523,7 @@ export const deployContract = async ({
     "test": "vitest",
     "dev": "tsx --watch"
   },
-  "keywords": ["viem", "polkadot", "ethereum", "web3"],
+  "keywords": ["viem", "morph", "ethereum", "web3"],
   "author": "Your Name",
   "license": "MIT",
   "dependencies": {
@@ -553,7 +553,7 @@ export const deployContract = async ({
         onAddFile(fileItem);
       });
 
-      await createZipAndDownload(files, 'viem-polkadot-template.zip');
+      await createZipAndDownload(files, 'viem-morph-template.zip');
       
     } catch (error) {
       console.error('Viem template generation failed:', error);

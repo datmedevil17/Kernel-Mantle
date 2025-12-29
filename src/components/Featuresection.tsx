@@ -8,7 +8,7 @@ export function FeaturesSectionDemo() {
     {
       title: "Smart Contract Development",
       description:
-        "Build and deploy secure smart contracts on Polkadot AssetHub with our advanced IDE and debugging tools.",
+        "Build and deploy secure smart contracts on Morph Network with our advanced IDE and debugging tools.",
       skeleton: <SkeletonOne />,
       className:
         "col-span-1 lg:col-span-4 border-b lg:border-r border-neutral-800",
@@ -45,7 +45,7 @@ export function FeaturesSectionDemo() {
         </h4>
 
         <p className="text-sm lg:text-base max-w-2xl my-4 mx-auto text-neutral-500 text-center font-normal text-neutral-300">
-          From smart contract development to DeFi protocols, Kernel AI provides everything you need to build on Polkadot AssetHub with confidence.
+          From smart contract development to DeFi protocols, Kernel AI provides everything you need to build on Morph Network with confidence.
         </p>
       </div>
 
@@ -102,7 +102,7 @@ const FeatureDescription = ({ children }: { children?: React.ReactNode }) => {
   );
 };
 
-export const SkeletonOne = () => {
+export const SkeletonOne: React.FC = () => {
   return (
     <div className="relative flex flex-col py-8 px-2 gap-4 h-48">
       <div className="w-full mx-auto bg-neutral-900 rounded-lg p-4 shadow-2xl">
@@ -184,7 +184,7 @@ export const SkeletonThree = () => {
         <div className="relative aspect-video">
           <Image 
             src="/d9.png" 
-            alt="Polkadot Development Tutorial" 
+            alt="Morph Development Tutorial" 
             width={400}
             height={225}
             className="w-full h-full object-cover"
@@ -192,7 +192,7 @@ export const SkeletonThree = () => {
         </div>
         <div className="p-4">
           <h4 className="text-white font-semibold text-sm mb-1">
-            Polkadot Development Masterclass
+            Morph Development Masterclass
           </h4>
           <p className="text-neutral-400 text-xs">
             Learn substrate development from experts
@@ -214,7 +214,7 @@ export const SkeletonFour = () => {
     <div className="h-48 flex flex-col items-center justify-center relative bg-transparent">
       <div className="text-center mb-6">
         <h4 className="text-white font-semibold text-lg mb-2">
-          Global Polkadot Network
+          Global Morph Network
         </h4>
         <p className="text-neutral-400 text-sm">
           Deploy to parachains worldwide

@@ -119,7 +119,7 @@ const templates: Record<string, Template> = {
       { id: "3", type: "gasOptimize", x: 350, y: 100, config: { runs: 200 } },
       { id: "4", type: "test", x: 500, y: 100, config: { testSuite: "foundry" } },
       { id: "5", type: "deploy", x: 650, y: 50, config: { network: "asset-hub-testnet" } },
-      { id: "6", type: "verify", x: 800, y: 50, config: { explorer: "polkadot-js" } },
+      { id: "6", type: "verify", x: 800, y: 50, config: { explorer: "holesky-morph" } },
       { id: "7", type: "condition", x: 650, y: 200, config: { condition: "testnet_success" } },
       { id: "8", type: "deployMainnet", x: 800, y: 200, config: { network: "asset-hub-mainnet" } }, // Changed to deployMainnet
     ],
@@ -233,7 +233,7 @@ const templates: Record<string, Template> = {
       case "verify":
         return {
           contractFile: contractFile,
-          explorer: "polkadot-js",
+          explorer: "holesky-morph",
           apiKey: "",
           constructorArgs: [],
         }
@@ -1070,11 +1070,11 @@ const handleInputChange = (key: string, value: string | number | boolean) => {
               <div>
                 <label className="block text-sm font-medium text-gray-300 mb-1">Explorer</label>
                 <select
-                  value={node.config.explorer || "polkadot-js"}
+                  value={node.config.explorer || "holesky-morph"}
                   onChange={(e) => handleInputChange("explorer", e.target.value)}
                   className="w-full p-2 border border-gray-600 rounded bg-gray-700 text-gray-300"
                 >
-                  <option value="polkadot-js">Polkadot.js Apps</option>
+                  <option value="holesky-morph">Morph Dapps</option>
                   <option value="subscan">Subscan</option>
                   <option value="custom">Custom Explorer</option>
                 </select>
@@ -1228,7 +1228,7 @@ const handleInputChange = (key: string, value: string | number | boolean) => {
             </span>
             <span className="flex items-center gap-1">
               <div className="w-2 h-2 bg-emerald-500 rounded-full"></div>
-              Asset Hub Polkadot
+              Morph Network
             </span>
             <span className="flex items-center gap-1">
               <div className="w-2 h-2 bg-emerald-500 rounded-full"></div>
