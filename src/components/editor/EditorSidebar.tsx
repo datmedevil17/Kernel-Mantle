@@ -12,8 +12,8 @@ interface AbiItem {
   }>;
 }
 
-const BLOCK_EXPLORER_URL = "https://blockscout-passet-hub.parity-testnet.parity.io"
-const FAUCET_URL = "https://faucet.polkadot.io/?parachain=1111"
+const BLOCK_EXPLORER_URL = "https://explorer-holesky.morphl2.io"
+const FAUCET_URL = "https://bridge-holesky.morphl2.io"
 
 interface EditorSidebarProps {
   selectedFile: FileItem | null
