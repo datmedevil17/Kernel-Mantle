@@ -1,582 +1,1017 @@
-# Kernel AI-Powered IDE for Polkadot AssetHub
+## 🚀 Getting Started
 
-A versatile and production-ready smart contract development environment that redefines the experience of blockchain developers on Polkadot AssetHub. Kernel AI combines exceptional speed, security, and intelligence to provide a seamless experience to develop, audit, and deploy smart contracts.
-![Screenshot from 2025-06-06 21-44-34](https://github.com/user-attachments/assets/a7fe06e0-16f5-4368-b2a9-24b673525bb7)
+<div align="center">
 
+**Ready to revolutionize your Morph Network development experience?**
 
-## Table of Contents
+*Follow these simple steps to get Kernel AI up and running in minutes*
 
-- [Introduction](#introduction)
-- [Motivation](#motivation)
-- [Tech Stack](#tech-stack)
-- [Core Features](#core-features)
-- [Getting Started](#getting-started)
-- [Documentation](#documentation)# Kernel AI-Powered IDE for Morph Network
+</div>
 
-A versatile and production-ready smart contract development environment that redefines the experience of blockchain developers on Morph Network. Kernel AI combines exceptional speed, security, and intelligence to provide a seamless experience to develop, audit, and deploy smart contracts on the cutting-edge Layer 2 Ethereum-compatible blockchain.
-
-[Image]
-
-## Table of Contents
-
-- [Introduction](#introduction)
-- [Motivation](#motivation)
-- [Tech Stack](#tech-stack)
-- [Core Features](#core-features)
-- [Getting Started](#getting-started)
-- [Documentation](#documentation)
-- [Contributing](#contributing)
-- [License](#license)
-- [Contributors](#contributors)
-
----
-
-## Introduction
-
-Drawing inspiration from leading blockchain development frameworks like Remix, Third Web, and OpenZeppelin Wizard, Kernel is enhanced by finely-tuned AI models to elevate every stage of the development process. With Kernel AI, developers can streamline the entire contract development lifecycle and fast-track their development journey on Morph Network's innovative Layer 2 infrastructure that combines optimistic rollup technology with zero-knowledge proof capabilities.
-
-## Motivation
-
-The motivation behind Kernel AI is to address the common challenges faced by smart contract developers in the Morph Network ecosystem, such as:
-
-- **Security vulnerabilities** in smart contract code
-- **Complexity of development** on Layer 2 networks
-- **Inefficiencies in the deployment process** for Morph Network
-- **Lack of AI-powered development tools** optimized for Layer 2 solutions
-- **Bridge complexity** between Layer 1 and Layer 2 interactions
-
-By leveraging advanced AI and providing a comprehensive suite of tools specifically designed for Morph Network, Kernel AI aims to make smart contract development more accessible, secure, and efficient, ultimately fostering innovation and growth within the Morph blockchain ecosystem while taking advantage of reduced gas costs and faster transaction throughput.
-
-## Tech Stack
-
-Kernel AI is built using a robust tech stack to ensure performance, reliability, and scalability:
-
-- **Frontend**: Next.js, TypeScript, Tailwind CSS, ShadCn
-- **Smart Contracts**: Solidity (Ethereum-compatible)
-- **Development Tools**: Hardhat, Foundry, Wagmi, Privy, Morph SDK
-- **AI/ML**: Custom trained models, Gemini API integration
-- **Backend**: Next.js, GraphQL
-- **Layer 2**: Morph Network integration, Bridge protocols
-
-## Core Features
-
-Kernel AI is packed with a wide array of features designed to enhance every aspect of smart contract development on Morph Network. Here is a detailed breakdown:
-
-### 1. Transaction Management Dashboard
-
-A comprehensive dashboard to help users survey all the transactions they made on the Morph Network. The platform provides efficient AI analysis of transaction patterns, Layer 2 network activity, gas optimization insights, and detailed monitoring of your blockchain interactions with visual charts and real-time capabilities for both Morph testnet and mainnet.
-
-**Key Features:**
-- Real-time transaction monitoring and visualization across Morph Network
-- Layer 2 gas cost analysis and optimization recommendations
-- Bridge transaction tracking between Ethereum mainnet and Morph Network
-- Advanced decoding of complex transaction data with Layer 2 specific insights
-
-[Image]
-
-[Image]
-
-### 2. Conversational AI
-
-Interactive AI assistant that provides 24/7 development support through natural language processing, specifically trained on Morph Network documentation and best practices. The conversational AI understands your project context within the Layer 2 ecosystem and provides relevant suggestions, coding help, debugging assistance, and instant answers to Morph-specific development questions.
-
-**Key Features:**
-- Context-aware development assistance for Morph Network
-- Natural language query processing with Layer 2 optimization insights
-- Morph Network-specific troubleshooting and debugging support
-- Bridge transaction guidance and cross-layer interaction assistance
-
-[Image]
-
-### 3. AI-Powered Ready-to-Use Templates
-
-Provision of AI-enhanced smart contract templates specifically designed for Morph Network's Layer 2 environment. These templates are optimized for reduced gas costs, faster execution times, and seamless integration with Morph's infrastructure, offering secure, pre-built foundations that have been thoroughly audited and optimized for the Layer 2 ecosystem.
-
-**Key Features:**
-- Comprehensive library of pre-audited contract templates optimized for Morph Network
-- Layer 2 specific optimizations for gas efficiency
-- Cross-layer interaction templates for bridge functionality
-- DeFi, NFT, and governance templates tailored for Morph's capabilities
-
-[Image]
-
-- Detailed documentation and research materials for each template with Morph-specific considerations
-
-[Image]
-
-- AI-driven template analysis and function mapping optimized for Layer 2 performance
-
-[Image]
-
-### 4. Interactive Smart Contract Builder
-
-A comprehensive interactive way to build smart contracts featuring a visual interface optimized for Morph Network development. This drag-and-drop environment makes smart contract creation accessible while leveraging Layer 2 advantages such as lower gas costs and faster transaction finality, perfect for rapid prototyping and deployment.
-
-**Key Features:**
-- Intuitive drag-and-drop interface for contract creation with Morph Network optimization
-- Visual programming blocks designed for Layer 2 efficiency
-- One-step contract generation and deployment to Morph Network
-- Layer 2 specific components for bridge interactions and gas optimization
-
-[Image]
-
-- Beginner-friendly development environment with Morph Network best practices
-
-[Image]
-
-### 5. AI IDE
-
-Intelligent development environment for Solidity smart contracts optimized for Morph Network deployment. The AI-driven IDE features autocompletion with Layer 2 best practices, error detection, performance optimization for reduced gas usage, and seamless compilation and deployment with Morph-specific configurations and optimizations.
-
-**Key Features:**
-- Ready-to-use templates optimized for Morph Network's Layer 2 architecture
-
-[Image]
-
-- Integrated compilation and deployment tools with Morph Network configuration
-- Gas optimization suggestions specific to Layer 2 operations
-- Bridge interaction code generation and testing
-
-[Image]
-
-- Direct deployment to Morph Network with transaction confirmation and Layer 2 verification
-
-[Image]
-
-### 6. AI-Catered Auditor
-
-Comprehensive security analysis system providing detailed audit reports with Morph Network-specific improvement suggestions. The AI auditor generates vulnerability reports automatically, identifies potential security issues related to Layer 2 operations, bridge interactions, and provides actionable recommendations to enhance contract security within the Morph ecosystem.
-
-**Key Features:**
-- Automated vulnerability detection with Layer 2 specific security patterns
-- Bridge security analysis for cross-layer interactions
-- Morph Network specific security best practices validation
-
-[Image]
-
-- AI-generated improvement recommendations tailored for Layer 2 environments
-
-[Image]
-
-### 7. AI-Generated Tests
-
-Automatically generate comprehensive test suites for your smart contracts using advanced AI algorithms optimized for Morph Network testing scenarios. The system creates thorough test coverage including Layer 2 specific edge cases, bridge functionality testing, and gas optimization validation to ensure your contracts perform optimally on Morph Network.
-
-**Key Features:**
-- Automated test suite generation with Morph Network specific test cases
-
-[Image]
-
-- Support for multiple testing frameworks (Hardhat, Foundry) with Morph Network configuration
-- Bridge interaction testing and Layer 2 specific validation
-
-[Image]
-
-- Ready-to-use test templates with Morph Network customization options
-
-[Image]
-
-### 8. Natural Language Contract Interaction
-
-Using required ABI and contract address deployed on Morph Network, users can write queries in plain English. The AI helps guide users regarding Layer 2 transactions, gas optimization, and can execute function calls directly on Morph Network, making smart contract interaction intuitive while leveraging the benefits of reduced costs and faster execution.
-
-**Key Features:**
-- Plain English query interface for contract interaction on Morph Network
-- Intelligent function call execution with Layer 2 gas optimization
-- Layer 2 specific transaction guidance and bridge interaction support
-
-[Image]
-
-- User-friendly transaction confirmation with Morph Network gas cost analysis
-
-[Image]
-
-### 9. Node Deployment Pipeline
-
-Select your features with drag-and-drop functionality to schedule your deployment pipeline specifically designed for Morph Network infrastructure. The visual pipeline builder allows developers to design automated deployment workflows, configure Layer 2 specific parameters, manage bridge deployments, and orchestrate the entire deployment process through an intuitive interface optimized for Morph's ecosystem.
-
-**Key Features:**
-- Visual drag-and-drop pipeline creation interface for Morph Network deployments
-
-[Image]
-
-- Automated testnet and mainnet deployment options with Morph Network configuration
-- Layer 2 optimization and gas cost analysis integration
-
-[Image]
-
-- Production-ready contract building and deployment workflows with bridge setup
-
-[Image]
-
-## Getting Started
-
-### Prerequisites
+### 📋 Prerequisites
 
 Before you begin, ensure you have the following installed:
-- Node.js (v18 or higher)
-- Hardhat or Foundry
-- Morph Network RPC configuration
-- MetaMask or compatible wallet configured for Morph Network
-- Docker (optional, for containerized deployment)
 
-### Installation
+```bash
+✅ Node.js (v18 or higher)
+✅ Hardhat or Foundry
+✅ Morph Network RPC configuration
+✅ MetaMask or compatible wallet configured for Morph Network
+✅ Docker (optional, for containerized deployment)
+```
 
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/your-org/kernel-ai-morph.git
-   cd kernel-ai-morph
-   ```
+<div align="center">
 
-2. Install dependencies:
-   ```bash
-   npm install
-   ```
+| Requirement | Version | Purpose |
+|-------------|---------|---------|
+| ![Node.js](https://img.shields.io/badge/Node.js-43853D?style=flat&logo=node.js&logoColor=white) | v18+ | Runtime environment |
+| ![Hardhat](https://img.shields.io/badge/Hardhat-FF6B35?style=flat&logo=ethereum&logoColor=white) | Latest | Development framework |
+| ![MetaMask](https://img.shields.io/badge/MetaMask-F6851B?style=flat&logo=metamask&logoColor=white) | Latest | Wallet connection |
 
-3. Set up environment variables:
-   ```bash
-   cp .env.example .env
-   # Configure your Morph Network RPC endpoints and API keys
-   ```
-
-4. Configure Morph Network connection:
-   ```bash
-   # Add Morph Network configuration to your environment
-   MORPH_RPC_URL=https://rpc-quicknode-holesky.morphl2.io
-   MORPH_CHAIN_ID=2810
-   ```
-
-5. Start the development server:
-   ```bash
-   npm run dev
-   ```
-
-## Documentation
-
-Comprehensive documentation is available in the `/docs` directory, including:
-- API Reference
-- Morph Network Integration Guide
-- Deployment Instructions for Layer 2
-- Security Best Practices for Layer 2 Development
-- Template Library Documentation
-- Bridge Integration Tutorials
-- Gas Optimization Strategies
-
-## Contributing
-
-We welcome contributions from the Morph Network community! Please read our [Contributing Guidelines](CONTRIBUTING.md) before submitting pull requests.
-
-### Development Workflow
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-morph-feature`)
-3. Commit your changes (`git commit -m 'Add amazing Morph Network feature'`)
-4. Push to the branch (`git push origin feature/amazing-morph-feature`)
-5. Open a Pull Request
-
-### Code Standards
-
-- Follow TypeScript and React best practices
-- Implement Morph Network specific optimizations
-- Maintain consistent code formatting using Prettier
-- Write comprehensive tests including Layer 2 specific scenarios
-- Document all public APIs and components with Morph Network considerations
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## Contributors
-
-The following individuals have contributed to this project:
-
-### **Mrunal Kulkarni**
-**Role**: Frontend Developer  
-**Responsibilities**: Refining frontend components with Morph Network integration, optimizing performance for Layer 2 interactions, ensuring responsive design with Web3 wallet connectivity, maintaining code consistency across the application, and ensuring smooth integration with Morph Network backend systems and bridge functionality.
-
-### **Rakshit Shukla**
-**Role**: Blockchain Developer  
-**Responsibilities**: Developing smart contract templates optimized for Morph Network, integrating Layer 2 functionalities such as gas-optimized compilation and deployment, developing Morph-specific security features, implementing bridge interaction protocols, and creating dynamic import resolution for Solidity contracts with Morph Network optimization.
+</div>
 
 ---
 
-## Support
+### ⚡ Quick Installation
 
-For support, questions, or feature requests:
-- Create an issue on GitHub
-- Join our community Discord
-- Visit the Morph Network documentation
-- Email us at support@kernel-ai-morph.dev
+#### 1️⃣ Clone the Repository
+```bash
+git clone https://github.com/your-org/kernel-ai-morph.git
+cd kernel-ai-morph
+```
+
+#### 2️⃣ Install Dependencies
+```bash
+npm install
+# or
+yarn install
+# or
+pnpm install
+```
+
+#### 3️⃣ Configure Environment
+```bash
+cp .env.example .env
+```
+
+Add your Morph Network configuration:
+```env
+# Morph Network Configuration
+MORPH_RPC_URL=https://rpc-quicknode-holesky.morphl2.io
+MORPH_CHAIN_ID=2810
+MORPH_EXPLORER_API=https://explorer-api.morphl2.io
+
+# AI Configuration
+GEMINI_API_KEY=your_gemini_api_key
+OPENAI_API_KEY=your_openai_api_key
+
+# Database
+DATABASE_URL=your_database_url
+```
+
+#### 4️⃣ Start Development Server
+```bash
+npm run dev
+```
+
+<div align="center">
+
+🎉 **That's it!** Open [http://localhost:3000](http://localhost:3000) to see Kernel AI in action.
+
+</div>
 
 ---
 
-*Kernel - Empowering developers to build the future of decentralized applications on Morph Network's innovative Layer 2 solution*
-- [Contributing](#contributing)
-- [License](#license)
-- [Contributors](#contributors)
+### 🔧 Advanced Setup
+
+<details>
+<summary><strong>🐋 Docker Deployment</strong></summary>
+
+```bash
+# Build the Docker image
+docker build -t kernel-ai-morph .
+
+# Run the container
+docker run -p 3000:3000 -e NODE_ENV=production kernel-ai-morph
+```
+
+</details>
+
+<details>
+<summary><strong>🌐 Morph Network Configuration</strong></summary>
+
+Add Morph Network to your wallet:
+```json
+{
+  "chainId": "0xAFA",
+  "chainName": "Morph Holesky",
+  "nativeCurrency": {
+    "name": "Ether",
+    "symbol": "ETH",
+    "decimals": 18
+  },
+  "rpcUrls": ["https://rpc-quicknode-holesky.morphl2.io"],
+  "blockExplorerUrls": ["https://explorer-holesky.morphl2.io"]
+}
+```
+
+</details>
+
+<details>
+<summary><strong>🔑 API Keys Setup</strong></summary>
+
+Get your API keys:
+- **Gemini API**: [Google AI Studio](https://makersuite.google.com/app/apikey)
+- **OpenAI API**: [OpenAI Platform](https://platform.openai.com/api-keys)
+- **Morph RPC**: [Morph Network](https://docs.morphl2.io)
+
+</details>
 
 ---
 
-## Introduction
+### 🎯 First Steps
 
-Drawing inspiration from leading blockchain development frameworks like Remix, Third Web, and OpenZeppelin Wizard, Kernel is enhanced by finely-tuned AI models to elevate every stage of the development process. With Kernel AI, developers can streamline the entire contract development lifecycle and fast-track their development journey on Polkadot's cutting-edge infrastructure.
+Once Kernel AI is running:
 
-## Motivation
+1. **🔗 Connect Your Wallet** - Link your MetaMask to Morph Network
+2. **📝 Choose a Template** - Select from our AI-optimized contract templates
+3. **🎨 Use the Builder** - Try the drag-and-drop contract builder
+4. **🤖 Chat with AI** - Ask questions about Morph Network development
+5. **🚀 Deploy** - One-click deployment to Morph Network
 
-The motivation behind Kernel AI is to address the common challenges faced by smart contract developers in the Polkadot ecosystem, such as:
+---
 
-- **Security vulnerabilities** in smart contract code
-- **Complexity of development** on substrate-based chains
-- **Inefficiencies in the deployment process** for Polkadot AssetHub
-- **Lack of AI-powered development tools** for the Polkadot ecosystem
+### 🎬 Demo & Tutorials
 
-By leveraging advanced AI and providing a comprehensive suite of tools specifically designed for Polkadot AssetHub, Kernel AI aims to make smart contract development more accessible, secure, and efficient, ultimately fostering innovation and growth within the Polkadot blockchain ecosystem.
+<div align="center">
 
-## Tech Stack
+[![Demo Video](https://img.shields.io/badge/▶️_Watch_Demo-FF0000?style=for-the-badge&logo=youtube&logoColor=white)](https://youtube.com/watch?v=demo)
+[![Tutorial](https://img.shields.io/badge/📚_Tutorial-0066cc?style=for-the-badge&logo=gitbook&logoColor=white)](https://docs.kernel-ai.dev/tutorial)
 
-Kernel AI is built using a robust tech stack to ensure performance, reliability, and scalability:
+</div>
 
-- **Frontend**: Next.js, TypeScript, Tailwind CSS, ShadCn
-- **Smart Contracts**: Solidity
-- **Development Tools**: Resolc Compiler, Zustang, Wagmi, Privy
-- **AI/ML**: Custom trained models, Gemini API integration
-- **Backend**: Next.js, GraphQL
+---
 
+### ❓ Need Help?
 
-## Core Features
+<div align="center">
 
-Kernel AI is packed with a wide array of features designed to enhance every aspect of smart contract development on Polkadot AssetHub. Here is a detailed breakdown:
+[![Discord](https://img.shields.io/badge/Discord-7289DA?style=for-the-badge&logo=discord&logoColor=white)](https://discord.gg/kernel-ai)
+[![Documentation](https://img.shields.io/badge/Docs-000000?style=for-the-badge&logo=gitbook&logoColor=white)](https://docs.kernel-ai.dev)
+[![GitHub Issues](https://img.shields.io/badge/Issues-000000?style=for-the-badge&logo=github&logoColor=white)](https://github.com/your-org/kernel-ai-morph/issues)
 
-### 1. Transaction Management Dashboard
+**Having trouble?** Check our [troubleshooting guide](https://docs.kernel-ai.dev/troubleshooting) or join our Discord community!
 
-A comprehensive dashboard to help users survey all the transactions they made on the Polkadot AssetHub network. The platform provides efficient AI analysis of transaction patterns, network activity, and detailed insights into your blockchain interactions with visual charts and real-time monitoring capabilities.
+</div># Kernel AI-Powered IDE for Morph Network
 
-**Key Features:**
-- Real-time transaction monitoring and visualization
- 
-  ![Screenshot from 2025-06-06 18-42-26](https://github.com/user-attachments/assets/d8c780f9-f831-4bf7-bc7d-4ec2d5af524f)
-  
-- Advanced decoding of complex transaction data
+<div align="center">
 
- ![Screenshot from 2025-06-06 18-42-48](https://github.com/user-attachments/assets/9b05e03a-b320-4077-b1e1-34bf4c90460c)
+![Kernel AI Logo](https://img.shields.io/badge/Kernel-AI%20Powered-blue?style=for-the-badge&logo=ethereum)
+![Morph Network](https://img.shields.io/badge/Morph-Network-purple?style=for-the-badge)
+![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)
+![Version](https://img.shields.io/badge/Version-1.0.0-orange?style=for-the-badge)
 
+**A versatile and production-ready smart contract development environment that redefines the experience of blockchain developers on Morph Network.**
 
-### 2. Conversational AI
+*Kernel AI combines exceptional speed, security, and intelligence to provide a seamless experience to develop, audit, and deploy smart contracts on the cutting-edge Layer 2 Ethereum-compatible blockchain.*
 
-Interactive AI assistant that provides 24/7 development support through natural language processing. The conversational AI understands your project context and provides relevant suggestions, coding help, debugging assistance, and instant answers to development questions in plain English.
+[🚀 Get Started](#getting-started) • [📚 Documentation](#documentation) • [💬 Community](https://discord.gg/kernel-ai) • [🐛 Report Bug](https://github.com/your-org/kernel-ai-morph/issues)
 
-**Key Features:**
-- Context-aware development assistance
-- Natural language query processing
- 
-![Screenshot from 2025-06-06 18-47-21](https://github.com/user-attachments/assets/e481234b-9ea5-429a-8a82-9b1f5c6bb3bb)
+</div>
 
+---
 
-### 3. AI-Powered Ready-to-Use Templates
+> **⚡ Built for Morph Network** - Leveraging Layer 2 advantages with reduced gas costs, faster transactions, and seamless Ethereum compatibility.
 
-Provision of AI-enhanced smart contract templates specifically designed for Polkadot AssetHub. These templates are ready for instant initiation to workflow along with AI support, offering secure, pre-built foundations that have been thoroughly audited and optimized for the Polkadot ecosystem.
+![Kernel AI Dashboard](https://via.placeholder.com/800x400/0066cc/ffffff?text=Kernel+AI+Dashboard)
 
-**Key Features:**
-- Comprehensive library of pre-audited contract templates
- 
-![Screenshot from 2025-06-06 18-48-00](https://github.com/user-attachments/assets/ff10206d-04ec-4967-882e-296f2a75f949)
+## 📋 Table of Contents
 
-- Detailed documentation and research materials for each template
- 
-![Screenshot from 2025-06-06 18-48-49](https://github.com/user-attachments/assets/32166598-e960-466d-8953-4897437bc51c)
+- [🎯 Introduction](#-introduction)
+- [💡 Motivation](#-motivation)
+- [🛠️ Tech Stack](#️-tech-stack)
+- [✨ Core Features](#-core-features)
+- [🚀 Getting Started](#-getting-started)
+- [📚 Documentation](#-documentation)
+- [🤝 Contributing](#-contributing)
+- [📄 License](#-license)
+- [👥 Contributors](#-contributors)
 
-- AI-driven template analysis and function mapping
-![Screenshot from 2025-06-06 18-49-46](https://github.com/user-attachments/assets/6527f64f-22ee-4b0a-b798-67c872e41272)
+---
 
+## 🎯 Introduction
 
-### 4. Interactive Smart Contract Builder
+> *"Elevating blockchain development with AI-powered intelligence"*
 
-A comprehensive interactive way to build smart contracts featuring a scratch-like interface to build smart contracts using drag and drop functionality. This visual development environment makes smart contract creation accessible to developers of all skill levels without requiring extensive coding knowledge.
+Drawing inspiration from leading blockchain development frameworks like **Remix**, **Third Web**, and **OpenZeppelin Wizard**, Kernel is enhanced by finely-tuned AI models to elevate every stage of the development process. 
 
-**Key Features:**
-- Intuitive drag-and-drop interface for contract creation
-- Visual programming blocks for complex logic implementation
- 
-![Screenshot from 2025-06-06 18-53-03](https://github.com/user-attachments/assets/d31bb1d7-6df2-4137-95e7-72db85c29b53)
+With **Kernel AI**, developers can:
+- 🔄 Streamline the entire contract development lifecycle
+- ⚡ Fast-track development on Morph Network's innovative Layer 2 infrastructure
+- 🛡️ Leverage optimistic rollup technology with zero-knowledge proof capabilities
+- 💰 Benefit from reduced gas costs and faster transaction throughput
 
-- One-step contract generation and deployment
-- Beginner-friendly development environment
- 
-![Screenshot from 2025-06-06 18-53-14](https://github.com/user-attachments/assets/e2e2339c-08e0-4ec2-839e-4f503a7b1aff)
+<details>
+<summary><strong>🌟 What makes Kernel AI special?</strong></summary>
 
+- **AI-First Approach**: Every feature is enhanced with intelligent automation
+- **Layer 2 Optimized**: Built specifically for Morph Network's architecture
+- **Developer-Centric**: Designed by developers, for developers
+- **Production Ready**: Enterprise-grade security and reliability
 
-### 5. AI IDE
+</details>
 
-Intelligent development environment for Solidity smart contracts where developers can write contracts from scratch or use pre-built templates. The AI-driven IDE features autocompletion, error detection, performance optimization, and one-step compilation and deployment with AI-based suggestions for enhanced development efficiency.
+## 💡 Motivation
 
-**Key Features:**
-- Ready to Use Template to begin rapid production
- 
-![Screenshot from 2025-06-06 18-55-23](https://github.com/user-attachments/assets/3d011fab-56bc-449c-b879-da640a116f20)
+<div align="center">
 
-- Integrated compilation and deployment tools
- 
-![Screenshot from 2025-06-06 18-56-37](https://github.com/user-attachments/assets/45e4a27d-e355-42b6-9f48-546ff95472ab)
-  
-- Direct deployment to Polkadot AssetHub with transaction confirmation
- 
-![Screenshot from 2025-06-06 18-57-38](https://github.com/user-attachments/assets/d8fcf7b3-82eb-4687-a77d-d19c4fa4b559)
+**"Solving the biggest challenges in Layer 2 smart contract development"**
 
+</div>
 
-### 6. AI-Catered Auditor
+The motivation behind Kernel AI is to address the common pain points faced by smart contract developers in the Morph Network ecosystem:
 
-Comprehensive security analysis system providing detailed audit reports with improvement suggestions. The AI auditor generates vulnerability reports automatically, identifies potential security issues, and provides actionable recommendations to enhance contract security and reliability.
+| Challenge | Solution |
+|-----------|----------|
+| 🛡️ **Security vulnerabilities** in smart contract code | AI-powered security auditing and real-time vulnerability detection |
+| 🔧 **Complexity of development** on Layer 2 networks | Intuitive drag-and-drop interface with AI assistance |
+| 📉 **Inefficiencies in deployment** for Morph Network | One-click deployment with automated optimization |
+| 🤖 **Lack of AI-powered tools** optimized for Layer 2 | Comprehensive AI suite built specifically for Morph |
+| 🌉 **Bridge complexity** between L1 and L2 interactions | Seamless cross-layer interaction tools |
 
-**Key Features:**
-- Automated vulnerability detection and analysis
- 
-![Screenshot from 2025-06-06 19-02-52](https://github.com/user-attachments/assets/8c21c0c8-bec3-4d31-97b5-6fa52058017f)
+### 🎯 Our Mission
 
-- AI-generated improvement recommendations
- 
-![Screenshot from 2025-06-06 19-03-12](https://github.com/user-attachments/assets/b89a1f87-7bf3-4f8e-af73-618bb3c7c617)
+By leveraging advanced AI and providing a comprehensive suite of tools specifically designed for **Morph Network**, Kernel AI aims to:
 
+- ✅ Make smart contract development more **accessible**
+- ✅ Ensure **security** through automated auditing
+- ✅ Improve **efficiency** with intelligent automation
+- ✅ Foster **innovation** within the Morph blockchain ecosystem
+- ✅ Take advantage of **reduced gas costs** and **faster transaction throughput**
 
-### 7. AI-Generated Tests
+## 🛠️ Tech Stack
 
-Automatically generate comprehensive test suites for your smart contracts using advanced AI algorithms. The system creates thorough test coverage, identifies edge cases, and ensures your contracts are thoroughly validated before deployment.
+<div align="center">
 
-**Key Features:**
-- Automated test suite generation for comprehensive coverage
- 
-![Screenshot from 2025-06-06 19-05-05](https://github.com/user-attachments/assets/430b6fe7-f628-4f9e-9e26-4dafec5be8df)
+**Built with cutting-edge technologies for performance, reliability, and scalability**
 
-- Support for multiple testing frameworks (Viem, Hardhat, Foundry)
- 
-![Screenshot from 2025-06-06 19-04-33](https://github.com/user-attachments/assets/2e3afa5a-b333-4c95-be34-32b4573a738d)
+</div>
 
-- Ready-to-use test templates with customization options
- 
-![image](https://github.com/user-attachments/assets/bd7893a3-917e-461c-bc83-b3e59bd555a1)
+### Frontend & UI
+```
+Next.js 14    TypeScript    Tailwind CSS    ShadCN/UI    React 18
+```
 
+### Blockchain & Smart Contracts
+```
+Solidity    Hardhat    Foundry    Wagmi    Privy    Morph SDK
+```
 
-### 8. Natural Language Contract Interaction
+### AI & Machine Learning
+```
+Custom Models    Gemini API    OpenAI Integration    TensorFlow
+```
 
-Using required ABI and contract address, users can write queries in plain English. The AI helps guide users regarding transactions and can execute function calls directly, making smart contract interaction intuitive and accessible without technical complexity.
+### Backend & Infrastructure
+```
+Next.js API    GraphQL    PostgreSQL    Redis    Docker
+```
 
-**Key Features:**
-- Plain English query interface for contract interaction
-- Intelligent function call execution and transaction guidance
- 
-![Screenshot from 2025-06-06 19-08-07](https://github.com/user-attachments/assets/af2282d9-20fe-4835-a04b-3deff52729ef)
+### Layer 2 Integration
+```
+Morph Network    Bridge Protocols    Gas Optimization    Cross-Chain
+```
 
-- ABI-based contract analysis and method mapping
-- User-friendly transaction confirmation and execution
- 
-![Screenshot from 2025-06-06 19-08-37](https://github.com/user-attachments/assets/f8078773-9971-42e9-92db-aa170856e674)
+<div align="center">
 
+| Category | Technologies |
+|----------|-------------|
+| **🎨 Frontend** | ![Next.js](https://img.shields.io/badge/Next.js-000000?style=flat&logo=next.js&logoColor=white) ![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=flat&logo=typescript&logoColor=white) ![Tailwind](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=flat&logo=tailwind-css&logoColor=white) |
+| **⛓️ Blockchain** | ![Solidity](https://img.shields.io/badge/Solidity-363636?style=flat&logo=solidity&logoColor=white) ![Ethereum](https://img.shields.io/badge/Ethereum-3C3C3D?style=flat&logo=ethereum&logoColor=white) |
+| **🤖 AI/ML** | ![OpenAI](https://img.shields.io/badge/OpenAI-412991?style=flat&logo=openai&logoColor=white) ![TensorFlow](https://img.shields.io/badge/TensorFlow-FF6F00?style=flat&logo=tensorflow&logoColor=white) |
+| **🔧 Backend** | ![Node.js](https://img.shields.io/badge/Node.js-43853D?style=flat&logo=node.js&logoColor=white) ![GraphQL](https://img.shields.io/badge/GraphQL-E10098?style=flat&logo=graphql&logoColor=white) ![Docker](https://img.shields.io/badge/Docker-2496ED?style=flat&logo=docker&logoColor=white) |
 
-### 9. Node Deployment Pipeline
+</div>
 
-Select your features with drag-and-drop functionality to schedule your deployment pipeline and get efficient output. The visual pipeline builder allows developers to design automated deployment workflows, configure deployment parameters, and manage the entire deployment process through an intuitive interface.
+## ✨ Core Features
 
-**Key Features:**
-- Visual drag-and-drop pipeline creation interface
- 
-![Screenshot from 2025-06-06 19-45-28](https://github.com/user-attachments/assets/e7fcafb6-f7c6-45ec-9b76-c5cbfd630940)
+<div align="center">
 
-- Automated testnet and mainnet deployment options
- 
-![Screenshot from 2025-06-06 19-47-12](https://github.com/user-attachments/assets/143531d9-be7e-4bea-b6fc-a0d6170372d5)
+**🚀 Comprehensive suite of AI-powered tools for Morph Network development**
 
-- Production-ready contract building and deployment workflows
+*Every feature is designed to enhance your development experience with intelligent automation*
 
-![d7](https://github.com/user-attachments/assets/ba1c9c76-d679-46fa-a97e-8bfe39475569)
+</div>
 
+---
 
+### 📊 1. Transaction Management Dashboard
 
-## Getting Started
+> **Monitor, analyze, and optimize your Morph Network transactions with AI insights**
 
-### Prerequisites
+A comprehensive dashboard to survey all transactions on Morph Network with efficient AI analysis of transaction patterns, Layer 2 network activity, gas optimization insights, and detailed monitoring capabilities.
+
+#### 🔥 Key Features:
+- 📈 **Real-time monitoring** across Morph Network
+- ⛽ **Gas cost analysis** and optimization recommendations  
+- 🌉 **Bridge transaction tracking** between Ethereum mainnet and Morph
+- 🔍 **Advanced decoding** with Layer 2 specific insights
+
+<div align="center">
+
+![Transaction Dashboard](https://via.placeholder.com/600x300/4F46E5/ffffff?text=Transaction+Dashboard)
+
+*Real-time transaction monitoring and visualization*
+
+![Transaction Analysis](https://via.placeholder.com/600x300/059669/ffffff?text=Advanced+Transaction+Analysis)
+
+*Advanced decoding of complex transaction data*
+
+</div>
+
+---
+
+### 🤖 2. Conversational AI
+
+> **24/7 AI assistant trained specifically on Morph Network development**
+
+Interactive AI assistant providing development support through natural language processing, specifically trained on Morph Network documentation and Layer 2 best practices.
+
+#### 🔥 Key Features:
+- 🧠 **Context-aware assistance** for Morph Network
+- 💬 **Natural language processing** with Layer 2 optimization insights
+- 🔧 **Morph-specific troubleshooting** and debugging support
+- 🌉 **Bridge transaction guidance** and cross-layer interaction help
+
+<div align="center">
+
+![Conversational AI](https://via.placeholder.com/600x300/7C3AED/ffffff?text=Conversational+AI+Assistant)
+
+*Natural language query processing with Layer 2 optimization insights*
+
+</div>
+
+---
+
+### 📝 3. AI-Powered Ready-to-Use Templates
+
+> **Pre-audited, gas-optimized smart contract templates for Morph Network**
+
+AI-enhanced smart contract templates specifically designed for Morph Network's Layer 2 environment, optimized for reduced gas costs and faster execution times.
+
+#### 🔥 Key Features:
+- 📚 **Comprehensive template library** pre-audited for Morph Network
+- ⛽ **Layer 2 gas optimizations** built-in
+- 🌉 **Cross-layer interaction** templates for bridge functionality
+- 🏦 **DeFi, NFT, and governance** templates tailored for Morph
+
+<div align="center">
+
+![Templates Library](https://via.placeholder.com/600x300/DC2626/ffffff?text=Smart+Contract+Templates)
+
+*Comprehensive library of pre-audited contract templates*
+
+![Template Documentation](https://via.placeholder.com/600x300/EA580C/ffffff?text=Template+Documentation)
+
+*Detailed documentation and research materials*
+
+![Template Analysis](https://via.placeholder.com/600x300/65A30D/ffffff?text=AI+Template+Analysis)
+
+*AI-driven template analysis and function mapping*
+
+</div>
+
+---
+
+### 🎨 4. Interactive Smart Contract Builder
+
+> **Visual drag-and-drop interface for building smart contracts**
+
+Comprehensive interactive smart contract builder with visual interface optimized for Morph Network development, making contract creation accessible to developers of all skill levels.
+
+#### 🔥 Key Features:
+- 🖱️ **Drag-and-drop interface** with Morph Network optimization
+- 🧩 **Visual programming blocks** designed for Layer 2 efficiency
+- ⚡ **One-step generation** and deployment to Morph Network
+- 🌉 **Layer 2 specific components** for bridge interactions
+
+<div align="center">
+
+![Smart Contract Builder](https://via.placeholder.com/600x300/1E40AF/ffffff?text=Interactive+Contract+Builder)
+
+*Visual programming blocks for complex logic implementation*
+
+![Builder Interface](https://via.placeholder.com/600x300/BE185D/ffffff?text=Beginner+Friendly+Interface)
+
+*Beginner-friendly development environment*
+
+</div>
+
+---
+
+### 💻 5. AI IDE
+
+> **Intelligent development environment with AI-powered features**
+
+Intelligent Solidity development environment optimized for Morph Network deployment with autocompletion, error detection, and performance optimization.
+
+#### 🔥 Key Features:
+- 📋 **Ready-to-use templates** optimized for Layer 2 architecture
+- 🔧 **Integrated compilation** and deployment tools
+- ⛽ **Gas optimization** suggestions for Layer 2 operations
+- 🌉 **Bridge interaction** code generation and testing
+
+<div align="center">
+
+![AI IDE Templates](https://via.placeholder.com/600x300/7C2D12/ffffff?text=AI+IDE+Templates)
+
+*Ready-to-use templates for rapid development*
+
+![IDE Compilation](https://via.placeholder.com/600x300/0F766E/ffffff?text=Integrated+Compilation+Tools)
+
+*Integrated compilation and deployment tools*
+
+![Direct Deployment](https://via.placeholder.com/600x300/9333EA/ffffff?text=Direct+Deployment)
+
+*Direct deployment to Morph Network with verification*
+
+</div>
+
+---
+
+### 🛡️ 6. AI-Catered Auditor
+
+> **Comprehensive security analysis with Layer 2 specific insights**
+
+Advanced security analysis system providing detailed audit reports with Morph Network-specific improvements, automated vulnerability detection, and actionable recommendations.
+
+#### 🔥 Key Features:
+- 🔍 **Automated vulnerability detection** with Layer 2 patterns
+- 🌉 **Bridge security analysis** for cross-layer interactions
+- ✅ **Morph Network security** best practices validation
+- 📊 **AI-generated recommendations** for Layer 2 environments
+
+<div align="center">
+
+![Security Auditor](https://via.placeholder.com/600x300/DC2626/ffffff?text=Automated+Security+Analysis)
+
+*Automated vulnerability detection and analysis*
+
+![Audit Recommendations](https://via.placeholder.com/600x300/059669/ffffff?text=AI+Generated+Recommendations)
+
+*AI-generated improvement recommendations*
+
+</div>
+
+---
+
+### 🧪 7. AI-Generated Tests
+
+> **Comprehensive test suite generation with Layer 2 optimization**
+
+Automatically generate thorough test suites using advanced AI algorithms optimized for Morph Network testing scenarios, including Layer 2 edge cases and bridge functionality.
+
+#### 🔥 Key Features:
+- 🤖 **Automated test generation** with Morph Network test cases
+- 🔧 **Multiple framework support** (Hardhat, Foundry) with Morph config
+- 🌉 **Bridge interaction testing** and Layer 2 validation
+- 📋 **Ready-to-use templates** with Morph Network customization
+
+<div align="center">
+
+![Test Generation](https://via.placeholder.com/600x300/7C3AED/ffffff?text=AI+Test+Generation)
+
+*Automated test suite generation*
+
+![Testing Frameworks](https://via.placeholder.com/600x300/0891B2/ffffff?text=Multiple+Testing+Frameworks)
+
+*Support for multiple testing frameworks*
+
+![Test Templates](https://via.placeholder.com/600x300/CA8A04/ffffff?text=Ready+to+Use+Tests)
+
+*Ready-to-use test templates*
+
+</div>
+
+---
+
+### 💬 8. Natural Language Contract Interaction
+
+> **Interact with smart contracts using plain English**
+
+Using ABI and contract address, write queries in plain English. AI guides users through Layer 2 transactions, gas optimization, and executes function calls directly on Morph Network.
+
+#### 🔥 Key Features:
+- 💬 **Plain English interface** for contract interaction
+- 🧠 **Intelligent function execution** with Layer 2 gas optimization
+- 🌉 **Layer 2 transaction guidance** and bridge interaction support
+- ✅ **User-friendly confirmation** with Morph Network gas analysis
+
+<div align="center">
+
+![Natural Language Interface](https://via.placeholder.com/600x300/DC2626/ffffff?text=Plain+English+Queries)
+
+*Plain English query interface*
+
+![Transaction Execution](https://via.placeholder.com/600x300/059669/ffffff?text=Transaction+Execution)
+
+*User-friendly transaction confirmation*
+
+</div>
+
+---
+
+### 🚀 9. Node Deployment Pipeline
+
+> **Visual deployment workflow designer for Morph Network**
+
+Drag-and-drop deployment pipeline builder specifically designed for Morph Network infrastructure with automated workflows, Layer 2 configuration, and production-ready deployment.
+
+#### 🔥 Key Features:
+- 🎨 **Visual pipeline creation** for Morph Network deployments
+- 🤖 **Automated deployment** with Morph Network configuration
+- ⛽ **Layer 2 optimization** and gas cost analysis
+- 🏭 **Production-ready workflows** with bridge setup
+
+<div align="center">
+
+![Deployment Pipeline](https://via.placeholder.com/600x300/7C2D12/ffffff?text=Visual+Deployment+Pipeline)
+
+*Visual drag-and-drop pipeline creation*
+
+![Automated Deployment](https://via.placeholder.com/600x300/0F766E/ffffff?text=Automated+Deployment)
+
+*Automated testnet and mainnet deployment*
+
+![Production Workflow](https://via.placeholder.com/600x300/9333EA/ffffff?text=Production+Workflow)
+
+*Production-ready contract building workflows*
+
+</div>
+
+## 🚀 Getting Started
+
+<div align="center">
+
+**Ready to revolutionize your Morph Network development experience?**
+
+*Follow these simple steps to get Kernel AI up and running in minutes*
+
+</div>
+
+### 📋 Prerequisites
 
 Before you begin, ensure you have the following installed:
-- Node.js (v18 or higher)
-- Rust and Cargo
-- Substrate Contracts Node
-- Docker (optional, for containerized deployment)
 
-### Installation
+```bash
+✅ Node.js (v18 or higher)
+✅ Hardhat or Foundry
+✅ Morph Network RPC configuration
+✅ MetaMask or compatible wallet configured for Morph Network
+✅ Docker (optional, for containerized deployment)
+```
 
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/your-org/kernel-ai.git
-   cd kernel-ai
-   ```
+<div align="center">
 
-2. Install dependencies:
-   ```bash
-   npm install
-   ```
+| Requirement | Version | Purpose |
+|-------------|---------|---------|
+| ![Node.js](https://img.shields.io/badge/Node.js-43853D?style=flat&logo=node.js&logoColor=white) | v18+ | Runtime environment |
+| ![Hardhat](https://img.shields.io/badge/Hardhat-FF6B35?style=flat&logo=ethereum&logoColor=white) | Latest | Development framework |
+| ![MetaMask](https://img.shields.io/badge/MetaMask-F6851B?style=flat&logo=metamask&logoColor=white) | Latest | Wallet connection |
 
-3. Set up environment variables:
-   ```bash
-   cp .env.example .env
-   # Configure your environment variables
-   ```
-
-4. Start the development server:
-   ```bash
-   npm run dev
-   ```
-
-## Documentation
-
-Comprehensive documentation is available in the `/docs` directory, including:
-- API Reference
-- Development Guide
-- Deployment Instructions
-- Security Best Practices
-- Template Library Documentation
-
-## Contributing
-
-We welcome contributions from the Polkadot community! Please read our [Contributing Guidelines](CONTRIBUTING.md) before submitting pull requests.
-
-### Development Workflow
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
-
-### Code Standards
-
-- Follow TypeScript and React best practices
-- Maintain consistent code formatting using Prettier
-- Write comprehensive tests for new features
-- Document all public APIs and components
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## Contributors
-
-The following individuals have contributed to this project:
-
-### **Mrunal Kulkarni**
-**Role**: Frontend Developer  
-**Responsibilities**: Refining frontend components, optimizing performance, ensuring responsive design, maintaining code consistency across the application, and ensuring smooth integration with the backend systems.
-
-### **Rakshit Shukla**
-**Role**: Blockchain Developer  
-**Responsibilities**: Developing smart contract templates, integrating Polkadot AssetHub functionalities such as code compilation, deployment and testing, developing security features and dynamic import resolution protocols for Solidity contracts utilizing resolc compiler.
+</div>
 
 ---
 
-## Support
+### ⚡ Quick Installation
 
-For support, questions, or feature requests:
-- Create an issue on GitHub
-- Join our community Discord
-- Email us at support@kernel-ai.dev
+#### 1️⃣ Clone the Repository
+```bash
+git clone https://github.com/your-org/kernel-ai-morph.git
+cd kernel-ai-morph
+```
+
+#### 2️⃣ Install Dependencies
+```bash
+npm install
+# or
+yarn install
+# or
+pnpm install
+```
+
+#### 3️⃣ Configure Environment
+```bash
+cp .env.example .env
+```
+
+Add your Morph Network configuration:
+```env
+# Morph Network Configuration
+MORPH_RPC_URL=https://rpc-quicknode-holesky.morphl2.io
+MORPH_CHAIN_ID=2810
+MORPH_EXPLORER_API=https://explorer-api.morphl2.io
+
+# AI Configuration
+GEMINI_API_KEY=your_gemini_api_key
+OPENAI_API_KEY=your_openai_api_key
+
+# Database
+DATABASE_URL=your_database_url
+```
+
+#### 4️⃣ Start Development Server
+```bash
+npm run dev
+```
+
+<div align="center">
+
+🎉 **That's it!** Open [http://localhost:3000](http://localhost:3000) to see Kernel AI in action.
+
+</div>
 
 ---
 
-*Kernel - Empowering developers to build the future of decentralized applications on Polkadot AssetHub*
+### 🔧 Advanced Setup
+
+<details>
+<summary><strong>🐋 Docker Deployment</strong></summary>
+
+```bash
+# Build the Docker image
+docker build -t kernel-ai-morph .
+
+# Run the container
+docker run -p 3000:3000 -e NODE_ENV=production kernel-ai-morph
+```
+
+</details>
+
+<details>
+<summary><strong>🌐 Morph Network Configuration</strong></summary>
+
+Add Morph Network to your wallet:
+```json
+{
+  "chainId": "0xAFA",
+  "chainName": "Morph Holesky",
+  "nativeCurrency": {
+    "name": "Ether",
+    "symbol": "ETH",
+    "decimals": 18
+  },
+  "rpcUrls": ["https://rpc-quicknode-holesky.morphl2.io"],
+  "blockExplorerUrls": ["https://explorer-holesky.morphl2.io"]
+}
+```
+
+</details>
+
+<details>
+<summary><strong>🔑 API Keys Setup</strong></summary>
+
+Get your API keys:
+- **Gemini API**: [Google AI Studio](https://makersuite.google.com/app/apikey)
+- **OpenAI API**: [OpenAI Platform](https://platform.openai.com/api-keys)
+- **Morph RPC**: [Morph Network](https://docs.morphl2.io)
+
+</details>
+
+---
+
+### 🎯 First Steps
+
+Once Kernel AI is running:
+
+1. **🔗 Connect Your Wallet** - Link your MetaMask to Morph Network
+2. **📝 Choose a Template** - Select from our AI-optimized contract templates
+3. **🎨 Use the Builder** - Try the drag-and-drop contract builder
+4. **🤖 Chat with AI** - Ask questions about Morph Network development
+5. **🚀 Deploy** - One-click deployment to Morph Network
+
+---
+
+### 🎬 Demo & Tutorials
+
+<div align="center">
+
+[![Demo Video](https://img.shields.io/badge/▶️_Watch_Demo-FF0000?style=for-the-badge&logo=youtube&logoColor=white)](https://youtube.com/watch?v=demo)
+[![Tutorial](https://img.shields.io/badge/📚_Tutorial-0066cc?style=for-the-badge&logo=gitbook&logoColor=white)](https://docs.kernel-ai.dev/tutorial)
+
+</div>
+
+---
+
+### ❓ Need Help?
+
+<div align="center">
+
+[![Discord](https://img.shields.io/badge/Discord-7289DA?style=for-the-badge&logo=discord&logoColor=white)](https://discord.gg/kernel-ai)
+[![Documentation](https://img.shields.io/badge/Docs-000000?style=for-the-badge&logo=gitbook&logoColor=white)](https://docs.kernel-ai.dev)
+[![GitHub Issues](https://img.shields.io/badge/Issues-000000?style=for-the-badge&logo=github&logoColor=white)](https://github.com/your-org/kernel-ai-morph/issues)
+
+**Having trouble?** Check our [troubleshooting guide](https://docs.kernel-ai.dev/troubleshooting) or join our Discord community!
+
+</div>
+
+## 📚 Documentation
+
+<div align="center">
+
+**Comprehensive guides, API references, and best practices for Kernel AI**
+
+*Everything you need to master Morph Network development with AI*
+
+</div>
+
+### 📖 Available Documentation
+
+Our extensive documentation covers every aspect of Kernel AI development:
+
+<div align="center">
+
+| 📘 Guide | 📄 Description | 🔗 Link |
+|----------|----------------|---------|
+| **🚀 API Reference** | Complete API documentation with examples | [View Docs](https://docs.kernel-ai.dev/api) |
+| **🏗️ Morph Integration** | Layer 2 development and bridge interactions | [View Docs](https://docs.kernel-ai.dev/morph) |
+| **🚀 Deployment Guide** | Step-by-step deployment instructions | [View Docs](https://docs.kernel-ai.dev/deployment) |
+| **🛡️ Security Practices** | Layer 2 security best practices | [View Docs](https://docs.kernel-ai.dev/security) |
+| **📚 Template Library** | Complete template documentation | [View Docs](https://docs.kernel-ai.dev/templates) |
+| **🌉 Bridge Tutorials** | Cross-layer interaction guides | [View Docs](https://docs.kernel-ai.dev/bridge) |
+| **⛽ Gas Optimization** | Layer 2 optimization strategies | [View Docs](https://docs.kernel-ai.dev/optimization) |
+
+</div>
+
+---
+
+### 🎯 Quick Links
+
+<div align="center">
+
+[![Get Started](https://img.shields.io/badge/🚀_Get_Started-4F46E5?style=for-the-badge)](https://docs.kernel-ai.dev/quickstart)
+[![API Reference](https://img.shields.io/badge/📖_API_Docs-059669?style=for-the-badge)](https://docs.kernel-ai.dev/api)
+[![Examples](https://img.shields.io/badge/💡_Examples-DC2626?style=for-the-badge)](https://docs.kernel-ai.dev/examples)
+[![FAQ](https://img.shields.io/badge/❓_FAQ-7C3AED?style=for-the-badge)](https://docs.kernel-ai.dev/faq)
+
+</div>
+
+---
+
+### 🔍 What's Inside
+
+- **📋 API Reference**: Complete endpoint documentation with request/response examples
+- **🏗️ Architecture Guide**: Deep dive into Kernel AI's Layer 2 architecture
+- **🎨 UI Components**: Reusable components and design system
+- **🔧 Configuration**: Environment setup and customization options
+- **🧪 Testing Guide**: Best practices for testing on Morph Network
+- **🚀 Deployment**: Production deployment strategies
+- **💡 Tutorials**: Step-by-step learning paths for all skill levels
+
+---
+
+## 🤝 Contributing
+
+<div align="center">
+
+**Join our mission to revolutionize blockchain development!**
+
+*We welcome contributions from the Morph Network community*
+
+</div>
+
+### 🌟 Ways to Contribute
+
+<div align="center">
+
+| 🐛 **Bug Reports** | 💡 **Feature Requests** | 📝 **Documentation** | 🔧 **Code** |
+|-------------------|-------------------------|----------------------|-------------|
+| Found a bug? | Have an idea? | Improve docs | Submit PRs |
+| [Report it](https://github.com/your-org/kernel-ai-morph/issues/new?template=bug_report.md) | [Suggest it](https://github.com/your-org/kernel-ai-morph/issues/new?template=feature_request.md) | [Edit on GitHub](https://github.com/your-org/kernel-ai-morph/tree/main/docs) | [View Guidelines](https://github.com/your-org/kernel-ai-morph/blob/main/CONTRIBUTING.md) |
+
+</div>
+
+---
+
+### 🔄 Development Workflow
+
+```bash
+# 1️⃣ Fork the repository
+git clone https://github.com/your-username/kernel-ai-morph.git
+
+# 2️⃣ Create a feature branch
+git checkout -b feature/amazing-morph-feature
+
+# 3️⃣ Make your changes
+# ... code away! 🚀
+
+# 4️⃣ Commit your changes
+git commit -m 'Add amazing Morph Network feature'
+
+# 5️⃣ Push to the branch
+git push origin feature/amazing-morph-feature
+
+# 6️⃣ Open a Pull Request
+# Go to GitHub and create your PR! 🎉
+```
+
+---
+
+### ✅ Code Standards
+
+<div align="center">
+
+| 🎯 **Requirement** | 📋 **Description** |
+|-------------------|-------------------|
+| **🏗️ Architecture** | Follow TypeScript and React best practices |
+| **⚡ Optimization** | Implement Morph Network specific optimizations |
+| **🎨 Formatting** | Use Prettier for consistent code formatting |
+| **🧪 Testing** | Write comprehensive tests including Layer 2 scenarios |
+| **📚 Documentation** | Document APIs and components with Morph considerations |
+
+</div>
+
+---
+
+### 🏆 Contributors Recognition
+
+We believe in recognizing our amazing contributors!
+
+<div align="center">
+
+[![Contributors](https://contrib.rocks/image?repo=your-org/kernel-ai-morph)](https://github.com/your-org/kernel-ai-morph/graphs/contributors)
+
+</div>
+
+---
+
+### 📱 Community Guidelines
+
+- **🤝 Be Respectful**: Treat everyone with kindness and respect
+- **💬 Stay On Topic**: Keep discussions relevant to Kernel AI and Morph Network
+- **🔍 Search First**: Check existing issues and docs before asking
+- **📝 Be Clear**: Provide detailed information when reporting issues
+- **🎉 Celebrate**: Acknowledge and celebrate community achievements
+
+---
+
+## 📄 License
+
+<div align="center">
+
+**MIT License - Open Source Freedom**
+
+*We believe in open source innovation*
+
+</div>
+
+This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) file for details.
+
+### 📋 License Summary
+
+```
+✅ Commercial use    ✅ Modification    ✅ Distribution    ✅ Private use
+```
+
+**What this means:**
+- 🆓 **Free to use** for any purpose, including commercial projects
+- 🔧 **Modify freely** to suit your needs
+- 📤 **Share and distribute** without restrictions
+- 🏢 **Use in private** projects and enterprises
+
+---
+
+## 👥 Contributors
+
+<div align="center">
+
+**Meet the amazing people building the future of AI-powered blockchain development**
+
+</div>
+
+### 🚀 Core Team
+
+<div align="center">
+
+| 👤 **Developer** | 🎯 **Role** | 📋 **Responsibilities** |
+|------------------|-------------|-------------------------|
+| **Mrunal Kulkarni** | 🎨 Frontend Developer | Frontend components, Morph Network integration, performance optimization, responsive design, code consistency, backend integration |
+| **Rakshit Shukla** | ⛓️ Blockchain Developer | Smart contract templates, Layer 2 functionality, security features, bridge protocols, Solidity optimization for Morph Network |
+
+</div>
+
+---
+
+### 🌟 How They're Building the Future
+
+#### **Mrunal Kulkarni** - *Frontend Architect*
+> *"Creating seamless user experiences for the next generation of blockchain developers"*
+
+**Key Contributions:**
+- 🎨 **UI/UX Excellence**: Crafting intuitive interfaces for complex blockchain operations
+- ⚡ **Performance**: Optimizing frontend performance for Layer 2 interactions
+- 📱 **Responsive Design**: Ensuring perfect experience across all devices
+- 🔗 **Web3 Integration**: Seamless wallet connectivity and transaction handling
+
+#### **Rakshit Shukla** - *Blockchain Pioneer*
+> *"Bridging the gap between AI and blockchain with innovative Layer 2 solutions"*
+
+**Key Contributions:**
+- 🏗️ **Smart Contract Architecture**: Building robust, gas-optimized contracts for Morph
+- 🛡️ **Security Focus**: Implementing advanced security patterns and audit tools
+- 🌉 **Bridge Development**: Creating seamless cross-layer interaction protocols
+- 🤖 **AI Integration**: Combining blockchain with AI for intelligent development tools
+
+---
+
+### 🙏 Special Thanks
+
+We're grateful to the entire **Morph Network community**, **AI/ML researchers**, and **open source contributors** who make this project possible.
+
+<div align="center">
+
+**Want to join our team?** Check out our [open positions](https://kernel-ai.dev/careers) or start contributing!
+
+</div>
+
+---
+
+## 🆘 Support
+
+<div align="center">
+
+**Need help? We're here for you! 🤝**
+
+*Multiple ways to get assistance with Kernel AI*
+
+</div>
+
+### 💬 Get Help
+
+<div align="center">
+
+| 🎯 **Type** | 📝 **Description** | 🔗 **Link** |
+|-------------|-------------------|-------------|
+| 🐛 **Bug Reports** | Found an issue? Let us know! | [Create Issue](https://github.com/your-org/kernel-ai-morph/issues/new?template=bug_report.md) |
+| 💡 **Feature Requests** | Have an idea for improvement? | [Request Feature](https://github.com/your-org/kernel-ai-morph/issues/new?template=feature_request.md) |
+| 💬 **Community Chat** | Join our Discord community | [Join Discord](https://discord.gg/kernel-ai) |
+| 📧 **Direct Support** | Email our support team | [support@kernel-ai-morph.dev](mailto:support@kernel-ai-morph.dev) |
+| 📚 **Documentation** | Comprehensive guides and tutorials | [View Docs](https://docs.kernel-ai.dev) |
+
+</div>
+
+---
+
+### ⚡ Quick Support
+
+<div align="center">
+
+[![Discord](https://img.shields.io/badge/💬_Discord-7289DA?style=for-the-badge&logo=discord&logoColor=white)](https://discord.gg/kernel-ai)
+[![GitHub Discussions](https://img.shields.io/badge/💭_Discussions-000000?style=for-the-badge&logo=github&logoColor=white)](https://github.com/your-org/kernel-ai-morph/discussions)
+[![Email Support](https://img.shields.io/badge/📧_Email-EA4335?style=for-the-badge&logo=gmail&logoColor=white)](mailto:support@kernel-ai-morph.dev)
+
+</div>
+
+---
+
+### 🕐 Response Times
+
+- **🚨 Critical Issues**: Within 2 hours
+- **🐛 Bug Reports**: Within 24 hours  
+- **💡 Feature Requests**: Within 48 hours
+- **❓ General Questions**: Within 24 hours
+
+---
+
+### 🌐 Community Resources
+
+- **📖 Documentation**: [docs.kernel-ai.dev](https://docs.kernel-ai.dev)
+- **🎬 Video Tutorials**: [YouTube Channel](https://youtube.com/@kernel-ai)
+- **📰 Blog & Updates**: [blog.kernel-ai.dev](https://blog.kernel-ai.dev)
+- **🐦 Twitter Updates**: [@KernelAI_Dev](https://twitter.com/KernelAI_Dev)
+
+---
+
+<div align="center">
+
+---
+
+## 🚀 Ready to Build the Future?
+
+**Kernel AI** is more than just a development tool – it's your gateway to the next generation of blockchain development on **Morph Network**.
+
+### 🌟 Start Your Journey Today
+
+[![Get Started](https://img.shields.io/badge/🚀_Get_Started_Now-4F46E5?style=for-the-badge&logoColor=white)](https://kernel-ai.dev)
+[![Star on GitHub](https://img.shields.io/badge/⭐_Star_on_GitHub-000000?style=for-the-badge&logo=github&logoColor=white)](https://github.com/your-org/kernel-ai-morph)
+[![Join Discord](https://img.shields.io/badge/💬_Join_Community-7289DA?style=for-the-badge&logo=discord&logoColor=white)](https://discord.gg/kernel-ai)
+
+---
+
+**💫 *Kernel - Empowering developers to build the future of decentralized applications on Morph Network's innovative Layer 2 solution* 💫**
+
+*Built with ❤️ by developers, for developers*
+
+---
+
+</div>
