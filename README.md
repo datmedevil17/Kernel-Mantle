@@ -2,7 +2,7 @@
 
 A versatile and production-ready smart contract development environment that redefines the experience of blockchain developers on **Morph**. Kernel AI combines exceptional speed, security, and intelligence to provide a seamless experience to develop, audit, and deploy smart contracts.
 
-![Screenshot from 2025-06-06 21-44-34](https://github.com/user-attachments/assets/a7fe06e0-16f5-4368-b2a9-24b673525bb7)
+<img width="1920" height="969" alt="image" src="https://github.com/user-attachments/assets/c9645a24-02c7-4cf5-8a48-4434422bb775" />
 
 ## Table of Contents
 
