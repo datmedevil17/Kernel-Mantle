@@ -114,10 +114,8 @@ Instantly generate test cases for smart contracts deployed on **Morph**, with su
 ### 8. Natural Language Contract Interaction
 
 Talk to your deployed Morph contract in plain English. ABI + contract address is all you need to run functions or view state.
+<img width="1920" height="969" alt="Screenshot From 2025-08-05 02-45-34" src="https://github.com/user-attachments/assets/6b1d686f-f3d9-426c-9bbf-12db2d7e8e3f" />
 
-<img width="1920" height="969" alt="image" src="https://github.com/user-attachments/assets/31487ee7-89d8-43b2-a28b-3da75daa8713" />
-
-<img width="1920" height="969" alt="image" src="https://github.com/user-attachments/assets/f4886ec1-0976-40d5-9c65-55b1c0c85cde" />
 
 
 
@@ -125,8 +123,9 @@ Talk to your deployed Morph contract in plain English. ABI + contract address is
 
 Drag-and-drop your way to full deployment workflows on **Morph**, including automated testnet/mainnet pipelines.
 
-![Uploading image.png…]()
+<img width="1920" height="969" alt="image" src="https://github.com/user-attachments/assets/31487ee7-89d8-43b2-a28b-3da75daa8713" />
 
+<img width="1920" height="969" alt="image" src="https://github.com/user-attachments/assets/f4886ec1-0976-40d5-9c65-55b1c0c85cde" />
 
 ## Getting Started
 
