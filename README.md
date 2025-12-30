@@ -49,79 +49,84 @@ Kernel AI is built using a robust tech stack to ensure performance, reliability,
 
 A comprehensive dashboard to help users survey all the transactions they made on the Morph network. The platform provides efficient AI analysis of transaction patterns, network activity, and detailed insights into your blockchain interactions with visual charts and real-time monitoring capabilities.
 
-![Screenshot](https://github.com/user-attachments/assets/d8c780f9-f831-4bf7-bc7d-4ec2d5af524f)
+<img width="1920" height="969" alt="image" src="https://github.com/user-attachments/assets/4d0e72b0-349c-4a25-9191-c4f4425e8d13" />
 
-![Screenshot](https://github.com/user-attachments/assets/9b05e03a-b320-4077-b1e1-34bf4c90460c)
+<img width="1920" height="969" alt="image" src="https://github.com/user-attachments/assets/408b7419-8a92-41e1-a1dd-5e72a7e9f2a2" />
 
 ### 2. Conversational AI
 
 Interactive AI assistant that provides 24/7 development support through natural language processing. The assistant understands your Morph-specific project context and helps with coding, debugging, and answering development questions.
 
-![Screenshot](https://github.com/user-attachments/assets/e481234b-9ea5-429a-8a82-9b1f5c6bb3bb)
+<img width="1920" height="969" alt="image" src="https://github.com/user-attachments/assets/aeb61f76-2e4e-4260-8a34-df6406c4a556" />
 
 ### 3. AI-Powered Ready-to-Use Templates
 
 Provision of AI-enhanced smart contract templates optimized for **Morph**. These come with pre-built, secure foundations for rapid deployment on the Morph chain.
 
-![Screenshot](https://github.com/user-attachments/assets/ff10206d-04ec-4967-882e-296f2a75f949)
+<img width="1920" height="969" alt="image" src="https://github.com/user-attachments/assets/f367dcf2-6ced-4b87-b534-850530f9977d" />
 
-![Screenshot](https://github.com/user-attachments/assets/32166598-e960-466d-8953-4897437bc51c)
+<img width="1920" height="969" alt="image" src="https://github.com/user-attachments/assets/3cf73d12-f964-425f-afd6-5c0decec930d" />
 
-![Screenshot](https://github.com/user-attachments/assets/6527f64f-22ee-4b0a-b798-67c872e41272)
+<img width="1920" height="969" alt="image" src="https://github.com/user-attachments/assets/081dcaa0-bfcb-46e6-87b9-afb39ce55b21" />
+
 
 ### 4. Interactive Smart Contract Builder
 
 A scratch-like drag-and-drop interface for smart contract development that lowers the barrier for beginners on the Morph platform.
 
-![Screenshot](https://github.com/user-attachments/assets/d31bb1d7-6df2-4137-95e7-72db85c29b53)
+<img width="1920" height="969" alt="image" src="https://github.com/user-attachments/assets/e431e45c-c4f5-4285-bf1b-a4eaf759a935" />
 
-![Screenshot](https://github.com/user-attachments/assets/e2e2339c-08e0-4ec2-839e-4f503a7b1aff)
+<img width="1920" height="969" alt="image" src="https://github.com/user-attachments/assets/9bee4969-c9b6-4bf2-8189-daccacb56b4c" />
 
 ### 5. AI IDE
 
 A smart, AI-powered IDE optimized for Solidity contracts targeting **Morph**. Supports live error checking, auto-complete, optimization suggestions, and direct deployment.
 
-![Screenshot](https://github.com/user-attachments/assets/3d011fab-56bc-449c-b879-da640a116f20)
+<img width="1920" height="969" alt="image" src="https://github.com/user-attachments/assets/9001748b-f33c-42a1-8b19-245bc66e959e" />
 
-![Screenshot](https://github.com/user-attachments/assets/45e4a27d-e355-42b6-9f48-546ff95472ab)
+<img width="1920" height="969" alt="image" src="https://github.com/user-attachments/assets/6c46c970-3671-499a-b7ec-64639d7c0ab4" />
 
-![Screenshot](https://github.com/user-attachments/assets/d8fcf7b3-82eb-4687-a77d-d19c4fa4b559)
+<img width="1920" height="969" alt="Screenshot From 2025-08-05 02-20-18" src="https://github.com/user-attachments/assets/1ed559a4-e40e-4277-ac97-07e5f9523d31" />
+
+<img width="1920" height="969" alt="image" src="https://github.com/user-attachments/assets/f2207159-ea0a-4b6f-9236-8aad6ae24f13" />
+
+<img width="1920" height="969" alt="image" src="https://github.com/user-attachments/assets/e90fa9e0-1bdf-4253-87d3-053dd6bf7949" />
+
+
 
 ### 6. AI-Catered Auditor
 
 Integrated AI-powered contract auditing system tailored for **Morph** deployments, detecting vulnerabilities and recommending fixes.
 
-![Screenshot](https://github.com/user-attachments/assets/8c21c0c8-bec3-4d31-97b5-6fa52058017f)
+<img width="1920" height="969" alt="image" src="https://github.com/user-attachments/assets/98a0172e-9016-441f-be05-53f939fdc7e1" />
 
-![Screenshot](https://github.com/user-attachments/assets/b89a1f87-7bf3-4f8e-af73-618bb3c7c617)
+<img width="1920" height="969" alt="image" src="https://github.com/user-attachments/assets/b52beab3-4c73-48f1-b7b4-d1d15fc0a4b2" />
 
 ### 7. AI-Generated Tests
 
 Instantly generate test cases for smart contracts deployed on **Morph**, with support for testing frameworks like Viem, Hardhat, and Foundry.
 
-![Screenshot](https://github.com/user-attachments/assets/430b6fe7-f628-4f9e-9e26-4dafec5be8df)
+<img width="1920" height="969" alt="image" src="https://github.com/user-attachments/assets/e95206e6-39b2-4c20-be37-3bd7ab985dca" />
 
-![Screenshot](https://github.com/user-attachments/assets/2e3afa5a-b333-4c95-be34-32b4573a738d)
+<img width="1920" height="969" alt="image" src="https://github.com/user-attachments/assets/8009c807-472d-4a1f-98eb-1f7910183109" />
 
-![Screenshot](https://github.com/user-attachments/assets/bd7893a3-917e-461c-bc83-b3e59bd555a1)
 
 ### 8. Natural Language Contract Interaction
 
 Talk to your deployed Morph contract in plain English. ABI + contract address is all you need to run functions or view state.
 
-![Screenshot](https://github.com/user-attachments/assets/af2282d9-20fe-4835-a04b-3deff52729ef)
+<img width="1920" height="969" alt="image" src="https://github.com/user-attachments/assets/31487ee7-89d8-43b2-a28b-3da75daa8713" />
 
-![Screenshot](https://github.com/user-attachments/assets/f8078773-9971-42e9-92db-aa170856e674)
+<img width="1920" height="969" alt="image" src="https://github.com/user-attachments/assets/f4886ec1-0976-40d5-9c65-55b1c0c85cde" />
+
+
 
 ### 9. Node Deployment Pipeline
 
 Drag-and-drop your way to full deployment workflows on **Morph**, including automated testnet/mainnet pipelines.
 
-![Screenshot](https://github.com/user-attachments/assets/e7fcafb6-f7c6-45ec-9b76-c5cbfd630940)
+![Uploading image.png…]()
 
-![Screenshot](https://github.com/user-attachments/assets/143531d9-be7e-4bea-b6fc-a0d6170372d5)
-
-![Screenshot](https://github.com/user-attachments/assets/ba1c9c76-d679-46fa-a97e-8bfe39475569)
 
 ## Getting Started
 
