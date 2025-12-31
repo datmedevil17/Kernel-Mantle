@@ -22,6 +22,7 @@ import { useContractOperations } from "@/hooks/useContractOperations"
 import { useAccount, useConnect } from 'wagmi'
 import { injected } from 'wagmi/connectors'
 import { Button } from "@/components/ui/button"
+import { useRouter } from "next/navigation"
 
 const nodeTypes: Record<string, NodeType> = {
   import: { icon: Upload, color: "bg-emerald-600", label: "Import Contract" },
@@ -47,6 +48,7 @@ const PipelineBuilder: React.FC = () => {
   const canvasRef = useRef<HTMLDivElement>(null)
   const [uploadedFiles, setUploadedFiles] = useState<Record<string, string>>({})
   const fileInputRef = useRef<HTMLInputElement>(null)
+  const router = useRouter()
 
   // Import the hook functions
   const { handleCompile, handleDeploy } = useContractOperations()
@@ -1355,8 +1357,28 @@ const handleInputChange = (key: string, value: string | number | boolean) => {
           {/* Execution Logs Panel */}
 {executionLogs.length > 0 && (
   <div className="w-80 bg-black border-l border-gray-800 flex flex-col h-full max-h-screen">
-    <div className="p-4 pt-20 border-b border-gray-800 flex-shrink-0">
+    <div className="p-4 pt-20 border-b border-gray-800 flex-shrink-0 flex justify-between items-center">
       <h3 className="text-emerald-400 font-semibold">Execution Logs</h3>
+      {(!isExecuting && (compilationResult?.abi || globalCompilationResult?.abi)) && (
+        <Button 
+          size="sm" 
+          onClick={() => {
+            const params = new URLSearchParams();
+            const result = compilationResult || globalCompilationResult;
+            if (result?.contractAddress) {
+              params.set("contractAddress", result.contractAddress);
+            }
+            if (result?.abi) {
+              params.set("abi", JSON.stringify(result.abi));
+            }
+            router.push(`/sandbox?${params.toString()}`);
+          }}
+          className="bg-emerald-600/20 hover:bg-emerald-600/40 text-emerald-400 border border-emerald-500/50 h-7 text-xs"
+        >
+          <Zap className="w-3 h-3 mr-1" />
+          Generate UI
+        </Button>
+      )}
     </div>
     <div className="flex-1 p-4 overflow-y-auto font-mono text-sm min-h-0">
       {executionLogs.map((log, index) => (
