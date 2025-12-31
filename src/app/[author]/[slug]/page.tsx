@@ -84,20 +84,19 @@ Contract Name: ${contract.source.name}
 Contract Description: ${contract.source.description}
 `;
 
-      const prompt = `You are a smart contract expert assistant. Analyze the following smart contract and answer this question: "${query}"
+      const prompt = `You are a Solidity expert. Answer this question about the contract: "${query}"
 
 ${context}
 
-Please provide a detailed but concise explanation, focusing on:
-1. Direct answers to the question
-2. Code references when relevant
-3. Security implications if applicable
-4. Best practices and recommendations
-
-Keep the response technical but understandable.`;
+Rules:
+- Be concise (max 150 words)
+- Use bullet points for lists
+- Reference specific functions/lines when relevant
+- Highlight security concerns if applicable
+- No markdown headers, just plain text with bullets`;
 
       const response = await axios({
-        url: "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=AIzaSyCHK_9m7dwti-kYYWmr-ciR-Kp9_QTgvOc",
+        url: `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${process.env.NEXT_PUBLIC_GEMINI_API_KEY}`,
         method: "POST",
         headers: {
           "Content-Type": "application/json",

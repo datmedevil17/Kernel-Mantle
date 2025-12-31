@@ -13,10 +13,10 @@ export function WobbleCardDemo() {
       >
         <div className="max-w-xs relative z-10">
           <h2 className="text-left text-balance text-base md:text-xl lg:text-3xl font-semibold tracking-[-0.015em] text-white">
-            Kernel AI supercharges development on MorphI2 zkEVM
+            Kernel AI supercharges development on Mantle L2
           </h2>
           <p className="mt-4 text-left text-base/6 text-neutral-200">
-            With over 50+ smart contract templates and AI-assisted tools, Kernel AI is the go-to IDE for developers building on Morph Layer 2.
+            With over 50+ smart contract templates and AI-assisted tools, Kernel AI is the go-to IDE for developers building on Mantle Layer 2.
           </p>
         </div>
 
@@ -35,7 +35,7 @@ export function WobbleCardDemo() {
       <WobbleCard containerClassName="col-span-1 min-h-[300px]">
         <div className="relative z-10">
           <h2 className="max-w-80 text-left text-balance text-base md:text-xl lg:text-3xl font-semibold tracking-[-0.015em] text-white">
-            Simplicity meets scale — powered by Morph zkEVM
+            Simplicity meets scale — powered by Mantle L2
           </h2>
           <p className="mt-4 max-w-[26rem] text-left text-base/6 text-neutral-200">
             No barriers, no bottlenecks. Kernel AI helps you deploy faster, with zero guesswork.
@@ -60,10 +60,10 @@ export function WobbleCardDemo() {
       <WobbleCard containerClassName="col-span-1 lg:col-span-3 min-h-[500px] lg:min-h-[600px] xl:min-h-[300px]">
         <div className="max-w-sm relative z-10">
           <h2 className="max-w-sm md:max-w-lg text-left text-balance text-base md:text-xl lg:text-3xl font-semibold tracking-[-0.015em] text-white">
-            Build blazing-fast production-ready smart contracts on Morph Layer 2 today!
+            Build blazing-fast production-ready smart contracts on Mantle Layer 2 today!
           </h2>
           <p className="mt-4 max-w-[26rem] text-left text-base/6 text-neutral-200">
-            With low gas fees and high throughput, MorphI2 offers the ideal environment for scalable, zkEVM-compatible smart contract development.
+            With low gas fees and high throughput, Mantle offers the ideal environment for scalable smart contract development.
           </p>
         </div>
 

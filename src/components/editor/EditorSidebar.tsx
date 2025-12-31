@@ -12,8 +12,8 @@ interface AbiItem {
   }>;
 }
 
-const BLOCK_EXPLORER_URL = "https://explorer-holesky.morphl2.io"
-const FAUCET_URL = "https://bridge-holesky.morphl2.io"
+const BLOCK_EXPLORER_URL = "https://sepolia.mantlescan.xyz"
+const FAUCET_URL = "https://faucet.sepolia.mantle.xyz"
 
 interface EditorSidebarProps {
   selectedFile: FileItem | null
@@ -249,12 +249,15 @@ const getConstructorParams = (abi: string) => {
         onClick={() => {
           if (!compilationResult?.abi) return;
           const constructorParams = getConstructorParams(compilationResult.abi);
-          if (constructorParams.length !== args.length || args.some((arg) => !arg.trim())) {
-            toast.error("Please provide all constructor arguments");
-            return;
+          // Only validate args if there ARE constructor parameters
+          if (constructorParams.length > 0) {
+            if (constructorParams.length !== args.length || args.some((arg) => !arg.trim())) {
+              toast.error("Please provide all constructor arguments");
+              return;
+            }
           }
-          // Pass the args to onDeploy
-          onDeploy(args); // This is the key change
+          // Pass the args to onDeploy (empty array for no-arg constructors)
+          onDeploy(constructorParams.length > 0 ? args : []);
         }}
         disabled={!isCompiled}
         className={`w-full px-4 py-3 text-sm rounded-xl transition-all duration-200 flex items-center justify-center space-x-2 font-medium shadow-md hover:shadow-lg ${

@@ -2,7 +2,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Send } from 'lucide-react';
 import Orb from './Orb';
-import { makeGeminiRequest } from '@/utils/api';
+import axios from 'axios';
 
 interface AIAssistantModalProps {
   isOpen: boolean;
@@ -41,7 +41,9 @@ export const AIAssistantModal: React.FC<AIAssistantModalProps> = ({ isOpen, onCl
     setIsTyping(true);
 
     try {
-      const response = await makeGeminiRequest(userMessage);
+      // Use the API route which includes the Neuron AI system context
+      const { data } = await axios.post('/api/chat', { question: userMessage });
+      const response = data.response;
       
       // Extract the content from the response object
       let botResponse = '';

@@ -48,7 +48,7 @@ export default function Home() {
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 0.3, duration: 1, ease: "easeOut" }}
           >
-            Welcome to <Cover>Kerenel</Cover>
+            Welcome to <Cover>Kernel</Cover>
           </motion.h1>
           <motion.p
             className="mx-auto mt-8 max-w-2xl text-center text-xl font-light text-neutral-400 leading-relaxed"

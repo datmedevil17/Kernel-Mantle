@@ -81,10 +81,11 @@ export default function IDELayout({ children }: IDELayoutProps) {
                 {!address ? (
                   <button
                     onClick={() => setIsModalOpen(true)}
-                    className="flex items-center gap-2 rounded-lg px-3 py-2 text-neutral-200 bg-emerald-600 hover:bg-emerald-700 transition-colors"
+                    className="group relative flex items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-white font-medium bg-gradient-to-r from-emerald-600 to-emerald-500 hover:from-emerald-500 hover:to-emerald-400 shadow-lg shadow-emerald-500/25 hover:shadow-emerald-500/40 transition-all duration-300 hover:scale-105"
                   >
-                    <IconUserBolt className="h-5 w-5 shrink-0" />
-                    <span>{isSidebarOpen ? 'Connect Wallet' : ''}</span>
+                    <div className="absolute inset-0 bg-gradient-to-r from-emerald-600 to-emerald-500 rounded-xl blur-md opacity-50 group-hover:opacity-70 transition-opacity" />
+                    <IconUserBolt className="relative h-5 w-5 shrink-0" />
+                    <span className="relative">{isSidebarOpen ? 'Connect Wallet' : ''}</span>
                   </button>
                 ) : (
                   <SidebarLink

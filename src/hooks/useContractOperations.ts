@@ -207,7 +207,7 @@ export function useContractOperations() {
     }
   }, []);
 
-const handleDeploy = useCallback(async (constructorArgs: string[] = []): Promise<DeploymentResult> => {
+const handleDeploy = useCallback(async (constructorArgs: string[] = [], externalCompilationResult?: CompilationResult | null): Promise<DeploymentResult> => {
   return new Promise(async (resolve) => {
     try {
       // Check wallet connection first
@@ -215,20 +215,23 @@ const handleDeploy = useCallback(async (constructorArgs: string[] = []): Promise
         throw new Error("Wallet not connected. Please connect your wallet first.");
       }
 
-      if (!compilationResult || compilationResult.error) {
+      // Use external compilation result if provided, otherwise use internal state
+      const compResult = externalCompilationResult || compilationResult;
+
+      if (!compResult || compResult.error) {
         throw new Error("No valid compilation result available for deployment");
       }
 
-      if (!compilationResult.bytecode) {
+      if (!compResult.bytecode) {
         throw new Error("No bytecode available for deployment");
       }
 
-      console.log("Attempting deployment...");
+      console.log("Attempting deployment with bytecode length:", compResult.bytecode.length);
 
       // Switch to the correct chain for Asset Hub Testnet
       // Asset Hub Westend Testnet chain ID is 1000 (adjust if needed)
       try {
-        await switchChain({ chainId: 1000 }); // Asset Hub chain ID
+        await switchChain({ chainId: 5003 }); // Mantle Sepolia Testnet chain ID
         console.log("Switched to Asset Hub chain");
       } catch (chainError) {
         console.warn("Chain switch failed, continuing with current chain:", chainError);
@@ -236,7 +239,7 @@ const handleDeploy = useCallback(async (constructorArgs: string[] = []): Promise
       }
 
       // Ensure bytecode has 0x prefix for deployment
-      let deployBytecode = compilationResult.bytecode;
+      let deployBytecode = compResult.bytecode;
       if (!deployBytecode.startsWith('0x')) {
         deployBytecode = `0x${deployBytecode}`;
       }
@@ -246,7 +249,7 @@ const handleDeploy = useCallback(async (constructorArgs: string[] = []): Promise
         throw new Error("Invalid bytecode: too short");
       }
 
-      const deployAbi: AbiItem[] = compilationResult.abi ? JSON.parse(compilationResult.abi) : [];
+      const deployAbi: AbiItem[] = compResult.abi ? JSON.parse(compResult.abi) : [];
       
       // Find constructor in ABI to get parameter types
       const constructorAbi = deployAbi.find((item: AbiItem) => item.type === 'constructor');

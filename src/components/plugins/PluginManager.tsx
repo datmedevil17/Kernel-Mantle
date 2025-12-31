@@ -45,30 +45,21 @@ interface VulnerabilityAnalysis {
 // Constants
 // ============================================================================
 
-const GEMINI_API_KEY = "AIzaSyCHK_9m7dwti-kYYWmr-ciR-Kp9_QTgvOc";
-const GEMINI_API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent";
+const GEMINI_API_KEY = process.env.NEXT_PUBLIC_GEMINI_API_KEY;
+const GEMINI_API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent";
 
-const VULNERABILITY_PROMPT = `
-Analyze the following Solidity smart contract for security vulnerabilities, gas optimizations, and best practices. 
-Provide a detailed JSON response with the following structure:
+const VULNERABILITY_PROMPT = `Analyze this Solidity contract for security issues. Be concise.
+
+Return ONLY this JSON (max 5 vulnerabilities, max 3 gas tips, max 3 best practices):
 {
-  "overallScore": number (0-100, where 100 is perfectly secure),
-  "vulnerabilities": [
-    {
-      "severity": "Critical|High|Medium|Low|Info",
-      "title": "Vulnerability Title",
-      "description": "Detailed description",
-      "recommendation": "How to fix it",
-      "lineNumber": number (if applicable),
-      "category": "Reentrancy|Access Control|Integer Overflow|etc"
-    }
-  ],
-  "gasOptimizations": ["optimization suggestion 1", "optimization suggestion 2"],
-  "bestPractices": ["best practice 1", "best practice 2"],
-  "summary": "Overall assessment summary"
+  "overallScore": 0-100,
+  "vulnerabilities": [{"severity":"Critical|High|Medium|Low","title":"max 10 words","description":"one sentence","recommendation":"one sentence fix","lineNumber":number|null,"category":"Reentrancy|Access Control|Overflow|Logic|Other"}],
+  "gasOptimizations": ["short tip 1","short tip 2"],
+  "bestPractices": ["short practice 1","short practice 2"],
+  "summary": "One sentence overall assessment"
 }
 
-Contract Code:
+Contract:
 `;
 
 // ============================================================================
@@ -212,7 +203,7 @@ const PluginManager: React.FC<PluginManagerProps> = ({
         {
           name: 'hardhat.config.js',
           content: `require('@nomicfoundation/hardhat-toolbox');
-require('@parity/hardhat-morph');
+require('@nomicfoundation/hardhat-toolbox');
 require('dotenv').config();
 
 /** @type import('hardhat/config').HardhatUserConfig */
@@ -240,11 +231,8 @@ module.exports = {
   },
   networks: {
     hardhat: {
-      morph: true,
-    },
-    westendHub: {
-      morph: true,
-      url: 'https://explorer-holesky.morphl2.io',
+      mantle: true,
+      url: 'https://rpc.sepolia.mantle.xyz',
       accounts: process.env.PRIVATE_KEY ? [process.env.PRIVATE_KEY] : [],
     },
     localhost: {
@@ -263,9 +251,9 @@ module.exports = {
         {
           name: 'package.json',
           content: `{
-  "name": "hardhat-morph-project",
+  "name": "hardhat-mantle-project",
   "version": "1.0.0",
-  "description": "A professional Hardhat project for Morph ecosystem",
+  "description": "A professional Hardhat project for Mantle ecosystem",
   "main": "index.js",
   "scripts": {
     "compile": "npx hardhat compile",
@@ -277,12 +265,11 @@ module.exports = {
     "node": "npx hardhat node",
     "clean": "npx hardhat clean"
   },
-  "keywords": ["hardhat", "morph", "ethereum", "solidity"],
+  "keywords": ["hardhat", "mantle", "ethereum", "solidity"],
   "author": "Your Name",
   "license": "MIT",
   "devDependencies": {
     "@nomicfoundation/hardhat-toolbox": "^4.0.0",
-    "@parity/hardhat-morph": "^1.0.0",
     "hardhat": "^2.19.0",
     "hardhat-gas-reporter": "^1.0.9",
     "solidity-coverage": "^0.8.5",
@@ -299,9 +286,9 @@ COINMARKETCAP_API_KEY=your_coinmarketcap_api_key_here`
         },
         {
           name: 'README.md',
-          content: `# Hardhat Morph Project
+          content: `# Hardhat Mantle Project
 
-This project demonstrates a basic Hardhat setup for Morph ecosystem development.
+This project demonstrates a basic Hardhat setup for Mantle ecosystem development.
 
 ## Setup
 
@@ -345,7 +332,7 @@ Never commit your \`.env\` file or expose your private keys!`
       });
 
       // Download as ZIP
-      await createZipAndDownload(files, 'hardhat-morph.zip');
+      await createZipAndDownload(files, 'hardhat-mantle.zip');
       
     } catch (error) {
       console.error('Hardhat template generation failed:', error);
@@ -366,33 +353,33 @@ Never commit your \`.env\` file or expose your private keys!`
           content: `import { http, createPublicClient, createWalletClient, defineChain } from 'viem';
 import { privateKeyToAccount } from 'viem/accounts';
 
-// Define Westend Asset Hub chain
-export const westendAssetHub = defineChain({
-  id: 420420421,
-  name: 'Westend Asset Hub',
-  network: 'westend-asset-hub',
+// Define Mantle Testnet chain
+export const mantleTestnet = defineChain({
+  id: 5003, // Mantle Sepolia Testnet Chain ID
+  name: 'Mantle Sepolia Testnet',
+  network: 'mantle-testnet',
   nativeCurrency: {
-    decimals: 12,
-    name: 'Westend',
-    symbol: 'WND',
+    decimals: 18,
+    name: 'Mantle',
+    symbol: 'MNT',
   },
   rpcUrls: {
     default: {
-      http: ['https://explorer-holesky.morphl2.io'],
+      http: ['https://rpc.sepolia.mantle.xyz'],
     },
     public: {
-      http: ['https://explorer-holesky.morphl2.io'],
+      http: ['https://rpc.sepolia.mantle.xyz'],
     },
   },
   blockExplorers: {
-    default: { name: 'Morph', url: 'https://explorer-holesky.morphl2.io' },
+    default: { name: 'Mantle Sepolia Explorer', url: 'https://sepolia.mantlescan.xyz' },
   },
 });
 
-const transport = http(morphHolesky.rpcUrls.default.http[0]);
+const transport = http(mantleTestnet.rpcUrls.default.http[0]);
 
 export const publicClient = createPublicClient({
-  chain: morphHolesky,
+  chain: mantleTestnet,
   transport,
 });
 
@@ -400,7 +387,7 @@ export const createWallet = (privateKey: \`0x\${string}\`) => {
   const account = privateKeyToAccount(privateKey);
   return createWalletClient({
     account,
-    chain: westendAssetHub,
+    chain: mantleTestnet,
     transport,
   });
 };
@@ -511,9 +498,9 @@ export const deployContract = async ({
         {
           name: 'package.json',
           content: `{
-  "name": "viem-morph-project",
+  "name": "viem-mantle-project",
   "version": "1.0.0",
-  "description": "A professional Viem project for Morph ecosystem",
+  "description": "A professional Viem project for Mantle ecosystem",
   "main": "index.js",
   "type": "module",
   "scripts": {
@@ -523,7 +510,7 @@ export const deployContract = async ({
     "test": "vitest",
     "dev": "tsx --watch"
   },
-  "keywords": ["viem", "morph", "ethereum", "web3"],
+  "keywords": ["viem", "mantle", "ethereum", "web3"],
   "author": "Your Name",
   "license": "MIT",
   "dependencies": {
@@ -553,7 +540,7 @@ export const deployContract = async ({
         onAddFile(fileItem);
       });
 
-      await createZipAndDownload(files, 'viem-morph-template.zip');
+      await createZipAndDownload(files, 'viem-mantle-template.zip');
       
     } catch (error) {
       console.error('Viem template generation failed:', error);

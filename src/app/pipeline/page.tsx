@@ -104,7 +104,7 @@ const templates: Record<string, Template> = {
     nodes: [
       { id: "1", type: "import", x: 50, y: 100, config: { contractFile: "MyToken.sol", contractType: "ERC20" } },
       { id: "2", type: "compile", x: 280, y: 100, config: { solcVersion: "0.8.19", optimizer: true } },
-      { id: "3", type: "deploy", x: 510, y: 100, config: { network: "asset-hub-testnet", gasLimit: "2000000" } },
+      { id: "3", type: "deploy", x: 510, y: 100, config: { network: "mantle-sepolia", gasLimit: "2000000" } },
     ],
     connections: [
       { from: "1", to: "2" },
@@ -118,10 +118,10 @@ const templates: Record<string, Template> = {
       { id: "2", type: "compile", x: 200, y: 100, config: { solcVersion: "0.8.19", optimizer: true } },
       { id: "3", type: "gasOptimize", x: 350, y: 100, config: { runs: 200 } },
       { id: "4", type: "test", x: 500, y: 100, config: { testSuite: "foundry" } },
-      { id: "5", type: "deploy", x: 650, y: 50, config: { network: "asset-hub-testnet" } },
-      { id: "6", type: "verify", x: 800, y: 50, config: { explorer: "holesky-morph" } },
+      { id: "5", type: "deploy", x: 650, y: 50, config: { network: "mantle-sepolia" } },
+      { id: "6", type: "verify", x: 800, y: 50, config: { explorer: "mantle-testnet" } },
       { id: "7", type: "condition", x: 650, y: 200, config: { condition: "testnet_success" } },
-      { id: "8", type: "deployMainnet", x: 800, y: 200, config: { network: "asset-hub-mainnet" } }, // Changed to deployMainnet
+      { id: "8", type: "deployMainnet", x: 800, y: 200, config: { network: "mantle-mainnet" } },
     ],
     connections: [
       { from: "1", to: "2" },
@@ -140,8 +140,8 @@ const templates: Record<string, Template> = {
       { id: "2", type: "import", x: 50, y: 150, config: { contractFile: "Pool.sol", contractType: "DEX" } },
       { id: "3", type: "compile", x: 250, y: 100, config: { solcVersion: "0.8.19" } },
       { id: "4", type: "test", x: 400, y: 100, config: { testSuite: "integration" } },
-      { id: "5", type: "deploy", x: 550, y: 50, config: { network: "asset-hub-testnet", contract: "Token" } },
-      { id: "6", type: "deploy", x: 550, y: 150, config: { network: "asset-hub-testnet", contract: "Pool" } },
+      { id: "5", type: "deploy", x: 550, y: 50, config: { network: "mantle-sepolia", contract: "Token" } },
+      { id: "6", type: "deploy", x: 550, y: 150, config: { network: "mantle-sepolia", contract: "Pool" } },
     ],
     connections: [
       { from: "1", to: "3" },
@@ -213,7 +213,7 @@ const templates: Record<string, Template> = {
       case "deploy":
         return {
           contractFile: contractFile,
-          network: "asset-hub-testnet",
+          network: "mantle-sepolia",
           gasLimit: "2000000",
           gasPrice: "auto",
           confirmations: 1,
@@ -223,7 +223,7 @@ const templates: Record<string, Template> = {
        case "deployMainnet":
     return {
       contractFile: contractFile,
-      network: "asset-hub-mainnet", // Force mainnet for mainnet deploy
+      network: "mantle-mainnet", // Force mainnet for mainnet deploy
       gasLimit: "2000000",
       gasPrice: "auto",
       confirmations: 3, // More confirmations for mainnet
@@ -233,7 +233,7 @@ const templates: Record<string, Template> = {
       case "verify":
         return {
           contractFile: contractFile,
-          explorer: "holesky-morph",
+          explorer: "mantle-testnet",
           apiKey: "",
           constructorArgs: [],
         }
@@ -256,9 +256,9 @@ const templates: Record<string, Template> = {
 const deployToTestnet = async (
   node: Node,
   logger: (msg: string, type?: ExecutionLog["type"]) => void,
-  compilationResult: { abi: string; bytecode: unknown; contractAddress?: string } | null // Add contractAddress
+  compilationResult: { abi: string; bytecode: unknown; contractAddress?: string } | null
 ) => {
-  logger(`🚀 Deploying to Asset Hub Testnet`, "info")
+  logger(`🚀 Deploying to Mantle Sepolia Testnet`, "info")
   
   // Check if wallet is connected
   if (!isConnected) {
@@ -272,17 +272,37 @@ const deployToTestnet = async (
     return false
   }
 
+  if (!compilationResult.bytecode) {
+    logger(`❌ No bytecode found in compilation result.`, "error")
+    return false
+  }
+
   try {
-    const deploymentResult = await handleDeploy() as DeploymentResult
+    // Get constructor args from node config and convert to string array
+    const rawArgs = node.config.constructorArgs || []
+    const constructorArgs: string[] = rawArgs.map((arg: unknown) => String(arg))
+    logger(`📝 Constructor args: ${constructorArgs.length > 0 ? constructorArgs.join(', ') : 'none'}`, "info")
+    logger(`⛽ Gas Limit: ${node.config.gasLimit || 'auto'}`, "info")
+    
+    // Pass compilation result as second argument to handleDeploy
+    const compResultForDeploy = compilationResult ? {
+      abi: compilationResult.abi,
+      bytecode: String(compilationResult.bytecode),
+      error: undefined
+    } : null
+    
+    const deploymentResult = await handleDeploy(constructorArgs, compResultForDeploy) as DeploymentResult
     console.log("Testnet deploy result:", deploymentResult)
 
-    if (deploymentResult && deploymentResult.contractAddress) {
+    if (deploymentResult && deploymentResult.success && deploymentResult.contractAddress) {
       logger(`✅ Contract deployed to testnet successfully`, "success")
-      logger(`📍 Testnet Address: ${deploymentResult.contractAddress}`, "success")
+      logger(`📍 Contract Address: ${deploymentResult.contractAddress}`, "success")
       logger(`🔗 Transaction Hash: ${deploymentResult.transactionHash}`, "info")
+      logger(`⛽ Gas Used: ${deploymentResult.gasUsed}`, "info")
       return true
     } else {
-      logger(`❌ Testnet deployment failed: ${deploymentResult?.error || "Unknown error"}`, "error")
+      const errorMsg = deploymentResult?.error || "Deployment transaction failed"
+      logger(`❌ Testnet deployment failed: ${errorMsg}`, "error")
       return false
     }
   } catch (error) {
@@ -978,11 +998,11 @@ const handleInputChange = (key: string, value: string | number | boolean) => {
       >
         {node.type === "deploy" ? (
           <>
-            <option value="asset-hub-testnet">Asset Hub Testnet</option>
+            <option value="mantle-sepolia">Mantle Sepolia Testnet</option>
             <option value="local">Local Development</option>
           </>
         ) : (
-          <option value="asset-hub-mainnet">Asset Hub Mainnet</option>
+          <option value="mantle-mainnet">Mantle Mainnet</option>
         )}
       </select>
       {node.type === "deployMainnet" && (
@@ -1070,11 +1090,11 @@ const handleInputChange = (key: string, value: string | number | boolean) => {
               <div>
                 <label className="block text-sm font-medium text-gray-300 mb-1">Explorer</label>
                 <select
-                  value={node.config.explorer || "holesky-morph"}
+                  value={node.config.explorer || "mantle-testnet"}
                   onChange={(e) => handleInputChange("explorer", e.target.value)}
                   className="w-full p-2 border border-gray-600 rounded bg-gray-700 text-gray-300"
                 >
-                  <option value="holesky-morph">Morph Dapps</option>
+                  <option value="mantle-testnet">Mantle Explorer</option>
                   <option value="subscan">Subscan</option>
                   <option value="custom">Custom Explorer</option>
                 </select>
@@ -1150,7 +1170,7 @@ const handleInputChange = (key: string, value: string | number | boolean) => {
       <div className="space-y-2">
         <h4 className="text-sm font-medium text-gray-300 mb-2">Wallet</h4>
         <div className="flex flex-col gap-2">
-          {isConnected && (
+          {mounted && isConnected && (
             <div className="flex items-center gap-2 text-sm text-green-400 p-2 bg-green-400/10 rounded border border-green-400/20">
               <div className="w-2 h-2 bg-green-400 rounded-full"></div>
               <span>Connected</span>
@@ -1228,7 +1248,7 @@ const handleInputChange = (key: string, value: string | number | boolean) => {
             </span>
             <span className="flex items-center gap-1">
               <div className="w-2 h-2 bg-emerald-500 rounded-full"></div>
-              Morph Network
+              Mantle Network
             </span>
             <span className="flex items-center gap-1">
               <div className="w-2 h-2 bg-emerald-500 rounded-full"></div>
@@ -1335,7 +1355,7 @@ const handleInputChange = (key: string, value: string | number | boolean) => {
           {/* Execution Logs Panel */}
 {executionLogs.length > 0 && (
   <div className="w-80 bg-black border-l border-gray-800 flex flex-col h-full max-h-screen">
-    <div className="p-4 border-b border-gray-800 flex-shrink-0">
+    <div className="p-4 pt-20 border-b border-gray-800 flex-shrink-0">
       <h3 className="text-emerald-400 font-semibold">Execution Logs</h3>
     </div>
     <div className="flex-1 p-4 overflow-y-auto font-mono text-sm min-h-0">
@@ -1361,16 +1381,20 @@ const handleInputChange = (key: string, value: string | number | boolean) => {
 
       {/* Node Configuration Panel */}
       {selectedNode && (
-        <div className="w-80 bg-gray-900 border-l border-gray-800 p-4 pt-30">
-          <h3 className="text-lg font-semibold mb-4 text-white">Configuration</h3>
-          <SolidityNodeConfig
-            node={nodes.find((n) => n.id === selectedNode)}
-            onUpdate={(config) => {
-              setNodes((prev) =>
-                prev.map((n) => (n.id === selectedNode ? { ...n, config: { ...n.config, ...config } } : n)),
-              )
-            }}
-          />
+        <div className="w-80 bg-gray-900 border-l border-gray-800 flex flex-col h-full max-h-screen">
+          <div className="p-4 pt-20 border-b border-gray-800 flex-shrink-0">
+            <h3 className="text-lg font-semibold text-white">Configuration</h3>
+          </div>
+          <div className="flex-1 overflow-y-auto p-4 min-h-0">
+            <SolidityNodeConfig
+              node={nodes.find((n) => n.id === selectedNode)}
+              onUpdate={(config) => {
+                setNodes((prev) =>
+                  prev.map((n) => (n.id === selectedNode ? { ...n, config: { ...n.config, ...config } } : n)),
+                )
+              }}
+            />
+          </div>
         </div>
       )}
     </div>

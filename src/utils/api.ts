@@ -1,9 +1,13 @@
 import axios from 'axios';
 
-const GEMINI_API_KEY = 'AIzaSyCHK_9m7dwti-kYYWmr-ciR-Kp9_QTgvOc';
-const GEMINI_API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent';
+const GEMINI_API_KEY = process.env.NEXT_PUBLIC_GEMINI_API_KEY;
+const GEMINI_API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent';
 
 export async function makeGeminiRequest(prompt: string) {
+  if (!GEMINI_API_KEY) {
+    throw new Error('NEXT_PUBLIC_GEMINI_API_KEY is not configured. Please add it to your .env.local file.');
+  }
+
   try {
     const response = await axios({
       url: `${GEMINI_API_URL}?key=${GEMINI_API_KEY}`,
@@ -44,60 +48,54 @@ export async function makeGeminiRequest(prompt: string) {
 }
 
 export async function querySecurityAudit(code: string, language: string) {
-  const prompt = `Analyze this ${language} code for security issues. Return a JSON array of security issues with these fields:
-  - id: string (unique identifier)
-  - severity: 'critical' | 'high' | 'medium' | 'low' | 'info'
-  - title: string
-  - description: string
-  - lineNumber: number (if applicable)
-  - recommendation: string
-  - category: string
+  const prompt = `Analyze this ${language} code for security vulnerabilities. Be concise. Return ONLY a JSON array (max 5 issues).
 
-  Code to analyze:
-  ${code}`;
+Each issue must have:
+- id: "SEC-1", "SEC-2", etc.
+- severity: "critical"|"high"|"medium"|"low"
+- title: Brief title (max 10 words)
+- description: One sentence description
+- lineNumber: number or null
+- recommendation: One sentence fix
+- category: "Reentrancy"|"Access Control"|"Overflow"|"Logic"|"Other"
+
+Code:
+${code.slice(0, 3000)}`;
 
   return makeGeminiRequest(prompt);
 }
 
 export async function queryCodeSuggestions(code: string, language: string) {
-  const prompt = `Analyze this ${language} code and provide improvement suggestions. Return a JSON array of suggestions with these fields:
-  - id: string (unique identifier)
-  - type: 'optimization' | 'best-practice' | 'security' | 'maintainability'
-  - title: string
-  - description: string
-  - codeExample: string (if applicable)
-  - impact: 'high' | 'medium' | 'low'
+  const prompt = `Suggest improvements for this ${language} code. Be concise. Return ONLY a JSON array (max 5 suggestions).
 
-  Code to analyze:
-  ${code}`;
+Each suggestion must have:
+- id: "SUG-1", "SUG-2", etc.
+- type: "optimization"|"best-practice"|"security"|"maintainability"
+- title: Brief title (max 10 words)
+- description: One sentence description
+- codeExample: Short code snippet or empty string
+- impact: "high"|"medium"|"low"
+
+Code:
+${code.slice(0, 3000)}`;
 
   return makeGeminiRequest(prompt);
 }
 
 export async function queryCodeAnalytics(code: string, language: string) {
-  const prompt = `Analyze this ${language} code and provide detailed metrics. Return a JSON object with these fields:
-  {
-    "complexity": {
-      "cyclomatic": number,
-      "cognitive": number,
-      "score": "excellent" | "good" | "moderate" | "complex" | "very-complex"
-    },
-    "codeQuality": {
-      "maintainability": number (0-100),
-      "readability": number (0-100),
-      "testability": number (0-100)
-    },
-    "metrics": {
-      "linesOfCode": number,
-      "functions": number,
-      "variables": number,
-      "comments": number,
-      "commentRatio": number
-    }${language === 'solidity' ? ',\n    "gasOptimization": {\n      "estimatedGas": number,\n      "optimizationPotential": number,\n      "suggestions": string[]\n    }' : ''}
-  }
+  const gasField = language === 'solidity' 
+    ? ',"gasOptimization":{"estimatedGas":number,"optimizationPotential":number,"suggestions":["string","string"]}' 
+    : '';
+  
+  const prompt = `Analyze this ${language} code metrics. Return ONLY this JSON structure:
+{
+  "complexity":{"cyclomatic":number,"cognitive":number,"score":"excellent|good|moderate|complex"},
+  "codeQuality":{"maintainability":number,"readability":number,"testability":number},
+  "metrics":{"linesOfCode":number,"functions":number,"variables":number,"comments":number,"commentRatio":number}${gasField}
+}
 
-  Code to analyze:
-  ${code}`;
+Code:
+${code.slice(0, 3000)}`;
 
   return makeGeminiRequest(prompt);
 }

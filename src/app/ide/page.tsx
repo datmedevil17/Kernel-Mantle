@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { makeGeminiRequest } from '@/utils/api';
-import { useContractStore } from '@/stores/contractStore';
+import { useContractStore, Contract } from '@/stores/contractStore';
 import { 
   Code2, 
   Coins, 
@@ -62,7 +62,7 @@ const ProjectHub = () => {
       setIsUpdating(true);
       setUpdateContractId(contractId);
       
-      const contract = contracts.find(c => c.address === contractId);
+      const contract = contracts.find((c: Contract) => c.address === contractId);
       if (!contract) return;
 
       const fullPrompt = `Update this Solidity smart contract based on the new description: ${newDescription}. 
@@ -308,7 +308,7 @@ contract PriceConsumer {
       {/* Grid background */}
       <div className="text-center mb-12 sm:mb-16 lg:mb-20 z-10">
         <h4 className="text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-black text-white mb-4 sm:mb-6 tracking-tight">
-          BUILD WITH ASSETHUB
+          BUILD WITH MANTLE
         </h4>
       </div>
       <div
@@ -328,7 +328,7 @@ contract PriceConsumer {
             Your Contracts ({contracts.length})
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {contracts.map((contract) => (
+            {contracts.map((contract: Contract) => (
               <Card
                 key={contract.address}
                 className="group relative bg-zinc-900/50 backdrop-blur-sm border border-zinc-800/50 rounded-xl transition-all duration-300 hover:border-zinc-700/50"

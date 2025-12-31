@@ -137,7 +137,7 @@ export const FloatingNav: React.FC<FloatingNavProps> = ({ navItems, className })
               animate={{ opacity: 1 }}
               transition={{ duration: 0.3, delay: 0.2 }}
             >
-              Morph
+              Mantle
             </motion.span>
           </motion.div>
         </motion.div>

@@ -54,15 +54,19 @@ export function TransactionList() {
 
     try {
       const valueInEth = parseInt(tx.transaction.value, 16) / 1e18
-      const prompt = `Analyze and decode this blockchain transaction on Morph Holesky testnet:
-        Input Data: ${tx.transaction.input}
-        To Address: ${tx.transaction.to}
-        From Address: ${tx.sender}
-        Value: ${valueInEth} ETH
-        Transaction Hash: ${tx.transaction.hash}
-        Success: ${tx.success}
-        Please explain what this transaction does in simple terms.
-        Return the response as a JSON object with 'explanation' and 'type' fields.`;
+      const prompt = `Decode this Mantle blockchain transaction. Be concise.
+
+Transaction Data:
+- Input: ${tx.transaction.input.slice(0, 100)}${tx.transaction.input.length > 100 ? '...' : ''}
+- To: ${tx.transaction.to}
+- Value: ${valueInEth} MNT
+- Status: ${tx.success ? 'Success' : 'Failed'}
+
+Return ONLY a JSON object with exactly these fields:
+{
+  "type": "Transfer|Contract Call|Contract Deploy|Approval|Swap|Other",
+  "explanation": "One sentence explaining what this transaction does"
+}`;
 
       const decoded = await makeGeminiRequest(prompt);
 
@@ -199,7 +203,7 @@ export function TransactionList() {
   return (
     <div className="space-y-4">
       <AnimatePresence>
-        {transactions.map((tx, index) => (
+        {transactions.map((tx: Transaction, index: number) => (
           <motion.div
             key={tx.transaction.hash}
             initial={{ opacity: 0, y: 20 }}
@@ -362,9 +366,9 @@ export function TransactionList() {
                             <Copy className="mr-2 h-4 w-4" />
                             Copy Hash
                           </Button>
-                          <Button variant="outline" size="sm" className="bg-gray-800/30 border-gray-700/50 hover:bg-gray-700/30 text-gray-300 hover:text-white" onClick={(e) => { e.stopPropagation(); window.open(`https://explorer-holesky.morphl2.io/tx/${tx.transaction.hash}`, '_blank') }}>
+                          <Button variant="outline" size="sm" className="bg-gray-800/30 border-gray-700/50 hover:bg-gray-700/30 text-gray-300 hover:text-white" onClick={(e) => { e.stopPropagation(); window.open(`https://sepolia.mantlescan.xyz/tx/${tx.transaction.hash}`, '_blank') }}>
                             <ExternalLink className="mr-2 h-4 w-4" />
-                            Morph Explorer
+                            Mantle Explorer
                           </Button>
                         </div>
                       </div>

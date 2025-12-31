@@ -8,7 +8,7 @@ export function FeaturesSectionDemo() {
     {
       title: "Smart Contract Development",
       description:
-        "Build and deploy secure smart contracts on Morph Network with our advanced IDE and debugging tools.",
+        "Build and deploy secure smart contracts on Mantle Network with our advanced IDE and debugging tools.",
       skeleton: <SkeletonOne />,
       className:
         "col-span-1 lg:col-span-4 border-b lg:border-r border-neutral-800",
@@ -23,13 +23,13 @@ export function FeaturesSectionDemo() {
     {
       title: "Learn Blockchain Development",
       description:
-        "Master MorphI2 development with our comprehensive tutorials and community-driven learning resources.",
+        "Master Mantle development with our comprehensive tutorials and community-driven learning resources.",
       skeleton: <SkeletonThree />,
       className:
         "col-span-1 lg:col-span-3 lg:border-r border-neutral-800",
     },
     {
-      title: "Deploy to MorphI2 Network",
+      title: "Deploy to Mantle Network",
       description:
         "Deploy your smart contracts to mainnet, testnet, or local networks with one-click deployment infrastructure.",
       skeleton: <SkeletonFour />,
@@ -45,7 +45,7 @@ export function FeaturesSectionDemo() {
         </h4>
 
         <p className="text-sm lg:text-base max-w-2xl my-4 mx-auto text-neutral-500 text-center font-normal text-neutral-300">
-          From smart contract development to DeFi protocols, Kernel AI provides everything you need to build on Morph Network with confidence.
+          From smart contract development to DeFi protocols, Kernel AI provides everything you need to build on Mantle Network with confidence.
         </p>
       </div>
 
@@ -184,7 +184,7 @@ export const SkeletonThree = () => {
         <div className="relative aspect-video">
           <Image 
             src="/d9.png" 
-            alt="Morph Development Tutorial" 
+            alt="Mantle Development Tutorial" 
             width={400}
             height={225}
             className="w-full h-full object-cover"
@@ -192,7 +192,7 @@ export const SkeletonThree = () => {
         </div>
         <div className="p-4">
           <h4 className="text-white font-semibold text-sm mb-1">
-            Morph Development Masterclass
+            Mantle Development Masterclass
           </h4>
           <p className="text-neutral-400 text-xs">
             Learn substrate development from experts
@@ -214,7 +214,7 @@ export const SkeletonFour = () => {
     <div className="h-48 flex flex-col items-center justify-center relative bg-transparent">
       <div className="text-center mb-6">
         <h4 className="text-white font-semibold text-lg mb-2">
-          Global Morph Network
+          Global Mantle Network
         </h4>
         <p className="text-neutral-400 text-sm">
           Deploy to parachains worldwide

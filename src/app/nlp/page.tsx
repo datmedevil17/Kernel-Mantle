@@ -82,27 +82,29 @@ const NaturalLanguageContractInteraction = () => {
 
   const convertNLToContract = useCallback(
     async (naturalLanguage: string): Promise<ConversionResult> => {
-      const prompt = `Convert this natural language command to a smart contract function call.
-    
-    Natural Language: "${naturalLanguage}"
-    Contract ABI: ${contractABI || sampleABI}
-    
-    You must return ONLY a valid JSON object with this exact structure:
-    {
-      "functionCall": "complete function call string",
-      "contractMethod": "exact function name from ABI",
-      "parameters": [{"name": "param_name", "type": "solidity_type", "value": "actual_value"}],
-      "abi": the exact ABI fragment for this function as JSON object (not string),
-      "gasEstimate": "estimated gas amount",
-      "explanation": "what this function does",
-      "requirements": ["requirement1", "requirement2"]
-    }
-    
-    Important rules:
-    - For token amounts, convert to wei (multiply by 10^18)
-    - Use exact parameter names and types from the ABI
-    - Return the ABI fragment as a JSON object, not a string
-    - Ensure all addresses are valid hex format starting with 0x`
+      const prompt = `Convert this natural language to a smart contract call. Be concise.
+
+Command: "${naturalLanguage}"
+ABI: ${contractABI || sampleABI}
+Caller's wallet address: ${address || "0x0000000000000000000000000000000000000000"}
+
+Return ONLY this JSON:
+{
+  "functionCall": "function_name(param1, param2)",
+  "contractMethod": "exact_function_name",
+  "parameters": [{"name": "param", "type": "type", "value": "actual_value"}],
+  "abi": {single function ABI object},
+  "gasEstimate": "estimated gas",
+  "explanation": "One sentence explanation",
+  "requirements": ["short requirement"]
+}
+
+Rules:
+- Convert token amounts to wei (multiply by 10^18)
+- All addresses MUST be valid 0x... format (42 chars)
+- If user says "my address" or "caller", use the wallet address provided above
+- NEVER use placeholders like {{address}} - always use real values
+- Return abi as JSON object, not string`
 
       try {
         const response = await makeGeminiRequest(prompt)
@@ -191,6 +193,14 @@ const NaturalLanguageContractInteraction = () => {
           return BigInt(value)
         
         case 'address':
+          // Check for placeholder patterns
+          if (value.includes('{{') || value.includes('caller') || value.includes('sender')) {
+            // Use connected wallet address if available
+            if (address) {
+              return address as `0x${string}`
+            }
+            throw new Error(`Please connect your wallet to use "my address"`)
+          }
           // Validate address format
           if (!/^0x[a-fA-F0-9]{40}$/.test(value)) {
             throw new Error(`Invalid address format: ${value}`)
@@ -275,7 +285,7 @@ const NaturalLanguageContractInteraction = () => {
   return (
     <div className="flex flex-col h-screen bg-black text-white">
       {/* Header */}
-      <div className="flex items-center justify-between p-6 border-b border-gray-800 bg-gradient-to-r from-black to-gray-900 pt-30">
+      <div className="flex items-center justify-between p-6 border-b border-gray-800 bg-gradient-to-r from-black to-gray-900 pt-20">
         <div className="flex items-center space-x-4">
           <div className="p-2 bg-emerald-500/10 rounded-lg border border-emerald-500/20">
             <Terminal className="w-6 h-6 text-emerald-400" />
@@ -329,22 +339,51 @@ const NaturalLanguageContractInteraction = () => {
                     <FileText className="w-4 h-4 text-emerald-400" />
                     <span>Contract ABI (Optional)</span>
                   </div>
-                  {contractABI && (
-                    <button
-                      onClick={() => setContractABI("")}
-                      className="text-xs text-gray-400 hover:text-red-400 transition-colors"
-                    >
-                      Clear
-                    </button>
-                  )}
+                  <div className="flex items-center space-x-2">
+                    {contractABI && (
+                      <>
+                        <button
+                          onClick={() => {
+                            try {
+                              const parsed = JSON.parse(contractABI)
+                              setContractABI(JSON.stringify(parsed, null, 2))
+                            } catch {
+                              // Already formatted or invalid
+                            }
+                          }}
+                          className="text-xs text-emerald-400 hover:text-emerald-300 transition-colors"
+                        >
+                          Format
+                        </button>
+                        <button
+                          onClick={() => setContractABI("")}
+                          className="text-xs text-gray-400 hover:text-red-400 transition-colors"
+                        >
+                          Clear
+                        </button>
+                      </>
+                    )}
+                  </div>
                 </label>
                 <div className="relative">
                   <textarea
                     value={contractABI}
                     onChange={(e) => setContractABI(e.target.value)}
-                    placeholder='[{"inputs":[],"name":"function_name","outputs":[],"type":"function"}]'
-                    rows={4}
-                    className="w-full px-4 py-3 bg-black border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all resize-none font-mono text-sm"
+                    onPaste={(e) => {
+                      // Auto-format pasted JSON
+                      setTimeout(() => {
+                        try {
+                          const parsed = JSON.parse(contractABI || e.clipboardData.getData('text'))
+                          setContractABI(JSON.stringify(parsed, null, 2))
+                        } catch {
+                          // Keep as-is if not valid JSON
+                        }
+                      }, 0)
+                    }}
+                    placeholder={`[\n  {\n    "inputs": [],\n    "name": "function_name",\n    "outputs": [],\n    "type": "function"\n  }\n]`}
+                    rows={8}
+                    className="w-full px-4 py-3 bg-black border border-gray-700 rounded-lg text-white placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all resize-none font-mono text-xs leading-relaxed"
+                    style={{ tabSize: 2 }}
                   />
                   <div className="absolute top-3 right-3 flex items-center space-x-2">
                     {contractABI && (

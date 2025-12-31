@@ -2,7 +2,8 @@ import { useEffect } from 'react'
 import axios from 'axios'
 import { useTransactionStore } from '@/stores/transactionStore'
 
-const MORPH_API = 'https://explorer-api-holesky.morphl2.io'
+// Blockscout API for Mantle Sepolia Testnet
+const BLOCKSCOUT_API = 'https://explorer.sepolia.mantle.xyz/api'
 
 interface DecodedInput {
   method_call: string
@@ -20,7 +21,7 @@ interface NextPageParams {
   items_count: number
 }
 
-interface MorphTransaction {
+interface MantleTransaction {
   hash: string
   block_number: number
   timestamp: string
@@ -43,8 +44,8 @@ interface MorphTransaction {
   decoded_input?: DecodedInput
 }
 
-interface MorphResponse {
-  items: MorphTransaction[]
+interface MantleResponse {
+  items: MantleTransaction[]
   next_page_params: NextPageParams | null
 }
 
@@ -61,19 +62,16 @@ export function useTransactions(address: string | undefined, isConnected: boolea
       setLoading(true)
 
       try {
-        // Use the correct Morph Holesky API v2 endpoint
-        const endpoint = `${MORPH_API}/api/v2/addresses/${address}/transactions`
+        // Use our API route to proxy Blockscout requests (avoids CORS issues)
+        const endpoint = `/api/transactions?address=${address}`
         
-        console.log('Fetching from:', endpoint)
+        console.log('Fetching transactions via API route:', endpoint)
         
-        const response = await axios.get<MorphResponse>(endpoint, {
-          timeout: 10000,
+        const response = await axios.get<MantleResponse>(endpoint, {
+          timeout: 15000,
           headers: {
             'Accept': 'application/json',
             'Content-Type': 'application/json'
-          },
-          params: {
-            filter: 'to%2Cfrom', // Filter for to and from transactions
           }
         })
 
@@ -87,7 +85,7 @@ export function useTransactions(address: string | undefined, isConnected: boolea
 
         const transactions = response.data.items
 
-        const formattedTransactions = transactions.map((tx: MorphTransaction) => {
+        const formattedTransactions = transactions.map((tx: MantleTransaction) => {
           // Convert values properly
           const valueInWei = tx.value || '0'
           const gasPrice = tx.gas_price || '0'
@@ -109,7 +107,7 @@ export function useTransactions(address: string | undefined, isConnected: boolea
           return {
             transaction: {
               type: '0x0',
-              chainId: '2810', // Morph Holesky chain ID
+              chainId: '5003', // Mantle Sepolia Testnet chain ID
               nonce: tx.nonce?.toString() || '0',
               to: tx.to?.hash || '',
               gas: gasHex,
@@ -134,7 +132,7 @@ export function useTransactions(address: string | undefined, isConnected: boolea
         setTransactions(formattedTransactions)
         
       } catch (error) {
-        console.error('Error fetching Morph Holesky transactions:', error)
+        console.error('Error fetching transactions from Blockscout:', error)
         
         if (axios.isAxiosError(error)) {
           console.error('Response data:', error.response?.data)
