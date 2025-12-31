@@ -30,7 +30,13 @@ interface ConversionResult {
     type: string
     value: string
   }>
-  abi?: any
+   abi?: {
+    inputs: Array<{ name: string; type: string }>
+    name: string
+    outputs: Array<{ name: string; type: string }>
+    type: string
+    stateMutability?: string
+  }
   error?: string
 }
 
