@@ -4,6 +4,22 @@ import { useTransactionStore } from '@/stores/transactionStore'
 
 const MORPH_API = 'https://explorer-api-holesky.morphl2.io'
 
+interface DecodedInput {
+  method_call: string
+  method_id: string
+  parameters: Array<{
+    name: string
+    type: string
+    value: string
+  }>
+}
+
+interface NextPageParams {
+  block_number: number
+  index: number
+  items_count: number
+}
+
 interface MorphTransaction {
   hash: string
   block_number: number
@@ -24,12 +40,12 @@ interface MorphTransaction {
   type: number
   position: number
   method: string
-  decoded_input?: any
+  decoded_input?: DecodedInput
 }
 
 interface MorphResponse {
   items: MorphTransaction[]
-  next_page_params: any
+  next_page_params: NextPageParams | null
 }
 
 export function useTransactions(address: string | undefined, isConnected: boolean) {
@@ -50,7 +66,7 @@ export function useTransactions(address: string | undefined, isConnected: boolea
         
         console.log('Fetching from:', endpoint)
         
-        const response = await axios.get(endpoint, {
+        const response = await axios.get<MorphResponse>(endpoint, {
           timeout: 10000,
           headers: {
             'Accept': 'application/json',

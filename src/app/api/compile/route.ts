@@ -208,16 +208,6 @@ const compileFromSources = async (
       }
     }
 
-    // Helper function to determine if a contract is deployable
-    const isDeployableContract = (abi: ABIItem[]): boolean => {
-      // Check if contract has a constructor or non-view/pure functions
-      return abi.some(item => 
-        item.type === 'constructor' || 
-        (item.type === 'function' && 
-         item.stateMutability !== 'view' && 
-         item.stateMutability !== 'pure')
-      )
-    }
 
     // Helper function to determine contract type
     const getContractType = (abi: ABIItem[], bytecode: string): string => {

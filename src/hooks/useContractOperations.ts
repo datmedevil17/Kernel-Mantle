@@ -16,7 +16,19 @@ interface DeploymentResult {
   gasUsed: string;
   error?: string;
 }
+interface AbiInput {
+  type: string;
+  name: string;
+  internalType?: string;
+}
 
+interface AbiItem {
+  type: 'constructor' | 'function' | 'event' | 'error';
+  name?: string;
+  inputs?: AbiInput[];
+  outputs?: AbiInput[];
+  stateMutability?: string;
+}
 export function useContractOperations() {
   const [compilationResult, setCompilationResult] = useState<CompilationResult | null>(null);
   const [isCompiling, setIsCompiling] = useState(false);
@@ -196,7 +208,7 @@ export function useContractOperations() {
   }, []);
 
 const handleDeploy = useCallback(async (constructorArgs: string[] = []): Promise<DeploymentResult> => {
-  return new Promise(async (resolve, reject) => {
+  return new Promise(async (resolve) => {
     try {
       // Check wallet connection first
       if (!isConnected) {
@@ -234,19 +246,18 @@ const handleDeploy = useCallback(async (constructorArgs: string[] = []): Promise
         throw new Error("Invalid bytecode: too short");
       }
 
-      const deployAbi = compilationResult.abi ? JSON.parse(compilationResult.abi) : [];
+      const deployAbi: AbiItem[] = compilationResult.abi ? JSON.parse(compilationResult.abi) : [];
       
       // Find constructor in ABI to get parameter types
-      const constructorAbi = deployAbi.find((item: any) => item.type === 'constructor');
+      const constructorAbi = deployAbi.find((item: AbiItem) => item.type === 'constructor');
       
       // Convert string arguments to proper types
-      let processedArgs: any[] = [];
+      let processedArgs: unknown[] = [];
       if (constructorAbi && constructorAbi.inputs && constructorArgs.length > 0) {
-        processedArgs = constructorAbi.inputs.map((input: any, index: number) => {
+        processedArgs = constructorAbi.inputs.map((input: AbiInput, index: number) => {
           const argValue = constructorArgs[index];
-          
           // Convert based on parameter type
-          switch (input.type) {
+           switch (input.type) {
             case 'uint256':
             case 'uint':
               return BigInt(argValue);

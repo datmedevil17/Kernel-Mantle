@@ -4,7 +4,6 @@ import { useState } from "react"
 import { componentLibrary, categories } from "@/constants/componentLibrary"
 import { Database, Radio, Zap, Map, Cpu, X, Copy, Check, ChevronDown,Sparkles,Loader2 } from "lucide-react"
 import { makeGeminiRequest } from "@/utils/api"
-import { useContractOperations } from "@/hooks/useContractOperations"
 
 const VisualSmartContractBuilder = () => {
   const [canvasComponents, setCanvasComponents] = useState<ComponentType[]>([])

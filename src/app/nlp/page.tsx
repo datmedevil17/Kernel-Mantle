@@ -245,19 +245,6 @@ const NaturalLanguageContractInteraction = () => {
           <Code className="w-4 h-4 text-gray-500" />
         </div>
       </div>
-      {contractAddress && (
-        <div className="p-3 bg-black rounded-lg border border-gray-800">
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-xs text-gray-400">Address Preview</span>
-            <span className="text-xs text-emerald-400">
-              {contractAddress.startsWith('0x') ? 'Valid Format' : 'Invalid Format'}
-            </span>
-          </div>
-          <div className="font-mono text-sm text-green-400 break-all">
-            {contractAddress}
-          </div>
-        </div>
-      )}
     </div>
 
     {/* Contract ABI */}
@@ -296,75 +283,6 @@ const NaturalLanguageContractInteraction = () => {
           )}
         </div>
       </div>
-      
-      {contractABI && (
-        <div className="space-y-3">
-          <div className="p-4 bg-black rounded-lg border border-gray-800">
-            <div className="flex items-center justify-between mb-3">
-              <span className="text-xs font-medium text-gray-400">ABI Preview</span>
-              <div className="flex items-center space-x-2">
-                {(() => {
-                  try {
-                    return (
-                      <span className="flex items-center space-x-1 text-xs text-green-400">
-                        <CheckCircle className="w-3 h-3" />
-                        <span>Valid JSON</span>
-                      </span>
-                    );
-                  } catch {
-                    return (
-                      <span className="flex items-center space-x-1 text-xs text-red-400">
-                        <AlertCircle className="w-3 h-3" />
-                        <span>Invalid JSON</span>
-                      </span>
-                    );
-                  }
-                })()}
-              </div>
-            </div>
-            <div className="max-h-40 overflow-y-auto">
-              <pre className="text-xs text-gray-300 whitespace-pre-wrap break-words">
-                {(() => {
-                  try {
-                    return JSON.stringify(JSON.parse(contractABI), null, 2);
-                  } catch {
-                    return contractABI;
-                  }
-                })()}
-              </pre>
-            </div>
-          </div>
-          
-          {(() => {
-            try {
-              const parsed = JSON.parse(contractABI);
-              const functions = Array.isArray(parsed) 
-                ? parsed.filter(item => item.type === 'function')
-                : parsed.type === 'function' ? [parsed] : [];
-              
-              if (functions.length > 0) {
-                return (
-                  <div className="p-4 bg-gradient-to-br from-gray-900 to-black rounded-lg border border-gray-800">
-                    <h4 className="text-xs font-medium text-emerald-400 mb-3">Available Functions</h4>
-                    <div className="space-y-2">
-                      {functions.map((func, idx) => (
-                        <div key={idx} className="flex items-center justify-between p-2 bg-black rounded border border-gray-700">
-                          <span className="text-sm font-mono text-white">{func.name}</span>
-                          <span className="text-xs text-gray-400">
-                            {func.inputs?.length || 0} params
-                          </span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                );
-              }
-            } catch {
-              return null;
-            }
-          })()}
-        </div>
-      )}
     </div>
   </div>
 </div>
