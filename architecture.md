@@ -11,58 +11,58 @@
 ```mermaid
 graph TB
     subgraph "Client Layer"
-        Browser[Web Browser]
+        Browser["Web Browser"]
     end
     
     subgraph "Frontend - Next.js 15"
-        Landing[Landing Page]
-        Dashboard[Dashboard]
-        IDE[AI IDE]
-        Pipeline[Pipeline Builder]
-        NLP[NLP Interface]
-        Explore[Templates Explorer]
-        Sandbox[Neuron Generator]
+        Landing["Landing Page"]
+        Dashboard["Dashboard"]
+        IDE["AI IDE"]
+        Pipeline["Pipeline Builder"]
+        NLP["NLP Interface"]
+        Explore["Templates Explorer"]
+        Sandbox["Neuron Generator"]
         
         subgraph "UI Components"
-            Editor[Monaco Editor]
-            CodeEditor[Code Editor]
-            FileNav[File Navigator]
-            TransList[Transaction List]
-            AuditUI[Audit Components]
-            Modals[Modal Components]
+            Editor["Monaco Editor"]
+            CodeEditor["Code Editor"]
+            FileNav["File Navigator"]
+            TransList["Transaction List"]
+            AuditUI["Audit Components"]
+            Modals["Modal Components"]
         end
         
         subgraph "State Management - Zustand"
-            ContractStore[Contract Store]
-            FileStore[File Store]
-            TxStore[Transaction Store]
+            ContractStore["Contract Store"]
+            FileStore["File Store"]
+            TxStore["Transaction Store"]
         end
     end
     
     subgraph "API Layer - Next.js API Routes"
-        CompileAPI[/api/compile]
-        ChatAPI[/api/chat]
-        ExploreAPI[/api/explore]
-        TxAPI[/api/transactions]
+        CompileAPI["/api/compile"]
+        ChatAPI["/api/chat"]
+        ExploreAPI["/api/explore"]
+        TxAPI["/api/transactions"]
     end
     
     subgraph "External Services"
-        Gemini[Gemini AI API]
-        Mantle[Mantle Network]
-        Privy[Privy Auth]
+        Gemini["Gemini AI API"]
+        Mantle["Mantle Network"]
+        Privy["Privy Auth"]
     end
     
     subgraph "Smart Contracts & Templates"
-        Contracts[Solidity Contracts]
-        OZ[OpenZeppelin Libraries]
-        Templates[Contract Templates]
+        Contracts["Solidity Contracts"]
+        OZ["OpenZeppelin Libraries"]
+        Templates["Contract Templates"]
     end
     
     subgraph "Compilation & Tools"
-        Solc[Solc Compiler]
-        Resolc[Resolc Compiler]
-        Viem[Viem]
-        Wagmi[Wagmi]
+        Solc["Solc Compiler"]
+        Resolc["Resolc Compiler"]
+        Viem["Viem"]
+        Wagmi["Wagmi"]
     end
     
     Browser --> Landing
@@ -120,38 +120,38 @@ graph TB
 ```mermaid
 graph LR
     subgraph "Pages"
-        P1[/ - Landing]
-        P2[/dashboard - Analytics]
-        P3[/ide - AI IDE]
-        P4[/pipeline - Visual Builder]
-        P5[/nlp - NLP Interface]
-        P6[/explore - Templates]
-        P7[/sandbox - UI Generator]
+        P1["/ - Landing"]
+        P2["/dashboard - Analytics"]
+        P3["/ide - AI IDE"]
+        P4["/pipeline - Visual Builder"]
+        P5["/nlp - NLP Interface"]
+        P6["/explore - Templates"]
+        P7["/sandbox - UI Generator"]
     end
     
     subgraph "Shared Components"
-        C1[Navbar]
-        C2[Footer]
-        C3[ConnectWallet]
-        C4[NeuronAssistant]
+        C1["Navbar"]
+        C2["Footer"]
+        C3["ConnectWallet"]
+        C4["NeuronAssistant"]
     end
     
     subgraph "Feature Components"
-        F1[CodeEditor]
-        F2[FileNavigator]
-        F3[EditorSidebar]
-        F4[TransactionList]
-        F5[AuditReport]
-        F6[ContractCard]
-        F7[PluginManager]
+        F1["CodeEditor"]
+        F2["FileNavigator"]
+        F3["EditorSidebar"]
+        F4["TransactionList"]
+        F5["AuditReport"]
+        F6["ContractCard"]
+        F7["PluginManager"]
     end
     
     subgraph "UI Library - ShadCN"
-        U1[Button]
-        U2[Card]
-        U3[Dialog]
-        U4[Input]
-        U5[Tabs]
+        U1["Button"]
+        U2["Card"]
+        U3["Dialog"]
+        U4["Input"]
+        U5["Tabs"]
     end
     
     P1 --> C1
