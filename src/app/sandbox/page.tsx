@@ -14,8 +14,52 @@ import {
   ArrowLeft, 
   Zap, 
   Loader2, 
-  Github
+  Github,
+  AlertCircle
 } from "lucide-react";
+
+// Wrapper code to provide Wagmi context inside Sandpack
+const WRAPPER_CODE = `import React from 'react';
+import { createConfig, WagmiProvider, http } from 'wagmi';
+import { mainnet, sepolia, mantleSepoliaTestnet } from 'wagmi/chains';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { injected } from 'wagmi/connectors';
+import GeneratedApp from './GeneratedApp';
+
+const config = createConfig({
+  chains: [mainnet, sepolia, mantleSepoliaTestnet],
+  transports: {
+    [mainnet.id]: http(),
+    [sepolia.id]: http(),
+    [mantleSepoliaTestnet.id]: http(),
+  },
+  connectors: [injected()],
+});
+
+const queryClient = new QueryClient();
+
+export default function App() {
+  return (
+    <WagmiProvider config={config}>
+      <QueryClientProvider client={queryClient}>
+        <GeneratedApp />
+      </QueryClientProvider>
+    </WagmiProvider>
+  );
+}`;
+
+const INITIAL_GENERATED_APP = `import React from 'react';
+
+export default function GeneratedApp() {
+  return (
+    <div className="p-8 text-center font-sans text-white">
+      <h1 className="text-2xl font-bold mb-4">Ready to Generate</h1>
+      <p className="text-gray-400">
+        Click "Generate UI" to build a custom dApp for your contract.
+      </p>
+    </div>
+  );
+}`;
 
 export default function SandboxPage() {
   const router = useRouter();
@@ -25,73 +69,113 @@ export default function SandboxPage() {
   const abiString = searchParams.get("abi");
   const contractName = searchParams.get("name") || "MyContract";
 
-  // Initial scaffold code before AI generation
-  const initialCode = `import React from 'react';
-
-export default function App() {
-  return (
-    <div style={{ padding: '20px', fontFamily: 'sans-serif' }}>
-      <h1>Neuron UI Generator</h1>
-      <p>Click "Generate UI" to build a custom dApp for your contract.</p>
-      <div style={{ 
-        padding: '20px', 
-        border: '1px solid #333', 
-        borderRadius: '8px',
-        marginTop: '20px'
-      }}>
-        <p><strong>Contract:</strong> ${contractName}</p>
-        <p><strong>Address:</strong> ${contractAddress}</p>
-      </div>
-    </div>
-  );
-}`;
-
   const [isGenerating, setIsGenerating] = useState(false);
-  const [generatedCode, setGeneratedCode] = useState(initialCode);
-  const [activeTab, setActiveTab] = useState<"preview" | "code">("preview");
+  const [generatedCode, setGeneratedCode] = useState(INITIAL_GENERATED_APP);
+  const [error, setError] = useState<string | null>(null);
 
   const handleGenerate = async () => {
-    if (!abiString) return;
+    if (!abiString || !contractAddress) {
+      setError("Missing contract ABI or Address.");
+      return;
+    }
     
     setIsGenerating(true);
+    setError(null);
+
     try {
-      const prompt = `Generate a modern, functional React component Using 'wagmi' and 'viem' to interact with this Smart Contract.
+      // 1. Parse ABI locally to extract functions
+      let abi: any;
+      try {
+        abi = JSON.parse(abiString);
+        
+        // Handle double-encoding if it's still a string
+        if (typeof abi === 'string') {
+          abi = JSON.parse(abi);
+        }
+      } catch (e) {
+        console.error("Error parsing ABI string:", e);
+        throw new Error("Invalid ABI format");
+      }
+
+      // Handle if ABI is wrapped in an object (e.g. Hardhat artifact)
+      if (!Array.isArray(abi) && abi.abi && Array.isArray(abi.abi)) {
+        abi = abi.abi;
+      }
+
+      if (!Array.isArray(abi)) {
+        console.error("Parsed ABI is not an array:", abi);
+        throw new Error(`Invalid ABI format: Expected array, got ${typeof abi}`);
+      }
+
+      console.log("Successfully parsed ABI, length:", abi.length);
+
+      const functions = abi.filter((item: any) => item.type === 'function');
       
-      Contract Name: ${contractName}
-      Contract Address: ${contractAddress}
-      ABI: ${abiString}
+      const readFunctions = functions.filter((f: any) => 
+        f.stateMutability === 'view' || f.stateMutability === 'pure'
+      ).map((f: any) => f.name);
+
+      const writeFunctions = functions.filter((f: any) => 
+        f.stateMutability !== 'view' && f.stateMutability !== 'pure'
+      ).map((f: any) => f.name);
+
+      // 2. Structured Prompt
+      const prompt = `Generate a React component called 'GeneratedApp' for a dApp dashboard.
+      
+      Context:
+      - Contract Name: ${contractName}
+      - Contract Address: "${contractAddress}"
+      - Chain ID: 5003 (Mantle Sepolia)
+      
+      The ABI contains these specific functions:
+      - READ Functions: ${readFunctions.join(", ")}
+      - WRITE Functions: ${writeFunctions.join(", ")}
 
       Requirements:
-      1. Use 'wagmi' hooks: useReadContract, useWriteContract, useAccount, useConnect.
-      2. Use 'viem' for parsing ether/formatting (parseEther, formatEther).
-      3. Create a beautiful UI with Tailwind CSS classes.
-      4. Include a "Connect Wallet" button if not connected.
-      5. For READ functions: Display them clearly in cards.
-      6. For WRITE functions: Create forms with inputs and "Submit" buttons.
-      7. Handle loading and error states.
-      8. Return ONLY the full React functional component code. Start with imports.
-      9. Do NOT use external UI libraries other than standard HTML/Tailwind.
-      10. The component should be exported as default.
+      1. Use 'wagmi' v2 hooks: useReadContract, useWriteContract, useAccount, useConnect, useDisconnect, useWaitForTransactionReceipt.
+      2. Use 'viem' for parsing/formatting (parseEther, formatEther).
+      3. Create a "Connect Wallet" button at the top right.
+      4. Create TWO sections: "Read Contract" and "Write Contract".
+      5. For EVERY Read function listed above, create a card that reads its value.
+      6. For EVERY Write function listed above, create a form with inputs and a submit button.
+      7. Handle loading states and show transaction hashes.
+      8. Use 'lucide-react' for icons.
+      9. Style with Tailwind CSS using a professional Black & White theme (minimalist, high contrast, clean typography, subtle borders).
+      10. Export the component as 'default'.
+      11. NO Markdown blocks. NO \`\`\` wrappers. Just the raw code.
+      12. CRITICAL: Use 'chainId: 5003' in all hooks. Use the NUMBER 5003.
+      13. WAGMI V2 STRICT MODE: 
+          - DO NOT import 'wagmi/connectors/injected'.
+          - DO NOT use 'InjectedConnector'.
+          - To connect, use: \`const { connectors, connect } = useConnect();\` and \`connect({ connector: connectors[0] })\`.
+          - DO NOT add arguments to \`useConnect()\`.
+      14. LAYOUT: The main container MUST use 'min-h-screen' and 'w-full' to fill the entire preview area. Content should be properly spaced.
       
-      IMPORTANT: The code will run in a Sandpack environment. Ensure all imports are valid for standard React/Wagmi setup.
-      Assume 'wagmi' and 'viem' are available.`;
+      IMPORTANT: The code runs in a wrapper that ALREADY provides WagmiProvider.
+      Do not add WagmiProvider or QueryClientProvider. Just build the UI component.`;
 
       const response = await makeGeminiRequest(prompt);
       
       let code = response.content || response;
-      // Clean up markdown code blocks if present
-      code = code.replace(/```jsx?/g, "").replace(/```tsx?/g, "").replace(/```/g, "");
+      // Sanitize output
+      code = code.replace(/```tsx?|```jsx?|```/g, "").trim();
       
+      // Basic check to ensure it exports default
+      if (!code.includes("export default")) {
+        throw new Error("Generated code missing default export.");
+      }
+
       setGeneratedCode(code);
-    } catch (error) {
-      console.error("Failed to generate UI:", error);
+    } catch (err: any) {
+      console.error("Failed to generate UI:", err);
+      setError(err.message || "Failed to generate UI. Please try again.");
     } finally {
       setIsGenerating(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-black text-white flex flex-col">
+    <div className="min-h-screen bg-black text-white flex flex-col pt-30">
       {/* Header */}
       <div className="border-b border-gray-800 bg-gray-900/50 p-4 flex items-center justify-between backdrop-blur-sm">
         <div className="flex items-center space-x-4">
@@ -114,9 +198,15 @@ export default function App() {
         </div>
 
         <div className="flex items-center space-x-3">
+          {error && (
+            <div className="flex items-center text-red-400 text-xs mr-4">
+              <AlertCircle className="w-4 h-4 mr-1" />
+              {error}
+            </div>
+          )}
            <Button
             onClick={handleGenerate}
-            disabled={isGenerating}
+            disabled={isGenerating || !abiString}
             className="bg-gradient-to-r from-emerald-600 to-blue-600 hover:from-emerald-700 hover:to-blue-700 text-white border-0"
           >
             {isGenerating ? (
@@ -143,10 +233,11 @@ export default function App() {
         {/* Sandpack Container */}
         <div className="flex-1 h-full">
           <SandpackProvider
-            template="react"
+            template="react-ts"
             theme="dark"
             files={{
-              "/App.js": generatedCode,
+              "/App.tsx": WRAPPER_CODE,
+              "/GeneratedApp.tsx": generatedCode,
             }}
             options={{
               externalResources: ["https://cdn.tailwindcss.com"],
@@ -156,10 +247,12 @@ export default function App() {
             }}
             customSetup={{
               dependencies: {
-                "wagmi": "2.5.7",
-                "viem": "2.7.6",
-                "@tanstack/react-query": "5.25.0",
-                "lucide-react": "latest"
+                "wagmi": "2.14.1",
+                "viem": "2.21.0",
+                "@tanstack/react-query": "5.59.0",
+                "lucide-react": "latest",
+                "clsx": "latest",
+                "tailwind-merge": "latest"
               }
             }}
           >
@@ -174,7 +267,7 @@ export default function App() {
               <SandpackPreview 
                 showNavigator 
                 showRefreshButton
-                style={{ height: "100%" }}
+                
               />
             </SandpackLayout>
           </SandpackProvider>

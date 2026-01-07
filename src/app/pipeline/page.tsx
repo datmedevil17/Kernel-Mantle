@@ -37,6 +37,9 @@ const nodeTypes: Record<string, NodeType> = {
   gasOptimize: { icon: Zap, color: "bg-emerald-800", label: "Gas Optimize" },
 }
 
+
+let globalCompilationResult: { abi: string; bytecode: unknown; contractAddress?: string } | null | undefined = null;
+
 const PipelineBuilder: React.FC = () => {
   const [nodes, setNodes] = useState<Node[]>([])
   const [connections, setConnections] = useState<Connection[]>([])
@@ -297,6 +300,12 @@ const deployToTestnet = async (
     console.log("Testnet deploy result:", deploymentResult)
 
     if (deploymentResult && deploymentResult.success && deploymentResult.contractAddress) {
+      // Update global and state compilation results with the new address
+      if (globalCompilationResult) {
+        globalCompilationResult.contractAddress = deploymentResult.contractAddress;
+      }
+      setCompilationResult(prev => prev ? ({ ...prev, contractAddress: deploymentResult.contractAddress }) : null);
+
       logger(`✅ Contract deployed to testnet successfully`, "success")
       logger(`📍 Contract Address: ${deploymentResult.contractAddress}`, "success")
       logger(`🔗 Transaction Hash: ${deploymentResult.transactionHash}`, "info")
@@ -633,8 +642,6 @@ Contract has been optimized with standard compiler optimizations.
 Manual review recommended for further improvements.`
     }
   }
-
-let globalCompilationResult: { abi: string; bytecode: unknown; contractAddress?: string } | null | undefined = null;
 
 const simulateNodeExecution = async (
   node: Node,
