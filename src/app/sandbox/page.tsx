@@ -267,6 +267,8 @@ export default function SandboxPage() {
               <SandpackPreview 
                 showNavigator 
                 showRefreshButton
+                                style={{ height: "635px" }}
+
                 
               />
             </SandpackLayout>
