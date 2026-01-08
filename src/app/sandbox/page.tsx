@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { 
   SandpackProvider, 
@@ -9,6 +9,7 @@ import {
   SandpackPreview
 } from "@codesandbox/sandpack-react";
 import { makeGeminiRequest } from "@/utils/api";
+import { type Abi, type AbiFunction } from "viem";
 import { Button } from "@/components/ui/button";
 import { 
   ArrowLeft, 
@@ -61,7 +62,7 @@ export default function GeneratedApp() {
   );
 }`;
 
-export default function SandboxPage() {
+const SandboxContent = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   
@@ -84,7 +85,7 @@ export default function SandboxPage() {
 
     try {
       // 1. Parse ABI locally to extract functions
-      let abi: any;
+      let abi: unknown;
       try {
         abi = JSON.parse(abiString);
         
@@ -98,26 +99,28 @@ export default function SandboxPage() {
       }
 
       // Handle if ABI is wrapped in an object (e.g. Hardhat artifact)
-      if (!Array.isArray(abi) && abi.abi && Array.isArray(abi.abi)) {
-        abi = abi.abi;
+      if (typeof abi === 'object' && abi !== null && 'abi' in abi && Array.isArray((abi as { abi: unknown }).abi)) {
+        abi = (abi as { abi: unknown }).abi;
       }
 
-      if (!Array.isArray(abi)) {
+      const abiTyped = abi as Abi;
+
+      if (!Array.isArray(abiTyped)) {
         console.error("Parsed ABI is not an array:", abi);
         throw new Error(`Invalid ABI format: Expected array, got ${typeof abi}`);
       }
 
-      console.log("Successfully parsed ABI, length:", abi.length);
+      console.log("Successfully parsed ABI, length:", abiTyped.length);
 
-      const functions = abi.filter((item: any) => item.type === 'function');
+      const functions = abiTyped.filter((item): item is AbiFunction => item.type === 'function');
       
-      const readFunctions = functions.filter((f: any) => 
+      const readFunctions = functions.filter((f) => 
         f.stateMutability === 'view' || f.stateMutability === 'pure'
-      ).map((f: any) => f.name);
+      ).map((f) => f.name);
 
-      const writeFunctions = functions.filter((f: any) => 
+      const writeFunctions = functions.filter((f) => 
         f.stateMutability !== 'view' && f.stateMutability !== 'pure'
-      ).map((f: any) => f.name);
+      ).map((f) => f.name);
 
       // 2. Structured Prompt
       const prompt = `Generate a React component called 'GeneratedApp' for a dApp dashboard.
@@ -166,9 +169,10 @@ export default function SandboxPage() {
       }
 
       setGeneratedCode(code);
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("Failed to generate UI:", err);
-      setError(err.message || "Failed to generate UI. Please try again.");
+      const errorMessage = err instanceof Error ? err.message : "Failed to generate UI. Please try again.";
+      setError(errorMessage);
     } finally {
       setIsGenerating(false);
     }
@@ -276,5 +280,13 @@ export default function SandboxPage() {
         </div>
       </div>
     </div>
+  );
+};
+
+export default function SandboxPage() {
+  return (
+    <React.Suspense fallback={<div className="min-h-screen bg-black text-white flex items-center justify-center">Loading...</div>}>
+      <SandboxContent />
+    </React.Suspense>
   );
 }

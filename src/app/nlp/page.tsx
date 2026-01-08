@@ -128,7 +128,7 @@ Rules:
         throw new Error("Failed to convert natural language to contract call")
       }
     },
-    [contractABI, sampleABI],
+    [contractABI, sampleABI,address],
   )
 
   const handleProcess = useCallback(async () => {

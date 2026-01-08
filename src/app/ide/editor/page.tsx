@@ -4,7 +4,7 @@ import FileNavigator from '@/components/editor/FileNavigator';
 import CodeEditor from '@/components/editor/CodeEditor';
 import EditorSidebar from '@/components/editor/EditorSidebar';
 import { useFileStore } from '@/stores/fileStore';
-import { useContractStore } from '@/stores/contractStore';
+import { useContractStore, type Contract } from '@/stores/contractStore';
 import { useContractOperations } from '@/hooks/useContractOperations';
 import type { FileItem } from '@/types/editor';
 
@@ -31,9 +31,9 @@ export default function EditorPage() {
 
   // Convert contracts to files when component mounts or contracts change
   useEffect(() => {
-    contracts.forEach(contract => {
+    contracts.forEach((contract: Contract) => {
       // Check if contract is already in files to avoid duplicates
-      const existingFile = files.find(file => file.name === contract.name);
+      const existingFile = files.find((file: FileItem) => file.name === contract.name);
       
       if (!existingFile && contract.content) {
         const fileItem: FileItem = {

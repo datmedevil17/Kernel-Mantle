@@ -2,8 +2,6 @@ import { useEffect } from 'react'
 import axios from 'axios'
 import { useTransactionStore } from '@/stores/transactionStore'
 
-// Blockscout API for Mantle Sepolia Testnet
-const BLOCKSCOUT_API = 'https://explorer.sepolia.mantle.xyz/api'
 
 interface DecodedInput {
   method_call: string
