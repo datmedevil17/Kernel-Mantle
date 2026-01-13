@@ -2,7 +2,7 @@
 
 A versatile and production-ready smart contract development environment that redefines the experience of blockchain developers on **Mantle**. Kernel AI combines exceptional speed, security, and intelligence to provide a seamless experience to develop, audit, and deploy smart contracts.
 
-<img width="1920" height="969" alt="image" src="https://github.com/user-attachments/assets/c9645a24-02c7-4cf5-8a48-4434422bb775" />
+![alt text](image.png)
 
 ## Table of Contents
 
@@ -49,48 +49,52 @@ Kernel AI is built using a robust tech stack to ensure performance, reliability,
 
 A comprehensive dashboard to help users survey all the transactions they made on the Mantle network. The platform provides efficient AI analysis of transaction patterns, network activity, and detailed insights into your blockchain interactions with visual charts and real-time monitoring capabilities.
 
-<img width="1920" height="969" alt="image" src="https://github.com/user-attachments/assets/4d0e72b0-349c-4a25-9191-c4f4425e8d13" />
+![alt text](image-1.png)
 
-<img width="1920" height="969" alt="image" src="https://github.com/user-attachments/assets/408b7419-8a92-41e1-a1dd-5e72a7e9f2a2" />
+![alt text](image-2.png)
 
 ### 2. Conversational AI
 
 Interactive AI assistant that provides 24/7 development support through natural language processing. The assistant understands your Mantle-specific project context and helps with coding, debugging, and answering development questions.
 
-<img width="1920" height="969" alt="image" src="https://github.com/user-attachments/assets/aeb61f76-2e4e-4260-8a34-df6406c4a556" />
+![alt text](image-3.png)
 
 ### 3. AI-Powered Ready-to-Use Templates
 
 Provision of AI-enhanced smart contract templates optimized for **Mantle**. These come with pre-built, secure foundations for rapid deployment on the Mantle chain.
 
-<img width="1920" height="969" alt="image" src="https://github.com/user-attachments/assets/f367dcf2-6ced-4b87-b534-850530f9977d" />
+![alt text](image-4.png)
 
-<img width="1920" height="969" alt="image" src="https://github.com/user-attachments/assets/3cf73d12-f964-425f-afd6-5c0decec930d" />
+![alt text](image-5.png)
 
-<img width="1920" height="969" alt="image" src="https://github.com/user-attachments/assets/081dcaa0-bfcb-46e6-87b9-afb39ce55b21" />
+![alt text](image-6.png)
 
 
 ### 4. Interactive Smart Contract Builder
 
 A scratch-like drag-and-drop interface for smart contract development that lowers the barrier for beginners on the Mantle platform.
 
-<img width="1920" height="969" alt="image" src="https://github.com/user-attachments/assets/e431e45c-c4f5-4285-bf1b-a4eaf759a935" />
+![alt text](image-7.png)
 
-<img width="1920" height="969" alt="image" src="https://github.com/user-attachments/assets/9bee4969-c9b6-4bf2-8189-daccacb56b4c" />
+![alt text](image-8.png)
 
 ### 5. AI IDE
 
 A smart, AI-powered IDE optimized for Solidity contracts targeting **Mantle**. Supports live error checking, auto-complete, optimization suggestions, and direct deployment.
 
-<img width="1920" height="969" alt="image" src="https://github.com/user-attachments/assets/9001748b-f33c-42a1-8b19-245bc66e959e" />
+![alt text](image-9.png)
 
-<img width="1920" height="969" alt="image" src="https://github.com/user-attachments/assets/6c46c970-3671-499a-b7ec-64639d7c0ab4" />
+![alt text](image-10.png)
 
-<img width="1920" height="969" alt="Screenshot From 2025-08-05 02-20-18" src="https://github.com/user-attachments/assets/1ed559a4-e40e-4277-ac97-07e5f9523d31" />
+![alt text](image-11.png)
 
-<img width="1920" height="969" alt="image" src="https://github.com/user-attachments/assets/f2207159-ea0a-4b6f-9236-8aad6ae24f13" />
+![alt text](image-12.png)
 
-<img width="1920" height="969" alt="image" src="https://github.com/user-attachments/assets/e90fa9e0-1bdf-4253-87d3-053dd6bf7949" />
+![alt text](image-13.png)
+
+![alt text](image-14.png)
+
+![alt text](image-15.png)
 
 
 
@@ -98,24 +102,25 @@ A smart, AI-powered IDE optimized for Solidity contracts targeting **Mantle**. S
 
 Integrated AI-powered contract auditing system tailored for **Mantle** deployments, detecting vulnerabilities and recommending fixes.
 
-<img width="1920" height="969" alt="image" src="https://github.com/user-attachments/assets/98a0172e-9016-441f-be05-53f939fdc7e1" />
+![alt text](image-16.png)
 
-<img width="1920" height="969" alt="image" src="https://github.com/user-attachments/assets/b52beab3-4c73-48f1-b7b4-d1d15fc0a4b2" />
 
 ### 7. AI-Generated Tests
 
 Instantly generate test cases for smart contracts deployed on **Mantle**, with support for testing frameworks like Viem, Hardhat, and Foundry.
 
-<img width="1920" height="969" alt="image" src="https://github.com/user-attachments/assets/e95206e6-39b2-4c20-be37-3bd7ab985dca" />
+![alt text](image-17.png)
 
-<img width="1920" height="969" alt="image" src="https://github.com/user-attachments/assets/8009c807-472d-4a1f-98eb-1f7910183109" />
+![alt text](image-18.png)
 
 
 ### 8. Natural Language Contract Interaction
 
 Talk to your deployed Mantle contract in plain English. ABI + contract address is all you need to run functions or view state.
-<img width="1920" height="969" alt="Screenshot From 2025-08-05 02-45-34" src="https://github.com/user-attachments/assets/6b1d686f-f3d9-426c-9bbf-12db2d7e8e3f" />
 
+![alt text](<Screenshot From 2025-12-31 17-23-51.png>)
+
+![alt text](<Screenshot From 2025-12-31 17-26-07.png>)
 
 
 
@@ -123,9 +128,16 @@ Talk to your deployed Mantle contract in plain English. ABI + contract address i
 
 Drag-and-drop your way to full deployment workflows on **Mantle**, including automated testnet/mainnet pipelines.
 
-<img width="1920" height="969" alt="image" src="https://github.com/user-attachments/assets/31487ee7-89d8-43b2-a28b-3da75daa8713" />
+![alt text](image-19.png)
 
-<img width="1920" height="969" alt="image" src="https://github.com/user-attachments/assets/f4886ec1-0976-40d5-9c65-55b1c0c85cde" />
+![alt text](image-20.png)
+
+### 10. AI Frontend Generation with Direct Deployment
+
+Instantly generate a full-featured, responsive React/Next.js frontend for your deployed smart contract. The AI analyzes your contract's ABI to create a tailored UI for interacting with all functions—ready to be deployed to Vercel with a single click.
+![alt text](image-21.png)
+
+![alt text](<Screenshot From 2026-01-08 18-01-45.png>)
 
 ## Getting Started
 
@@ -197,9 +209,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 The following individuals have contributed to this project:
 
-### **Mrunal Kulkarni**
-**Role**: Frontend Developer  
-**Responsibilities**: Refining frontend components, optimizing performance, ensuring responsive design, maintaining code consistency across the application, and ensuring smooth integration with the backend systems.
 
 ### **Rakshit Shukla**
 **Role**: Blockchain Developer  
